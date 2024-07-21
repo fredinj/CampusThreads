@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import './Posts.css';
 import PostCard from '../components/PostCard'; // Import the PostCard component
 
-const Home = () => {
+const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,17 +30,18 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
-      <h1>Posts</h1>
-      {posts.map(post => (
-        <PostCard 
-          key={post.post_id} 
-          title={post.post_title} 
-          content={post.post_content} 
-        />
-      ))}
+    <div id="main-container">
+      <div id="posts-container">
+        {posts.map(post => (
+          <PostCard 
+            key={post.post_id} 
+            title={post.post_title} 
+            content={post.post_content} 
+          />
+        ))}
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default Posts;

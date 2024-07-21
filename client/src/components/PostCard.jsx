@@ -10,4 +10,13 @@ const PostCard = ({ title, content }) => {
   );
 };
 
+// const PostCard = () => {
+//   return(
+//     <div className="post-card">
+//       <h2 className="post-title">Title</h2>
+//       <p className="post-content">Content</p>
+//     </div>
+//   )
+// }
+
 export default PostCard;
