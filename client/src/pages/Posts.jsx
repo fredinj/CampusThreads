@@ -1,34 +1,4 @@
-/* Old Stuff
-import React, { useEffect, useState } from 'react';
-import './Posts.css';
-import PostCard from '../components/PostCard';
-
-function Posts() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    fetch('http://localhost:3000/api/posts')
-      .then(response => response.json())
-      .then(data => setPosts(data))
-      .catch(error => console.error('Error fetching posts:', error));
-  }, []);
-
-  return (
-    <div id="main-container">
-      <div id="posts-container">
-        {posts.map((post) => (
-          <PostCard key={post.post_id} title={post.post_title} content={post.post_content} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default Posts;
-
-*/
-
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './Posts.css';
 import PostCard from '../components/PostCard'; // Import the PostCard component
 
@@ -42,6 +12,10 @@ const Posts = () => {
     title: '',
     content: ''
   });
+  
+  // Create a ref for the file input
+  const fileInputRef = useRef(null);
+
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -49,27 +23,41 @@ const Posts = () => {
     setForm({ ...form, [name]: value });
   };
 
+  // Handle image file upload
+  const handleImageUpload = (e) => {
+    const {name} = e.target;
+    const image = e.target.files[0]
+    if(image){
+      setForm({...form, [name]: image})
+    }
+  }
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
+
+
+      const formData = new FormData();
+      formData.append('post_title', form.title)
+      formData.append('post_content', form.content)
+      if(form.image){
+        formData.append('image', form.image)
+      }
+
       const response = await fetch('http://localhost:3000/api/posts', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          post_title: form.title,
-          post_content: form.content
-        })
-      });
+        body: formData
+      })
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const newPost = await response.json();
       setPosts([...posts, newPost]);
       setForm({ title: '', content: '' });
+      fileInputRef.current.value = null; 
     } catch (err) {
       setError(err.message);
     }
@@ -122,6 +110,16 @@ const Posts = () => {
               required
             />
           </div>
+          <div className="form-group">
+            <label htmlFor="image">Image:</label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+            />
+          </div>
           <button type="submit">Add Post</button>
         </form>
       </div>
@@ -130,6 +128,7 @@ const Posts = () => {
           <PostCard 
             title={post.post_title} 
             content={post.post_content} 
+            image_url={post.image_url}
           />
         ))}
       </div>
