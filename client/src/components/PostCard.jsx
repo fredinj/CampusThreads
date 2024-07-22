@@ -1,5 +1,5 @@
 import React from 'react';
-import './PostCard.css'; // Import the CSS file
+import './PostCard.css'; 
 
 const PostCard = ({ title, content }) => {
   return (

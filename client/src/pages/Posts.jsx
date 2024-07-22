@@ -25,6 +25,7 @@ function Posts() {
 }
 
 export default Posts;
+
 */
 
 import React, { useEffect, useState } from 'react';
@@ -99,9 +100,9 @@ const Posts = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div id="main-container">
-      <div id="top-content">
-        <form onSubmit={handleSubmit} id="post-form">
+    <div className="main-container">
+      <div className="top-content">
+        <form onSubmit={handleSubmit} className="post-form">
           <div className="form-group">
             <label htmlFor="id">ID:</label>
             <input
@@ -137,7 +138,7 @@ const Posts = () => {
           <button type="submit">Add Post</button>
         </form>
       </div>
-      <div id="posts-container">
+      <div className="posts-container">
         {posts.map(post => (
           <PostCard 
             key={post.post_id} 
