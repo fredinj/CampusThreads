@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
-  post_id: {
-    type: String,
-    required: true,
-    unique: true, // Assuming post_id should be unique
-  },
+  // post_id: {
+  //   type: String,
+  //   required: true,
+  //   unique: true, // Assuming post_id should be unique
+  // },
   post_title: {
     type: String,
     required: true,

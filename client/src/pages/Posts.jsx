@@ -39,7 +39,6 @@ const Posts = () => {
 
   // State to handle form inputs
   const [form, setForm] = useState({
-    id: '',
     title: '',
     content: ''
   });
@@ -61,7 +60,6 @@ const Posts = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          post_id: form.id,
           post_title: form.title,
           post_content: form.content
         })
@@ -71,7 +69,7 @@ const Posts = () => {
       }
       const newPost = await response.json();
       setPosts([...posts, newPost]);
-      setForm({ id: '', title: '', content: '' });
+      setForm({ title: '', content: '' });
     } catch (err) {
       setError(err.message);
     }
@@ -104,17 +102,6 @@ const Posts = () => {
       <div className="top-content">
         <form onSubmit={handleSubmit} className="post-form">
           <div className="form-group">
-            <label htmlFor="id">ID:</label>
-            <input
-              type="text"
-              id="id"
-              name="id"
-              value={form.id}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="form-group">
             <label htmlFor="title">Title:</label>
             <input
               type="text"
@@ -141,7 +128,6 @@ const Posts = () => {
       <div className="posts-container">
         {posts.map(post => (
           <PostCard 
-            key={post.post_id} 
             title={post.post_title} 
             content={post.post_content} 
           />
