@@ -21,7 +21,13 @@ const getPost = async (req, res) => {
 
 const addPost = async (req, res) => {
   try {
-    const post = await Post.create(req.body);
+    const { file } = req;
+    const newPost = new Post({
+      ...req.body,
+      image_url: file ? file.path : null, // filepath if exists or null
+    });
+
+    const post = await newPost.save();
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ message: error.message });

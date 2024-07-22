@@ -1,9 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Product = require("./models/product.model.js");
-const Post = require("./models/post.model.js");
 const postRoute = require("./routes/post.route.js")
 const app = express();
+const path = require('path');
 
 
 // middleware
@@ -13,6 +12,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // routes
 app.use("/api/posts", postRoute);
+
+app.use('/images/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
   res.send("Hi There !!");
