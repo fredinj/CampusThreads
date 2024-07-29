@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './Posts.css';
-import PostCard from '../components/PostCard'; // Import the PostCard component
+import PostCard from '../../components/posts/PostCard'; // Import the PostCard component
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -37,8 +37,6 @@ const Posts = () => {
     e.preventDefault();
   
     try {
-
-
       const formData = new FormData();
       formData.append('post_title', form.title)
       formData.append('post_content', form.content)
@@ -126,6 +124,7 @@ const Posts = () => {
       <div className="posts-container">
         {posts.map(post => (
           <PostCard 
+            key={post._id}
             title={post.post_title} 
             content={post.post_content} 
             image_url={post.image_url}

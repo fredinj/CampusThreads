@@ -1,36 +1,41 @@
+require('dotenv').config();
 const express = require("express");
-const mongoose = require("mongoose");
-const postRoute = require("./routes/post.route.js")
-const app = express();
+const cors = require('cors');
 const path = require('path');
+const connectDB = require('./db');
 
+const postRoute = require("./routes/post.route.js")
+const userRoutes = require('./routes/user.route.js'); 
+const authRoutes = require('./routes/auth.route.js'); 
+
+const app = express();
+
+// connect to db
+connectDB();
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(cors({
+  origin: true, // Replace with your client URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // routes
 app.use("/api/posts", postRoute);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
+// move to a route + controller for media
 app.use('/images/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
-  res.send("Hi There !!");
+  res.send("Hi");
 });
 
-
-// mongodb connect using moongose
-mongoose
-  .connect(
-    "mongodb+srv://rithinpaul10:ViqpfD3Nnzfo2lhX@cluster0.odnoxsr.mongodb.net/Posts-Test?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(() => {
-    console.log("Mongoose connected to db");
-    app.listen(3000, () => {
-      console.log("Server on 3000");
-    });
-  })
-  .catch(() => {
-    console.log("Mongoose connection failed");
-  });
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
