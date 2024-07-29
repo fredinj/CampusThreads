@@ -1,8 +1,12 @@
-import React, { useRef, useEffect, useState } from 'react';
-import './Posts.css';
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import './Home.css';
 import PostCard from '../../components/posts/PostCard'; // Import the PostCard component
+import axios from 'axios';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const Posts = () => {
+
+const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +19,10 @@ const Posts = () => {
   
   // Create a ref for the file input
   const fileInputRef = useRef(null);
+
+  // using auth context
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
 
   // Handle form input changes
@@ -61,6 +69,16 @@ const Posts = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+        await logout(); // Use the login function from AuthContext
+        navigate('/'); // Redirect to the home page or any other page
+    } catch (error) {
+      console.error('Logout failed', error);
+      setError('Logout failed. Please try again.');
+    }
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -85,6 +103,11 @@ const Posts = () => {
 
   return (
     <div className="main-container">
+
+    <nav>
+      <button onClick={handleLogout}>Logout</button>
+    </nav>
+
       <div className="top-content">
         <form onSubmit={handleSubmit} className="post-form">
           <div className="form-group">
@@ -135,6 +158,6 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Home;
 
 
