@@ -22,6 +22,7 @@ app.use(
     origin: true, // Replace with your client URL
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Allow credentials to be sent with requests
   })
 );
 app.use(cookieParser()); // for jwt in cookies

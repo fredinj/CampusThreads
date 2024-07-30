@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,13 +9,16 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                authCheckUrl = "http://localhost:3000/api/auth/check-auth"
+                const authCheckUrl = "http://localhost:3000/api/auth/check-auth"
                 const response = await axios.get(authCheckUrl, { withCredentials: true });
                 setIsAuthenticated(response.data.authenticated);
-                console.log("auth context works yay")
+                // console.log("auth context works yay")
+                // console.log("authenticated", response.data.authenticated)
             } catch (error) {
                 setIsAuthenticated(false);
-                console.log("auth context not works nooo")
+                console.log(error)
+                // console.log("auth context not works nooo")
+                // console.log("authenticated", response.data.authenticated)
             }
         };
 

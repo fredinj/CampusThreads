@@ -1,6 +1,8 @@
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const { User, validateRegistration } = require("../models/user.model");
+const jwt = require('jsonwebtoken');
+
 
 const createUser = async (req, res) => {
   try {
@@ -42,12 +44,11 @@ const loginUser = async (req,res) => {
       }
 
       const token = user.generateAuthToken();
-      // res.status(200).send({data: token, message: "Logged In Successfully"})
 
       res.cookie('token', token, {
         httpOnly: true, // Prevents JavaScript access to the cookie
         // secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
-        secure: true, // Use secure cookies in production (HTTPS)
+        secure: false, // Use secure cookies in production (HTTPS)
         sameSite: 'strict', // Helps protect against CSRF
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
@@ -67,29 +68,25 @@ const validateLogin = (data) => {
 
 const logoutUser = (req, res) => {
   // Clear the token cookie
-  res.cookie('token', '', { expires: new Date(0), httpOnly: true, secure: true, sameSite: 'strict', secure: true});
+  res.cookie('token', '', { expires: new Date(0), httpOnly: true, secure: false, sameSite: 'strict'});
   res.status(200).send({ message: 'Logged out successfully' });
 }
 
-const checkAuth = (req, res, next) => {
+const checkAuth = (req, res) => {
   // Check if the token is present in the cookies
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).send({ message: "No token provided, authorization denied." });
+    // console.log("token not provided");
+    return res.status(401).send({ authenticated: false, message: "No token provided, authorization denied." });
   }
 
   try {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Attach the decoded user data to the request object
-    req.user = decoded;
-
-    // Proceed to the next middleware or route handler
-    next();
+    res.status(200).send({ authenticated: true, user: decoded, message: "Authenticated" });
   } catch (error) {
-    res.status(401).send({ message: "Invalid token, authorization denied." });
+    res.status(401).send({ authenticated: false, message: "Invalid token, authorization denied." });
   }
 };
 

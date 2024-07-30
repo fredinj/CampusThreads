@@ -11,23 +11,26 @@ import SignUp from './pages/signup/SignUp'
 
 function App() {
   const { isAuthenticated } = useContext(AuthContext)
+
   return (
     <Routes>
-      {isAuthenticated && <Route path="/" exact element={<Home />}/>}
-      <Route path="/signup" exact element={<SignUp />}/>
-      <Route path="/login" exact element={<Login />}/>
-      <Route path="/" exact element={<Navigate replace to='/login'/>}/>
+      {isAuthenticated ? (
+        <>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Navigate to="/" />} />
+          <Route path="/signup" element={<SignUp />} />
+          {/* <Route path="*" element={<Navigate to="/" />} /> */}
+        </>
+      ) : (
+        <>
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </>
+      )}
     </Routes>
-  )
+  );
 
-  // return (
-  //   <Routes>
-  //     {isAuthenticated === true && <Route path="/" exact element={<Home />} />}
-  //     {isAuthenticated === false && <Route path="/" exact element={<Navigate replace to='/login' />} />}
-  //     <Route path="/signup" exact element={<SignUp />} />
-  //     <Route path="/login" exact element={<Login />} />
-  //   </Routes>
-  // );
 }
 
 export default App
