@@ -8,7 +8,8 @@ const SignUp = () => {
         firstName: "",
         lastName: "",
         email: "",
-        password: ""
+        password: "",
+        role: "student" // default role
     });
     const [error, setError] = useState("")
     const navigate = useNavigate();
@@ -81,16 +82,17 @@ const SignUp = () => {
                             required
                             className="input"
                         />
-                        <input 
-                            type="role" 
-                            placeholder='Role?'
-                            name='role'
-                            onChange={handleChange}
-                            value={data.password}
-                            required
-                            className="input"
-                        />
-                        {error && <div className="error_msg"> {error}</div>}
+                        <select
+                          name='role'
+                          onChange={handleChange}
+                          value={data.role}
+                          required
+                          className="input" >
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        {error && <div className="error_msg"> {error}</div>}           
                         <button type='submit' className="green_btn">
                             Sign Up
                         </button>

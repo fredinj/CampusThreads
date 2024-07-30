@@ -10,6 +10,9 @@ const getPosts = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+
   try {
     const { id } = req.params;
     const post = await Post.findById(id);
@@ -35,6 +38,9 @@ const addPost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+
   try {
     const { id } = req.params;
     const post = await Post.findByIdAndUpdate(id, req.body);
@@ -51,6 +57,9 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+  
   try {
     const { id } = req.params;
     const post = await Post.findByIdAndDelete(id);
