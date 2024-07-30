@@ -42,9 +42,8 @@ const loginUser = async (req,res) => {
       if(!validPassword){
           return res.status(401).send({message: "Invalid Email or Password!"});
       }
-
       const token = user.generateAuthToken();
-
+      
       res.cookie('token', token, {
         httpOnly: true, // Prevents JavaScript access to the cookie
         // secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)

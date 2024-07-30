@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const postRoute = require("./routes/post.route.js");
 const userRoutes = require("./routes/user.route.js");
 const authRoutes = require("./routes/auth.route.js");
+const categoryRoutes = require("./routes/category.route.js")
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(cookieParser()); // for jwt in cookies
 app.use("/api/posts", postRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/category", categoryRoutes);
 
 // move to a route + controller for media
 app.use("/images/uploads", express.static(path.join(__dirname, "uploads")));
