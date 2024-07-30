@@ -1,0 +1,21 @@
+.post-card {
+  border: 1px solid #000; /* 1px border */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Add some padding */
+  width: 70vw;
+  max-width: 300px;  /* Set a max width */
+  margin: 20px; /* Margin for spacing */
+  display: flex;
+  flex-direction: column; /* Arrange items in a column */
+}
+
+.post-title {
+  align-self: flex-start; /* Align title to top left */
+  margin: 0; /* Remove default margin */
+}
+
+.post-content {
+  text-align: center; /* Center align the content */
+  flex-grow: 1; /* Allow the content to take up remaining space */
+  margin: 0; /* Remove default margin */
+}
