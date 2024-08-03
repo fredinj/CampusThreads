@@ -1,6 +1,7 @@
 const CategoryRequest = require("../models/category-request.model");
 const Category = require("../models/category.model")
 const Joi = require("joi");
+const mongoose = require('mongoose');
 
 const viewCategoryRequests =  async (req, res) => { 
     try {
