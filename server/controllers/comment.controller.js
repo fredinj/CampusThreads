@@ -33,7 +33,7 @@ const getCommentsByPost = async (req, res) => {
   
   try{
     const comments = await Comment.find({ post: postId })
-    res.status(200).json({ comments });
+    res.status(200).json( comments );
   } catch (error) {
     res.status(500).json({message: "Error getting comments", error: error.message})
   }

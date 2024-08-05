@@ -3,7 +3,7 @@ import './Home.css';
 import PostCard from '../../components/posts/PostCard'; // Import the PostCard component
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -105,6 +105,7 @@ const Home = () => {
     <div className="main-container">
       <nav>
         <button onClick={handleLogout}>Logout</button>
+        <Link to="/categories/"> Categories </ Link>
       </nav>
 
       <div className="top-content">
@@ -150,6 +151,7 @@ const Home = () => {
             title={post.post_title} 
             content={post.post_content} 
             image_url={post.image_url}
+            postId = {post._id}
           />
         ))}
       </div>

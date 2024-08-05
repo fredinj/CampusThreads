@@ -5,9 +5,11 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkAuth = async () => {
+          setIsLoading(true);
             try {
                 const authCheckUrl = "http://localhost:3000/api/auth/check-auth"
                 const response = await axios.get(authCheckUrl, { withCredentials: true });
@@ -19,6 +21,8 @@ export const AuthProvider = ({ children }) => {
                 console.log(error)
                 // console.log("auth context not works nooo")
                 // console.log("authenticated", response.data.authenticated)
+            } finally {
+              setIsLoading(false);
             }
         };
 
@@ -47,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     );
