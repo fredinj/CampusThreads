@@ -5,7 +5,6 @@ import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,16 +13,16 @@ const Home = () => {
   // State to handle form inputs
   const [form, setForm] = useState({
     title: '',
-    content: ''
+    content: '',
+    image: null,
   });
-  
+
   // Create a ref for the file input
   const fileInputRef = useRef(null);
 
   // using auth context
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -33,37 +32,40 @@ const Home = () => {
 
   // Handle image file upload
   const handleImageUpload = (e) => {
-    const {name} = e.target;
-    const image = e.target.files[0]
-    if(image){
-      setForm({...form, [name]: image})
+    const image = e.target.files[0];
+    if (image) {
+      setForm({ ...form, image });
     }
-  }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
-      formData.append('post_title', form.title)
-      formData.append('post_content', form.content)
-      if(form.image){
-        formData.append('image', form.image)
+      formData.append('post_title', form.title);
+      formData.append('post_content', form.content);
+      if (form.image) {
+        formData.append('image', form.image);
       }
 
-      const response = await fetch('http://localhost:3000/api/posts', {
-        method: 'POST',
-        body: formData
-      })
+      const response = await axios.post('http://localhost:3000/api/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        },
+        withCredentials: true, // This ensures cookies are sent with the request
+      });
 
-      if (!response.ok) {
+      if (response.status !== 201) {
         throw new Error('Network response was not ok');
       }
-      const newPost = await response.json();
+
+      const newPost = response.data;
       setPosts([...posts, newPost]);
-      setForm({ title: '', content: '' });
-      fileInputRef.current.value = null; 
+      setForm({ title: '', content: '', image: null });
+      fileInputRef.current.value = null;
     } catch (err) {
       setError(err.message);
     }
@@ -71,8 +73,8 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-        await logout(); // Use the login function from AuthContext
-        navigate('/'); // Redirect to the home page or any other page
+      await logout(); // Use the logout function from AuthContext
+      navigate('/'); // Redirect to the home page or any other page
     } catch (error) {
       console.error('Logout failed', error);
       setError('Logout failed. Please try again.');
@@ -82,12 +84,10 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/posts');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setPosts(data); 
+        const response = await axios.get('http://localhost:3000/api/posts', {
+          withCredentials: true, // Ensure cookies are sent with the request
+        });
+        setPosts(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -103,10 +103,9 @@ const Home = () => {
 
   return (
     <div className="main-container">
-
-    <nav>
-      <button onClick={handleLogout}>Logout</button>
-    </nav>
+      <nav>
+        <button onClick={handleLogout}>Logout</button>
+      </nav>
 
       <div className="top-content">
         <form onSubmit={handleSubmit} className="post-form">
@@ -159,5 +158,3 @@ const Home = () => {
 };
 
 export default Home;
-
-

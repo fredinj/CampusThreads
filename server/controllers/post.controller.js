@@ -1,6 +1,8 @@
 const Post = require("../models/post.model");
 const mongoose = require('mongoose');
 
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 const getPosts = async (req, res) => {
   try {
     const posts = await Post.find({});
@@ -11,7 +13,6 @@ const getPosts = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
 
   try {
@@ -29,17 +30,17 @@ const addPost = async (req, res) => {
     const newPost = new Post({
       ...req.body,
       image_url: file ? file.path : null, // filepath if exists or null
+      author: req.user._id
     });
 
     const post = await newPost.save();
-    res.status(200).json(post);
+    res.status(20).json(post);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const updatePost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
 
   try {
@@ -58,7 +59,6 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
   
   try {

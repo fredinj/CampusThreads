@@ -12,6 +12,15 @@ const viewCategoryRequests =  async (req, res) => {
     }
 }
 
+const viewPendingCategoryRequests =  async (req, res) => { 
+  try {
+      const requests = await CategoryRequest.find({ status: "pending" });
+      res.status(200).json(requests);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+}
+
 const categoryRequest = async (req, res) => {
   try {
       const { error } = validateRequest(req.body);
@@ -119,4 +128,4 @@ const validateRequest = (data) => {
   return schema.validate(data);
 };
 
-module.exports = { categoryRequest, approveCategoryRequest, rejectCategoryRequest, viewCategoryRequests, deleteCategory, viewCategories }
+module.exports = { categoryRequest, approveCategoryRequest, rejectCategoryRequest, viewCategoryRequests, viewPendingCategoryRequests, deleteCategory, viewCategories }
