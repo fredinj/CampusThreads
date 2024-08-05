@@ -17,18 +17,22 @@ function App() {
 
   return (
     <Routes>
+      {/* <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<Login />} /> */}
+
+      <Route path="/signup" element={<SignUp />} />
+
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Navigate to="/" />} />
-          <Route path="/signup" element={<SignUp />} />
           <Route path="/posts/:postId" element={<PostPage />} />
           <Route path="/categories" element={<Navigate to="/categories" />} /> 
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
         <>
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
         </>
       )}
