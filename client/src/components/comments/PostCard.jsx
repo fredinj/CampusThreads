@@ -8,9 +8,7 @@
 
     return (
       <div className="post-card">
-        <Link to={`/posts/${postId}/`}>
-          <h2 className="post-title">{title}</h2>
-        </Link>
+        <h2 className="post-title">{title}</h2>
         <p className="post-content">{content}</p>
         {imageUrl && <img src={imageUrl} alt="Post image" />}
       </div>
