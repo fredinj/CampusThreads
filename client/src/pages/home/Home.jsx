@@ -5,7 +5,6 @@ import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,14 +15,13 @@ const Home = () => {
     title: '',
     content: ''
   });
-  
+
   // Create a ref for the file input
   const fileInputRef = useRef(null);
 
   // using auth context
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext); // Ensure user is provided by AuthContext
   const navigate = useNavigate();
-
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -33,29 +31,29 @@ const Home = () => {
 
   // Handle image file upload
   const handleImageUpload = (e) => {
-    const {name} = e.target;
-    const image = e.target.files[0]
-    if(image){
-      setForm({...form, [name]: image})
+    const { name } = e.target;
+    const image = e.target.files[0];
+    if (image) {
+      setForm({ ...form, [name]: image });
     }
-  }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
-      formData.append('post_title', form.title)
-      formData.append('post_content', form.content)
-      if(form.image){
-        formData.append('image', form.image)
+      formData.append('post_title', form.title);
+      formData.append('post_content', form.content);
+      if (form.image) {
+        formData.append('image', form.image);
       }
 
       const response = await fetch('http://localhost:3000/api/posts', {
         method: 'POST',
         body: formData
-      })
+      });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -63,7 +61,7 @@ const Home = () => {
       const newPost = await response.json();
       setPosts([...posts, newPost]);
       setForm({ title: '', content: '' });
-      fileInputRef.current.value = null; 
+      fileInputRef.current.value = null;
     } catch (err) {
       setError(err.message);
     }
@@ -71,12 +69,24 @@ const Home = () => {
 
   const handleLogout = async () => {
     try {
-        await logout(); // Use the login function from AuthContext
-        navigate('/'); // Redirect to the home page or any other page
+      await logout(); // Use the logout function from AuthContext
+      navigate('/'); // Redirect to the home page or any other page
     } catch (error) {
       console.error('Logout failed', error);
       setError('Logout failed. Please try again.');
     }
+  };
+
+  const navigateToCategories = () => {
+    navigate('/categories');
+  };
+
+  const navigateToMakeRequest = () => {
+    navigate('/make-request');
+  };
+
+  const navigateToRequestCategory = () => {
+    navigate('/request-category');
   };
 
   useEffect(() => {
@@ -87,7 +97,7 @@ const Home = () => {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setPosts(data); 
+        setPosts(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -103,10 +113,15 @@ const Home = () => {
 
   return (
     <div className="main-container">
+      <nav>
+        <button onClick={handleLogout}>Logout</button>
+        <button onClick={navigateToCategories}>Categories</button>
+        
+          <button onClick={navigateToMakeRequest}>Make Request</button>
 
-    <nav>
-      <button onClick={handleLogout}>Logout</button>
-    </nav>
+          <button onClick={navigateToRequestCategory}>Request Category</button>
+      
+      </nav>
 
       <div className="top-content">
         <form onSubmit={handleSubmit} className="post-form">
@@ -159,5 +174,3 @@ const Home = () => {
 };
 
 export default Home;
-
-
