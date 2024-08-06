@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
-import './Home.css';
-import PostCard from '../../components/posts/PostCard'; // Import the PostCard component
-import axios from 'axios';
-import { AuthContext } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useRef, useEffect, useState, useContext } from "react";
+import PostCard from "../../components/home/PostCard"; // Import the PostCard component
+import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -12,8 +11,8 @@ const Home = () => {
 
   // State to handle form inputs
   const [form, setForm] = useState({
-    title: '',
-    content: '',
+    title: "",
+    content: "",
     image: null,
   });
 
@@ -44,27 +43,31 @@ const Home = () => {
 
     try {
       const formData = new FormData();
-      formData.append('post_title', form.title);
-      formData.append('post_content', form.content);
+      formData.append("post_title", form.title);
+      formData.append("post_content", form.content);
       if (form.image) {
-        formData.append('image', form.image);
+        formData.append("image", form.image);
       }
 
-      const response = await axios.post('http://localhost:3000/api/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json',
-        },
-        withCredentials: true, // This ensures cookies are sent with the request
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/posts",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+          withCredentials: true, // This ensures cookies are sent with the request
+        }
+      );
 
       if (response.status !== 201) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const newPost = response.data;
       setPosts([...posts, newPost]);
-      setForm({ title: '', content: '', image: null });
+      setForm({ title: "", content: "", image: null });
       fileInputRef.current.value = null;
     } catch (err) {
       setError(err.message);
@@ -74,17 +77,17 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       await logout(); // Use the logout function from AuthContext
-      navigate('/'); // Redirect to the home page or any other page
+      navigate("/"); // Redirect to the home page or any other page
     } catch (error) {
-      console.error('Logout failed', error);
-      setError('Logout failed. Please try again.');
+      console.error("Logout failed", error);
+      setError("Logout failed. Please try again.");
     }
   };
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/posts', {
+        const response = await axios.get("http://localhost:3000/api/posts", {
           withCredentials: true, // Ensure cookies are sent with the request
         });
         setPosts(response.data);
@@ -102,17 +105,30 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="main-container">
+    <div className="flex flex-col items-center mt-4">
       <nav>
-        <button onClick={handleLogout}>Logout</button>
-        <Link to="/categories/"> Categories </ Link>
+        <button className="border border-black rounded px-2 py-1" onClick={handleLogout}>Logout</button>
+        <Link to="/categories/"> 
+          <button className="border border-black rounded px-2 py-1 ml-2">
+            Categories
+          </button>
+        </Link>
+        <Link to="/profile/"> 
+          <button className="border border-black rounded px-2 py-1 ml-2">
+            Profile
+          </button>
+        </Link>
       </nav>
 
-      <div className="top-content">
-        <form onSubmit={handleSubmit} className="post-form">
-          <div className="form-group">
+      <div className="flex flex-col items-center border border-black p-5 m-5">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-center w-full gap-2"
+        >
+          <div className="flex flex-col w-[25rem]">
             <label htmlFor="title">Title:</label>
             <input
+              className="border border-black rounded p-1"
               type="text"
               id="title"
               name="title"
@@ -121,9 +137,10 @@ const Home = () => {
               required
             />
           </div>
-          <div className="form-group">
+          <div className="flex flex-col w-[25rem]">
             <label htmlFor="content">Content:</label>
             <textarea
+              className="border border-black rounded p-1"
               id="content"
               name="content"
               value={form.content}
@@ -131,7 +148,7 @@ const Home = () => {
               required
             />
           </div>
-          <div className="form-group">
+          <div className="flex flex-col w-[25rem]">
             <label htmlFor="image">Image:</label>
             <input
               type="file"
@@ -141,18 +158,25 @@ const Home = () => {
               onChange={handleImageUpload}
             />
           </div>
-          <button type="submit">Add Post</button>
+          <button
+            className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
+            type="submit"
+          >
+            Add Post
+          </button>
         </form>
       </div>
-      <div className="posts-container">
-        {posts.map(post => (
-          <PostCard 
+
+      <div className="flex flex-col border m-5 p-5">
+        {posts.map((post) => (
+          <PostCard
             key={post._id}
-            title={post.post_title} 
-            content={post.post_content} 
+            title={post.post_title}
+            content={post.post_content}
             image_url={post.image_url}
-            postId = {post._id}
+            postId={post._id}
           />
+          
         ))}
       </div>
     </div>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import PostCard from '../../components/comments/PostCard'
-import CommentCard from '../../components/comments/CommentCard';
+import MainPostCard from '../../components/post/MainPostCard'
+import CommentCard from '../../components/post/CommentCard';
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -48,26 +48,24 @@ const PostPage = () => {
   if (error) return <p>Error: {error}</p>
 
   return(
-    <div className="main-container">
-      <div className="posts-container">
-        <PostCard 
-          key={post._id}
-          title={post.post_title} 
-          content={post.post_content} 
-          image_url={post.image_url}
-          postId = {post._id}
-        />
-      </div>
+    <div className="flex flex-col items-center">
 
-      <div className="comments-container">
-        {comments.map(comment => (
-          <CommentCard 
-            key={comment._id}
-            author={comment.author}
-            content={comment.content}
-          />
-        ))}
-      </div>
+      <MainPostCard 
+        key={post._id}
+        title={post.post_title} 
+        content={post.post_content} 
+        image_url={post.image_url}
+        postId = {post._id}
+      />
+
+      {comments.map(comment => (
+        <CommentCard 
+          key={comment._id}
+          author={comment.author}
+          content={comment.content}
+        />
+      ))}
+
     </div>
   )
 }
