@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -12,13 +13,11 @@ export const AuthProvider = ({ children }) => {
                 const authCheckUrl = "http://localhost:3000/api/auth/check-auth"
                 const response = await axios.get(authCheckUrl, { withCredentials: true });
                 setIsAuthenticated(response.data.authenticated);
-                // console.log("auth context works yay")
-                // console.log("authenticated", response.data.authenticated)
+                setUserRole(response.data.role); // Store the user role
             } catch (error) {
                 setIsAuthenticated(false);
-                console.log(error)
-                // console.log("auth context not works nooo")
-                // console.log("authenticated", response.data.authenticated)
+                setUserRole(null);
+                console.log(error);
             }
         };
 
@@ -30,8 +29,11 @@ export const AuthProvider = ({ children }) => {
             const loginUrl = "http://localhost:3000/api/auth/login";
             await axios.post(loginUrl, credentials, { withCredentials: true });
             setIsAuthenticated(true);
+            const response = await axios.get("http://localhost:3000/api/auth/check-auth", { withCredentials: true });
+            setUserRole(response.data.role); // Store the user role
         } catch (error) {
             setIsAuthenticated(false);
+            setUserRole(null);
             throw error; // Propagate the error to be handled in the component
         }
     };
@@ -41,13 +43,14 @@ export const AuthProvider = ({ children }) => {
             const logoutUrl = "http://localhost:3000/api/auth/logout";
             await axios.post(logoutUrl, {}, { withCredentials: true });
             setIsAuthenticated(false);
+            setUserRole(null);
         } catch (error) {
             console.error('Logout failed');
         }
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
