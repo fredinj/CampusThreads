@@ -7,9 +7,6 @@ import Login from './pages/login/Login'
 import SignUp from './pages/signup/SignUp'
 import PostPage from './pages/post/PostPage'
 
-// import './App.css'
-
-
 function App() {
   const { isAuthenticated, isLoading } = useContext(AuthContext)
 
