@@ -8,6 +8,6 @@ const categoryRequestSchema = new mongoose.Schema({
     tags: [{ type: String }] // Array of strings for tags
 });
 
-const CategoryRequest = mongoose.model('CategoryRequest', categoryRequestSchema);
+const CategoryRequest = mongoose.model('Category-Request', categoryRequestSchema);
 
 module.exports = CategoryRequest;
