@@ -116,10 +116,6 @@ const Home = () => {
       <nav>
         <button onClick={handleLogout}>Logout</button>
         <button onClick={navigateToCategories}>Categories</button>
-        
-          <button onClick={navigateToMakeRequest}>Make Request</button>
-
-          <button onClick={navigateToRequestCategory}>Request Category</button>
       
       </nav>
 

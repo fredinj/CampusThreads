@@ -60,6 +60,28 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
   }
+
+  .top-right-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  
+  .top-right-buttons button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .top-right-buttons button:hover {
+    background-color: #0056b3;
+  }
+  
   
   .explore-button:hover {
     background-color: #0056b3;
