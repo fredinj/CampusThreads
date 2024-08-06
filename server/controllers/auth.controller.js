@@ -72,18 +72,17 @@ const logoutUser = (req, res) => {
 }
 
 const checkAuth = (req, res) => {
-  // Check if the token is present in the cookies
   const token = req.cookies.token;
 
   if (!token) {
-    // console.log("token not provided");
     return res.status(401).send({ authenticated: false, message: "No token provided, authorization denied." });
   }
 
   try {
-    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).send({ authenticated: true, user: decoded, message: "Authenticated" });
+    const { role } = decoded; // Extract the role from the decoded token
+
+    res.status(200).send({ authenticated: true, user: decoded, role, message: "Authenticated" });
   } catch (error) {
     res.status(401).send({ authenticated: false, message: "Invalid token, authorization denied." });
   }
