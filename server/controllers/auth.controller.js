@@ -51,6 +51,7 @@ const loginUser = async (req,res) => {
         sameSite: 'strict', // Helps protect against CSRF
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
+      console.log("Logged in Successfully")
       res.status(200).send({ message: "Logged In Successfully" });
   } catch (error) {
       res.status(500).send({message: "Internal Server Error"});
@@ -71,7 +72,7 @@ const logoutUser = (req, res) => {
   res.status(200).send({ message: 'Logged out successfully' });
 }
 
-const checkAuth = (req, res) => {
+const checkAuth = async (req, res) => {
   // Check if the token is present in the cookies
   const token = req.cookies.token;
 
@@ -83,7 +84,12 @@ const checkAuth = (req, res) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).send({ authenticated: true, user: decoded, message: "Authenticated" });
+
+    const user = await User.findById(decoded._id).select('-password') // exclude password from response to client
+    delete user.password
+    console.log(user)
+
+    res.status(200).send({ authenticated: true, user, message: "Authenticated" });
   } catch (error) {
     res.status(401).send({ authenticated: false, message: "Invalid token, authorization denied." });
   }
