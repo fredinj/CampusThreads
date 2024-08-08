@@ -10,7 +10,7 @@ const MainPostCard = ({ title, content, image_url, postId }) => {
       <Link to={`/posts/${postId}/`}>
         <h2 className="font-bold">{title}</h2>
       </Link>
-      <p className="">{content}</p>
+      <div className="prose" dangerouslySetInnerHTML={{ __html: content }} />
       {imageUrl && <img src={imageUrl} alt="Post image" />}
     </div>
   );

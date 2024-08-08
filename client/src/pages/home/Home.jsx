@@ -3,6 +3,9 @@ import PostCard from "../../components/home/PostCard"; // Import the PostCard co
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+// import DOMPurify from 'dompurify';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -23,11 +26,28 @@ const Home = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  // // Handle form input changes
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setForm({ ...form, [name]: value });
+  // };
+
+  // // Handle content change from ReactQuill
+  // const handleContentChange = (value) => {
+  //   setForm({ ...form, content: value });
+  // };
+
+  // Handle all form input changes including ReactQuill content
+const handleInputChange = (e, editor = false) => {
+  const { name, value } = e.target || {};
+  
+  if (editor) {
+    setForm({ ...form, content: e });
+  } else {
     setForm({ ...form, [name]: value });
-  };
+  }
+};
+
 
   // Handle image file upload
   const handleImageUpload = (e) => {
@@ -43,6 +63,7 @@ const Home = () => {
 
     try {
       const formData = new FormData();
+      // const safeContent = DOMPurify.sanitize(content);
       formData.append("post_title", form.title);
       formData.append("post_content", form.content);
       if (form.image) {
@@ -62,12 +83,12 @@ const Home = () => {
       );
 
       if (response.status !== 200) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok, Status: ", response.status);
       }
 
       const newPost = response.data;
       setPosts([...posts, newPost]);
-      setForm({ title: "", content: "", image: null });
+      setForm({ ...form, title: "", content: "", image: null });
       fileInputRef.current.value = null;
     } catch (error) {
       setError(error.message);
@@ -137,10 +158,10 @@ const Home = () => {
               required
             />
           </div>
+
           <div className="flex flex-col w-[25rem]">
             <label htmlFor="content">Content:</label>
-            <textarea
-              className="border border-black rounded p-1"
+            <ReactQuill
               id="content"
               name="content"
               value={form.content}
@@ -148,6 +169,7 @@ const Home = () => {
               required
             />
           </div>
+
           <div className="flex flex-col w-[25rem]">
             <label htmlFor="image">Image:</label>
             <input
@@ -158,6 +180,7 @@ const Home = () => {
               onChange={handleImageUpload}
             />
           </div>
+
           <button
             className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
             type="submit"
