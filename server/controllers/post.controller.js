@@ -32,9 +32,8 @@ const addPost = async (req, res) => {
       image_url: file ? file.path : null, // filepath if exists or null
       author: req.user._id
     });
-
     const post = await newPost.save();
-    res.status(20).json(post);
+    res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -7,7 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   // State to handle form inputs
   const [form, setForm] = useState({
@@ -61,7 +61,7 @@ const Home = () => {
         }
       );
 
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
 
@@ -69,8 +69,8 @@ const Home = () => {
       setPosts([...posts, newPost]);
       setForm({ title: "", content: "", image: null });
       fileInputRef.current.value = null;
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -91,8 +91,8 @@ const Home = () => {
           withCredentials: true, // Ensure cookies are sent with the request
         });
         setPosts(response.data);
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        setError(error.message);
       } finally {
         setLoading(false);
       }
