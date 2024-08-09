@@ -14,7 +14,7 @@ const {
 } = require("../controllers/category.controller");
 
 // Create a new category request
-router.post("/request", [auth], categoryRequest); // add back teacher middleware
+router.post("/request", [auth, teacher], categoryRequest); // add back teacher middleware
 
 // Approve a category request
 router.put("/:id/approve", [auth, admin], approveCategoryRequest); // add admin middleware

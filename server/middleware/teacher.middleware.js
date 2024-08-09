@@ -1,9 +1,12 @@
 function teacher(req, res, next) {
-  console.log('Teacher middleware executed'); // Debugging log
-  if (req.user.role !== 'teacher') {
-      return res.status(403).send('Only teachers can make category requests.');
+  console.log('Teacher middleware executed');
+  if (req.user.role === 'teacher' || req.user.role === 'admin') {
+    console.log(req.user.role);  
+    next();
+  } else {
+    return res.status(403).send('Only teachers and admins can make category requests.');
   }
-  next();
 }
+
 
 module.exports = teacher;

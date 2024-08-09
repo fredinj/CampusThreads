@@ -2,15 +2,15 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import PostCard from "../../components/home/PostCard"; // Import the PostCard component
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import Quill styles
+import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 // import DOMPurify from 'dompurify';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
 
   // State to handle form inputs
   const [form, setForm] = useState({
@@ -23,31 +23,19 @@ const Home = () => {
   const fileInputRef = useRef(null);
 
   // using auth context
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // // Handle form input changes
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setForm({ ...form, [name]: value });
-  // };
-
-  // // Handle content change from ReactQuill
-  // const handleContentChange = (value) => {
-  //   setForm({ ...form, content: value });
-  // };
-
   // Handle all form input changes including ReactQuill content
-const handleInputChange = (e, editor = false) => {
-  const { name, value } = e.target || {};
-  
-  if (editor) {
-    setForm({ ...form, content: e });
-  } else {
-    setForm({ ...form, [name]: value });
-  }
-};
+  const handleInputChange = (e, editor = false) => {
+    const { name, value } = e.target || {};
 
+    if (editor) {
+      setForm({ ...form, content: e });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
+  };
 
   // Handle image file upload
   const handleImageUpload = (e) => {
@@ -83,7 +71,10 @@ const handleInputChange = (e, editor = false) => {
       );
 
       if (response.status !== 200) {
-        throw new Error("Network response was not ok, Status: ", response.status);
+        throw new Error(
+          "Network response was not ok, Status: ",
+          response.status
+        );
       }
 
       const newPost = response.data;
@@ -111,6 +102,8 @@ const handleInputChange = (e, editor = false) => {
         const response = await axios.get("http://localhost:3000/api/posts", {
           withCredentials: true, // Ensure cookies are sent with the request
         });
+        
+
         setPosts(response.data);
       } catch (error) {
         setError(error.message);
@@ -128,17 +121,20 @@ const handleInputChange = (e, editor = false) => {
   return (
     <div className="flex flex-col items-center mt-4">
       <nav>
-        <Link to="/categories/"> 
-          <button className="border border-black rounded px-2 py-1 ml-2">
-            Categories
-          </button>
-        </Link>
-        <Link to="/profile/"> 
-          <button className="border border-black rounded px-2 py-1 ml-2">
+        <button className="border border-black rounded px-2 py-1 ml-2"
+         onClick={ ()=>{ navigate("/categories") } }>
+          Categories
+        </button>
+        <button className="border border-black rounded px-2 py-1 ml-2"
+         onClick={ ()=> { navigate("/profile/") } }>
             Profile
-          </button>
-        </Link>
-        <button className="border border-black rounded px-2 py-1 ml-2" onClick={handleLogout}>Logout</button>
+        </button>
+        <button
+          className="border border-black rounded px-2 py-1 ml-2"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </nav>
 
       <div className="flex flex-col items-center border border-black p-5 m-5">
@@ -199,7 +195,6 @@ const handleInputChange = (e, editor = false) => {
             image_url={post.image_url}
             postId={post._id}
           />
-          
         ))}
       </div>
     </div>
