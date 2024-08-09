@@ -128,7 +128,6 @@ const handleInputChange = (e, editor = false) => {
   return (
     <div className="flex flex-col items-center mt-4">
       <nav>
-        <button className="border border-black rounded px-2 py-1" onClick={handleLogout}>Logout</button>
         <Link to="/categories/"> 
           <button className="border border-black rounded px-2 py-1 ml-2">
             Categories
@@ -139,6 +138,7 @@ const handleInputChange = (e, editor = false) => {
             Profile
           </button>
         </Link>
+        <button className="border border-black rounded px-2 py-1 ml-2" onClick={handleLogout}>Logout</button>
       </nav>
 
       <div className="flex flex-col items-center border border-black p-5 m-5">

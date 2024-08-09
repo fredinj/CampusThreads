@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const { User } = require("../models/user.model")
 
-function auth(req, res, next) {
+async function auth(req, res, next) {
     // Get token from cookies instead of headers
     const token = req.cookies.token;
     if (!token) {
@@ -9,7 +10,9 @@ function auth(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        const user = await User.findById(decoded._id).select('-password') // exclude password from response to client
+        req.user = user;
+
         console.log('Authenticated user:', req.user); // Debugging log
       next();
     } catch (error) {

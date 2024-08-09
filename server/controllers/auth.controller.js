@@ -86,7 +86,6 @@ const checkAuth = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded._id).select('-password') // exclude password from response to client
-    delete user.password
     console.log(user)
 
     res.status(200).send({ authenticated: true, user, message: "Authenticated" });

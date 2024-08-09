@@ -23,8 +23,9 @@ function App() {
         <>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Navigate to="/" />} />
-          <Route path="/posts/:postId" element={<PostPage />} />
-          <Route path="/categories" element={<Navigate to="/categories" />} /> 
+          <Route path="/post/:postId" element={<PostPage />} />
+          {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
+          {/* <Route path="/categories" element={<Navigate to="/categories" />} />  */}
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (

@@ -6,7 +6,7 @@ const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const addComment = async (req, res) => {
   const { postId } = req.params;
-  const { content } = req.body;
+  const { comment_content } = req.body;
 
   if (!isValidObjectId(req.params.postId)) return res.status(400).send({ message: 'Invalid request ID' });
   
@@ -15,10 +15,13 @@ const addComment = async (req, res) => {
     if(!post) return res.status(404).json( {message: "Post not found"} )
 
     const newComment = new Comment({
-      content,
-      author: req.user._id,
+      comment_content: comment_content,
+      author: req.user.firstName + " " + req.user.lastName,
+      author_id: req.user._id,
       post: postId
     });
+
+    console.log(req.user.firstName + "" + req.user.lastName)
 
     await newComment.save();
     res.status(201).json({newComment});
@@ -41,7 +44,7 @@ const getCommentsByPost = async (req, res) => {
 
 const updateComment = async (req, res) => {
   const { commentId } = req.params
-  const { content } = req.body;
+  const { comment_content } = req.body;
   
   if (!isValidObjectId(commentId)) return res.status(400).send({ message: 'Invalid comment ID' });
 
@@ -51,7 +54,7 @@ const updateComment = async (req, res) => {
     if(!comment) return res.status(404).json({message: "Comment not found"});
     if (comment.author.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
 
-    comment.content = content;
+    comment.comment_content = comment_content;
     await comment.save();
     res.status(200).json({ comment })
   } catch (error) {

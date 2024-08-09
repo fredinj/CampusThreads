@@ -7,7 +7,7 @@ const PostCard = ({ title, content, image_url, postId }) => {
 
   return (
     <div className="flex flex-col border border-black rounded-lg p-2 m-4 w-[25rem]">
-      <Link to={`/posts/${postId}/`}>
+      <Link to={`/post/${postId}/`}>
         <h2 className="text-blue-500 hover:text-blue-700">{title}</h2>
       </Link>
       <div className="prose" dangerouslySetInnerHTML={{ __html: content }} />
