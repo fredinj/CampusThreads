@@ -7,9 +7,7 @@ const MainPostCard = ({ title, content, image_url, postId }) => {
 
   return (
     <div className="border border-black rounded-lg flex flex-col m-5 p-2 w-[25rem]">
-      <Link to={`/posts/${postId}/`}>
-        <h2 className="font-bold">{title}</h2>
-      </Link>
+      <h2 className="font-bold">{title}</h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: content }} />
       {imageUrl && <img src={imageUrl} alt="Post image" />}
     </div>
