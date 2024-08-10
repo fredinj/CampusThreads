@@ -1,6 +1,10 @@
-import { useContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthContext } from "./contexts/AuthContext";
+import { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthContext } from './contexts/AuthContext';
+
+
+import ApproveRequest from './pages/Request/ApproveRequests'; // Ensure this path is correct
+
 
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -27,6 +31,11 @@ function App() {
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />}
+          {userRole === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
+
+
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
@@ -36,6 +45,9 @@ function App() {
           )}
           {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/make-request" element={<Navigate to="/" />} />
+          <Route path="/approve-request" element={<Navigate to="/" />} />
+
         </>
       ) : (
         <>

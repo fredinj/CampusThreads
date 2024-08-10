@@ -15,6 +15,10 @@ const CategoriesPage = () => {
     navigate("/categories/make-request/");
   };
 
+  const navigateToApproveRequest = () => {
+    navigate('/approve-request');
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -54,6 +58,9 @@ const CategoriesPage = () => {
         <div className="top-right-buttons">
           {(user.role === "teacher" || user.role === "admin") && (
             <button onClick={navigateToMakeRequest}>Make Request</button>
+          )}
+            {userRole === 'admin' && (
+            <button onClick={navigateToApproveRequest}>View Requests</button>
           )}
         </div>
       </div>
