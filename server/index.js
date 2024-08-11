@@ -6,9 +6,10 @@ const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
 
 const postRoute = require("./routes/post.route.js");
-const userRoutes = require("./routes/user.route.js");
-const authRoutes = require("./routes/auth.route.js");
-const categoryRoutes = require("./routes/category.route.js")
+const userRoute = require("./routes/user.route.js");
+const authRoute = require("./routes/auth.route.js");
+const categoryRoute = require("./routes/category.route.js");
+const commentRoute = require("./routes/comment.route.js");
 
 const app = express();
 
@@ -30,9 +31,10 @@ app.use(cookieParser()); // for jwt in cookies
 
 // routes
 app.use("/api/posts", postRoute);
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/category", categoryRoutes);
+app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
+app.use("/api/category", categoryRoute);
+app.use("/api/comments", commentRoute);
 
 // move to a route + controller for media
 app.use("/images/uploads", express.static(path.join(__dirname, "uploads")));

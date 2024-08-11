@@ -1,13 +1,11 @@
 /* Dark theme styles */
 
-body {
+  .categories-container {
     background-color: #121212;
     color: #e0e0e0;
     font-family: 'Arial', sans-serif;
-  }
-  
-  .categories-container {
     padding: 20px;
+    height: 100vh;
   }
   
   .categories-container h1 {

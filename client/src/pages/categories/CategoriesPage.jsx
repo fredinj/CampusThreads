@@ -8,11 +8,11 @@ const CategoriesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { token, userRole } = useContext(AuthContext); // Assuming AuthContext provides the token and userRole
+  const { token, user } = useContext(AuthContext); // Assuming AuthContext provides the token and userRole
   const navigate = useNavigate();
 
   const navigateToMakeRequest = () => {
-    navigate('/make-request');
+    navigate('/categories/make-request/');
   };
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const CategoriesPage = () => {
       <div className="header">
         <h1>Categories</h1>
         <div className="top-right-buttons">
-          {userRole === 'teacher' && (
+          {(user.role === 'teacher' || user.role === 'admin') && (
             <button onClick={navigateToMakeRequest}>Make Request</button>
           )}
         </div>
