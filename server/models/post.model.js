@@ -22,7 +22,8 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
+  author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+  category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: true}
 }, { timestamps: true }); 
 
 const Post = mongoose.model('Post', postSchema);

@@ -35,7 +35,7 @@ const MakeRequest = () => {
         }
       );
       if (response.status === 201) {
-        navigate("/"); // Navigate on success
+        navigate("/categories"); // Navigate on success
       }
     } catch (error) {
       // Log detailed error for debugging
@@ -51,6 +51,8 @@ const MakeRequest = () => {
 
   return (
     <div className="make-request-container">
+      <button onClick={ () => {navigate("/")} }>Home</button>
+      <button onClick={ () => {navigate("/categories")} }>Categories</button>
       <h1>Make a Request</h1>
       <form onSubmit={handleSubmit}>
         <label>

@@ -43,6 +43,7 @@ const CategoriesPage = () => {
   return (
     <div className="categories-container">
       <div className="header">
+        <button onClick={ () => {navigate("/")} }>Home</button>
         <h1>Categories</h1>
         <div className="top-right-buttons">
           {(user.role === 'teacher' || user.role === 'admin') && (
@@ -56,7 +57,7 @@ const CategoriesPage = () => {
             <div key={category._id} className="category-card" style={{ animationDelay: `${index * 0.1}s` }}>
               <h2>{category.name}</h2>
               <p>{category.description}</p>
-              <button className="explore-button">Explore More</button>
+              <button className="explore-button" onClick={ () => {navigate(`/category/${category._id}`)} }>Explore More</button>
             </div>
           ))}
         </div>

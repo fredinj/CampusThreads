@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import MainPostCard from '../../components/post/MainPostCard'
 import CommentCard from '../../components/post/CommentCard';
@@ -17,6 +17,7 @@ const PostPage = () => {
     content: ""
   });
 
+  const navigate = useNavigate()
   const { logout } = useContext(AuthContext)
 
   const handleLogout = async () => {
@@ -111,16 +112,18 @@ const PostPage = () => {
     <div className="flex flex-col items-center mt-4">
 
       <nav>
-        <Link to="/"> 
-          <button className="border border-black rounded px-2 py-1 ml-2">
-            Home
-          </button>
-        </Link>
-        <Link to="/profile/"> 
-          <button className="border border-black rounded px-2 py-1 ml-2">
-            Profile
-          </button>
-        </Link>
+        <button className="border border-black rounded px-2 py-1 ml-2"
+          onClick={ () => {navigate("/")} }>
+          Home
+        </button>
+        <button className="border border-black rounded px-2 py-1 ml-2"
+          onClick={ () => {navigate(`/category/${post.category_id}`)} }>
+          Category
+        </button>
+        <button className="border border-black rounded px-2 py-1 ml-2"
+          onClick={ () => {navigate(`/profile`)} }>
+          Profile
+        </button>
         <button className="border border-black rounded px-2 py-1 ml-2" onClick={handleLogout}>Logout</button>
       </nav>
 
