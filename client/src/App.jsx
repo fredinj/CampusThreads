@@ -1,39 +1,45 @@
-import { useContext } from 'react';
+import { useContext } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 
-import Home from './pages/home/Home';
-import Login from './pages/login/Login';
-import SignUp from './pages/signup/SignUp';
+import Home from './pages/home/Home'
+import Login from './pages/login/Login'
+import SignUp from './pages/signup/SignUp'
+import PostPage from './pages/post/PostPage'
 import CategoriesPage from './pages/categories/CategoriesPage';
-import MakeRequest from './pages/Request/MakeRequest'; // Ensure this path is correct
-
+import MakeRequest from './pages/request/MakeRequest';
 
 function App() {
-  const { isAuthenticated, userRole } = useContext(AuthContext);
+  const { isAuthenticated, isLoading, user } = useContext(AuthContext)
+
+  if(isLoading) return <p>Loading...</p>
 
   return (
     <Routes>
+      {/* <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<Login />} /> */}
+
+      <Route path="/signup" element={<SignUp />} />
+
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
-          <Route path="/categories" element={<CategoriesPage />} />
-          {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />}
-
           <Route path="/login" element={<Navigate to="/" />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/post/:postId" element={<PostPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          {(user.role === 'teacher' || user.role === 'admin') && <Route path="/categories/make-request" element={<MakeRequest />} />}
+          {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
           <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/make-request" element={<Navigate to="/" />} />
         </>
       ) : (
         <>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
         </>
       )}
     </Routes>
   );
+
 }
 
-export default App;
+export default App

@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import './MakeRequest.css'; // Import CSS file
 
 const MakeRequest = () => {
-  const [categoryName, setCategoryName] = useState('');
-  const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('');
+  const [categoryName, setCategoryName] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
-  const { token } = useContext(AuthContext); // Assuming AuthContext provides the token
+  // const { token } = useContext(AuthContext); // Assuming AuthContext provides the token // auth context isn't providing the token
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,27 +18,32 @@ const MakeRequest = () => {
     setLoading(true); // Start loading
     setError(null); // Clear previous errors
     try {
-      const response = await axios.post('http://localhost:3000/api/category/request',
+      const response = await axios.post(
+        "http://localhost:3000/api/category/request",
         {
           categoryName,
           description,
-          tags: tags.split(',').map(tag => tag.trim()) // Convert tags from comma-separated string to array
+          tags: tags.split(",").map((tag) => tag.trim()), // Convert tags from comma-separated string to array
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Ensure token is included
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            // Authorization: `Bearer ${token}`, // Ensure token is included // We're keeping the token in the cookie
           },
-          withCredentials: true // Ensure cookies are included
+          withCredentials: true, // Ensure cookies are included
         }
       );
       if (response.status === 201) {
-        navigate('/'); // Navigate on success
+        navigate("/"); // Navigate on success
       }
     } catch (error) {
       // Log detailed error for debugging
-      console.error('Submission error:', error.response ? error.response.data : error.message);
-      setError('Failed to submit request. Please try again.');
+      console.error(
+        "Submission error:",
+        error.response ? error.response.data : error.message
+      );
+      setError("Failed to submit request. Please try again.");
     } finally {
       setLoading(false); // End loading
     }
