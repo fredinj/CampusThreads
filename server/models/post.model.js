@@ -22,7 +22,7 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
+  author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
 }, { timestamps: true }); 
 
 const Post = mongoose.model('Post', postSchema);

@@ -35,7 +35,8 @@ const categoryRequest = async (req, res) => {
       const request = new CategoryRequest({
           categoryName: req.body.categoryName,
           description: req.body.description,
-          requestedBy: req.user._id
+          requestedBy: req.user._id,
+          tags: req.body.tags
       });
 
       await request.save();
@@ -123,7 +124,8 @@ const deleteCategory = async (req, res) => {
 const validateRequest = (data) => {
   const schema = Joi.object({
       categoryName: Joi.string().required().label('Category Name'),
-      description: Joi.string().required().label('Description')
+      description: Joi.string().required().label('Description'),
+      tags: Joi.array().items(Joi.string()).label('Tags')
   });
   return schema.validate(data);
 };

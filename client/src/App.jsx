@@ -6,9 +6,11 @@ import Home from './pages/home/Home'
 import Login from './pages/login/Login'
 import SignUp from './pages/signup/SignUp'
 import PostPage from './pages/post/PostPage'
+import CategoriesPage from './pages/categories/CategoriesPage';
+import MakeRequest from './pages/request/MakeRequest';
 
 function App() {
-  const { isAuthenticated, isLoading } = useContext(AuthContext)
+  const { isAuthenticated, isLoading, user } = useContext(AuthContext)
 
   if(isLoading) return <p>Loading...</p>
 
@@ -24,8 +26,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          {(user.role === 'teacher' || user.role === 'admin') && <Route path="/categories/make-request" element={<MakeRequest />} />}
           {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
-          {/* <Route path="/categories" element={<Navigate to="/categories" />} />  */}
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
