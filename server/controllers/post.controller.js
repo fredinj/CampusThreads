@@ -30,7 +30,7 @@ const addPost = async (req, res) => {
     const newPost = new Post({
       ...req.body,
       image_url: file ? file.path : null, // filepath if exists or null
-      author: req.user._id
+      author_id: req.user._id
     });
     const post = await newPost.save();
     res.status(200).json(post);
@@ -46,9 +46,8 @@ const updatePost = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findByIdAndUpdate(id, req.body);
 
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
 
     const updatedPost = await Post.findById(id);
     res.status(200).json({ updatedPost });
@@ -64,9 +63,8 @@ const deletePost = async (req, res) => {
     const { id } = req.params;
     const post = await Post.findByIdAndDelete(id);
 
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
 
     return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {

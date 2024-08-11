@@ -13,7 +13,7 @@ async function auth(req, res, next) {
         const user = await User.findById(decoded._id).select('-password') // exclude password from response to client
         req.user = user;
 
-        console.log('Authenticated user:', req.user); // Debugging log
+        // console.log('Authenticated user:', req.user); // Debugging log
       next();
     } catch (error) {
         res.status(400).send('Invalid token.');
