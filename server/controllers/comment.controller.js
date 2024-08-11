@@ -52,7 +52,7 @@ const updateComment = async (req, res) => {
     const comment = await Comment.findById(commentId);
 
     if(!comment) return res.status(404).json({message: "Comment not found"});
-    if (comment.author.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
+    if (comment.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
 
     comment.comment_content = comment_content;
     await comment.save();
@@ -69,7 +69,7 @@ const deleteComment = async (req, res) => {
   try{
     const comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ message: "Comment not found"} )
-    if (comment.author.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
+    if (comment.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
     await Comment.deleteOne({ _id:commentId });
     res.status(200).json({ message: "Comment deleted" })
   } catch (error) {
