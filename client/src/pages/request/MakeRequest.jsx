@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import './MakeRequest.css'; // Import CSS file
+import './MakeRequest.css'; // Import CSS file
 
 const MakeRequest = () => {
   const [categoryName, setCategoryName] = useState("");
@@ -50,9 +50,9 @@ const MakeRequest = () => {
   };
 
   return (
-    <div className="make-request-container bg-gray-900 text-gray-300 font-sans flex flex-col items-center p-[1.25rem]">
-      <h1 className="mb-[1.25rem]">Make a Request</h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-[600px]">
+    <div className="make-request-container">
+      <h1>Make a Request</h1>
+      <form onSubmit={handleSubmit}>
         <label>
           Category Name:
           <input
@@ -66,7 +66,6 @@ const MakeRequest = () => {
         <label>
           Description:
           <textarea
-            className="w-full h-[150px] p-[0.625rem] mb-[1.25rem] border border-gray-300 rounded"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter description"
@@ -82,14 +81,10 @@ const MakeRequest = () => {
             placeholder="Enter tags"
           />
         </label>
-        <button
-          type="submit"
-          disabled={loading}
-          className="py-[0.625rem] px-[1.25rem] bg-blue-500 text-white border-none rounded cursor-pointer"
-        >
-          {loading ? "Submitting..." : "Submit"}
+        <button type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit'}
         </button>
-        {error && <p className="error text-red-500 mt-[0.625rem]">{error}</p>}
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );
