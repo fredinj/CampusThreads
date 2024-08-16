@@ -11,50 +11,46 @@ import DOMPurify from "dompurify";
 
 const PostPage = () => {
   const { postId } = useParams();
-  const [comments, setComments] = useState([])
+  const [comments, setCommentsList] = useState([])
   const [post, setPost] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState({
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [comment, setComment] = useState({
     content: ""
   });
 
 
   const navigate = useNavigate()
   const { logout } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
 
   const handleLogout = async () => {
     try {
-      await logout(); // Use the logout function from AuthContext
-      navigate("/"); // Redirect to the home page or any other page
+      await logout();
+      navigate("/");
     } catch (error) {
       console.error("Logout failed", error);
       setError("Logout failed. Please try again.");
     }
   };
 
-  const handleInputChange = (e, editor = false) => {
-    if (editor) {
-      setForm({ ...form, content: e });
-    } 
+  const handleInputChange = (e) => {
+      setComment({ ...comment, content: e });
   };
 
   const handleSavePost = (newPost) => {
     setPost({ ...newPost }); 
-    setIsEditing(false); 
+    setIsEditingPost(false); //toggled with buttons anyways
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // const formData = new FormData();
-      // const safeContent = DOMPurify.sanitize(content);
-      // formData.append("comment_content", form.comment_content);
 
       const comment_content = {
-        comment_content: DOMPurify.sanitize(form.content)
+        comment_content: DOMPurify.sanitize(comment.content)
       }
 
       const response = await axios.post(
@@ -65,7 +61,7 @@ const PostPage = () => {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-          withCredentials: true, // This ensures cookies are sent with the request
+          withCredentials: true,
         }
       );
 
@@ -75,8 +71,8 @@ const PostPage = () => {
       }
 
       const { newComment } = response.data
-      setComments([...comments, newComment]);
-      setForm({ ...form, content: "" });
+      setCommentsList([...comments, newComment]);
+      setComment({ ...comment, content: "" });
 
     } catch (error) {
       setError(error.message);
@@ -88,7 +84,7 @@ const PostPage = () => {
       const response = await axios.get(`http://localhost:3000/api/comments/post/${postId}`, {
         withCredentials: true
       });
-      setComments(response.data)
+      setCommentsList(response.data)
     } catch (error) {
       setError(error.message);
     } finally {
@@ -138,7 +134,7 @@ const PostPage = () => {
         <button className="border border-black rounded px-2 py-1 ml-2" onClick={handleLogout}>Logout</button>
       </nav>
 
-      { isEditing ? (
+      { isEditingPost ? (
         <PostEditor post = {post} onSave={handleSavePost} />
       ) : (
         <MainPostCard key={post._id} post={post} /> 
@@ -146,14 +142,14 @@ const PostPage = () => {
 
       }
 
-      <div className="post-toolbar">
+      { post.author_id === user._id && <div className="post-toolbar">
         <button
           className="border border-black rounded-lg p-2"
-          onClick={ ()=> setIsEditing(!isEditing) }
+          onClick={ ()=> setIsEditingPost(!isEditingPost) }
         > 
-          {isEditing ? 'Cancel Edit' : 'Edit Post'} 
+          {isEditingPost ? 'Cancel Edit' : 'Edit Post'} 
         </button>
-      </div>
+      </div>}
 
       <div className="flex flex-col items-center border border-black p-5 m-5">
         <form
@@ -166,7 +162,7 @@ const PostPage = () => {
             <ReactQuill
               id="content"
               name="content"
-              value={form.content}
+              value={comment.content}
               onChange={handleInputChange}
               required
             />
@@ -184,9 +180,7 @@ const PostPage = () => {
       {comments.map(comment => (
         <CommentCard 
           key={comment._id}
-          author={comment.author}
-          author_id={comment.author_id}
-          comment_content={comment.comment_content}
+          commentProp={comment}
         />
       ))}
 

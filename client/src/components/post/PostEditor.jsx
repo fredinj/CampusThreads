@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
@@ -14,9 +14,14 @@ const PostEditor = ({ post, onSave }) => {
 
   const fileInputRef = useRef(null);
   
+  // Handle all form input changes including ReactQuill content
   const handleInputChange = (e, editor = false) => {
+    const { name, value } = e.target || {};
+
     if (editor) {
       setForm({ ...form, content: e });
+    } else {
+      setForm({ ...form, [name]: value });
     }
   };
 
