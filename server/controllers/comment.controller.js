@@ -45,7 +45,7 @@ const getCommentsByPost = async (req, res) => {
 const updateComment = async (req, res) => {
   const { commentId } = req.params
   const { comment_content } = req.body;
-  
+
   if (!isValidObjectId(commentId)) return res.status(400).send({ message: 'Invalid comment ID' });
 
   try {
@@ -56,7 +56,7 @@ const updateComment = async (req, res) => {
 
     comment.comment_content = comment_content;
     await comment.save();
-    res.status(200).json({ comment })
+    res.status(200).json( comment )
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

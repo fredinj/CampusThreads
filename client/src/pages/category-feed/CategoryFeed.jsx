@@ -81,7 +81,7 @@ const CategoryFeed = () => {
 
       const newPost = response.data;
       setPosts([...posts, newPost]);
-      setForm({ ...form, title: "", content: "", image: null });
+      setForm({ title: "", content: "", image: null });
       fileInputRef.current.value = null;
     } catch (error) {
       setError(error.message);
@@ -167,7 +167,7 @@ const CategoryFeed = () => {
               id="content"
               name="content"
               value={form.content}
-              onChange={handleInputChange}
+              onChange={(value) => handleInputChange(value, true)}
               required
             />
           </div>
