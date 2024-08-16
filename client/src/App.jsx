@@ -9,6 +9,8 @@ import PostPage from './pages/post/PostPage'
 import CategoriesPage from './pages/categories/CategoriesPage';
 import MakeRequest from './pages/request/MakeRequest';
 import CategoryFeed from './pages/category-feed/CategoryFeed';
+import EditorTest from './pages/editor-test/EditorTest';
+import EditorTest2 from './pages/editor-test2/EditorTest2';
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext)
@@ -41,6 +43,9 @@ function App() {
       )}
     </Routes>
   );
+
+  // return(<EditorTest2 />)
+  // return(<TiptapEditor />)
 
 }
 

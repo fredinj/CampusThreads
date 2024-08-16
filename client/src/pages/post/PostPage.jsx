@@ -6,6 +6,8 @@ import CommentCard from '../../components/post/CommentCard';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
+import PostEditor from "../../components/post/PostEditor";
+import DOMPurify from "dompurify";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -13,9 +15,11 @@ const PostPage = () => {
   const [post, setPost] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
     content: ""
   });
+
 
   const navigate = useNavigate()
   const { logout } = useContext(AuthContext)
@@ -36,6 +40,11 @@ const PostPage = () => {
     } 
   };
 
+  const handleSavePost = (newPost) => {
+    setPost({ ...newPost }); 
+    setIsEditing(false); 
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -45,7 +54,7 @@ const PostPage = () => {
       // formData.append("comment_content", form.comment_content);
 
       const comment_content = {
-        comment_content: form.content
+        comment_content: DOMPurify.sanitize(form.content)
       }
 
       const response = await axios.post(
@@ -74,36 +83,38 @@ const PostPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try{
-        const response = await axios.get(`http://localhost:3000/api/comments/post/${postId}`, {
-          withCredentials: true
-        });
-        setComments(response.data)
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      } 
-    }
+  const fetchComments = async () => {
+    try{
+      const response = await axios.get(`http://localhost:3000/api/comments/post/${postId}`, {
+        withCredentials: true
+      });
+      setComments(response.data)
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    } 
+  }
 
-    const fetchPost = async () => {
-      try{
-        const response = await axios.get(`http://localhost:3000/api/posts/${postId}`, {
-          withCredentials: true
-        });
-        setPost(response.data)
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      } 
-    }
-    
+  const fetchPost = async () => {
+    try{
+      const response = await axios.get(`http://localhost:3000/api/posts/${postId}`, {
+        withCredentials: true
+      });
+      setPost(response.data)
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    } 
+  }
+
+  useEffect(() => {
+   
     fetchPost();
     fetchComments();
-  }, []);
+
+  }, [postId]);
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error}</p>
@@ -127,13 +138,22 @@ const PostPage = () => {
         <button className="border border-black rounded px-2 py-1 ml-2" onClick={handleLogout}>Logout</button>
       </nav>
 
-      <MainPostCard 
-        key={post._id}
-        title={post.post_title} 
-        content={post.post_content} 
-        image_url={post.image_url}
-        postId = {post._id}
-      />
+      { isEditing ? (
+        <PostEditor post = {post} onSave={handleSavePost} />
+      ) : (
+        <MainPostCard key={post._id} post={post} /> 
+      )
+
+      }
+
+      <div className="post-toolbar">
+        <button
+          className="border border-black rounded-lg p-2"
+          onClick={ ()=> setIsEditing(!isEditing) }
+        > 
+          {isEditing ? 'Cancel Edit' : 'Edit Post'} 
+        </button>
+      </div>
 
       <div className="flex flex-col items-center border border-black p-5 m-5">
         <form

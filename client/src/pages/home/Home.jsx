@@ -24,22 +24,22 @@ const Home = () => {
     }
   };
 
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/posts", {
+        withCredentials: true, // Ensure cookies are sent with the request
+      });
+      
+      setPosts(response.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/posts", {
-          withCredentials: true, // Ensure cookies are sent with the request
-        });
-        
-
-        setPosts(response.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    
     fetchPosts();
   }, []);
 

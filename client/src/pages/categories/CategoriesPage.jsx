@@ -8,7 +8,7 @@ const CategoriesPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { token, user } = useContext(AuthContext); // Assuming AuthContext provides the token and userRole
+  const { user } = useContext(AuthContext); // Assuming AuthContext provides the token and userRole
   const navigate = useNavigate();
 
   const navigateToMakeRequest = () => {
@@ -35,7 +35,7 @@ const CategoriesPage = () => {
     };
 
     fetchCategories();
-  }, [token]);
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
