@@ -1,45 +1,25 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import PostCard from "../../components/home/PostCard"; // Import the PostCard component
 import axios from "axios";
-import { AuthContext } from "../../contexts/AuthContext";
-import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from 'dompurify';
 
-const CategoryFeed = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const PostEditor = ({ post, onSave }) => {
   const [error, setError] = useState(null);
-
-  const { categoryId } = useParams();
-
-  // State to handle form inputs
   const [form, setForm] = useState({
-    title: "",
-    content: "",
-    image: null,
+    title: post.post_title || "",
+    content: post.post_content || "",
+    image: "",
   });
 
-  // Create a ref for the file input
   const fileInputRef = useRef(null);
-
-  // using auth context
-  const { logout, user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  // Handle all form input changes including ReactQuill content
+  
   const handleInputChange = (e, editor = false) => {
-    const { name, value } = e.target || {};
-
     if (editor) {
       setForm({ ...form, content: e });
-    } else {
-      setForm({ ...form, [name]: value });
     }
   };
 
-  // Handle image file upload
   const handleImageUpload = (e) => {
     const image = e.target.files[0];
     if (image) {
@@ -47,21 +27,24 @@ const CategoryFeed = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
-      formData.append("post_title", DOMPurify.sanitize(form.title));
-      formData.append("post_content", DOMPurify.sanitize(form.content));
-      formData.append("category_id", categoryId)
+      formData.append("post_title",  DOMPurify.sanitize(post.post_title));
+      formData.append("post_content",  DOMPurify.sanitize(form.content));
+      formData.append("category_id", post.category_id)
       if (form.image) {
         formData.append("image", form.image);
+      } else {
+        formData.append("image_url", post.image_url)
       }
 
-      const response = await axios.post(
-        "http://localhost:3000/api/posts",
+      // console.log(formData)
+
+      const response = await axios.put(
+        `http://localhost:3000/api/posts/${post._id}`,
         formData,
         {
           headers: {
@@ -80,68 +63,21 @@ const CategoryFeed = () => {
       }
 
       const newPost = response.data;
-      setPosts([...posts, newPost]);
+
+      // console.log(newPost)
+
       setForm({ ...form, title: "", content: "", image: null });
       fileInputRef.current.value = null;
+      onSave(newPost)
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout(); // Use the logout function from AuthContext
-      navigate("/"); // Redirect to the home page or any other page
-    } catch (error) {
-      console.error("Logout failed", error);
-      setError("Logout failed. Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/category/${categoryId}/posts`, {
-          withCredentials: true, // Ensure cookies are sent with the request
-        });
-        
-
-        setPosts(response.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="flex flex-col items-center mt-4">
-      <nav>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=>{ navigate("/") } }>
-          Home
-        </button>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=>{ navigate("/categories") } }>
-          Categories
-        </button>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=> { navigate("/profile/") } }>
-            Profile
-        </button>
-        <button
-          className="border border-black rounded px-2 py-1 ml-2"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
 
       <div className="flex flex-col items-center border border-black p-5 m-5">
         <form
@@ -156,7 +92,8 @@ const CategoryFeed = () => {
               id="title"
               name="title"
               value={form.title}
-              onChange={handleInputChange}
+              // onChange={handleInputChange}
+              readOnly
               required
             />
           </div>
@@ -187,21 +124,13 @@ const CategoryFeed = () => {
             className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
             type="submit"
           >
-            Add Post
+            Save Post
           </button>
         </form>
       </div>
-
-      <div className="flex flex-col border m-5 p-5">
-        {posts.map((post) => (
-          <PostCard
-          key={post._id}
-          post={post}
-        />
-        ))}
-      </div>
     </div>
   );
-};
 
-export default CategoryFeed;
+}
+
+export default PostEditor
