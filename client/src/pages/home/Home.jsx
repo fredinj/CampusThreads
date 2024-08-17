@@ -29,7 +29,7 @@ const Home = () => {
       const response = await axios.get("http://localhost:3000/api/posts", {
         withCredentials: true, // Ensure cookies are sent with the request
       });
-      
+
       setPosts(response.data);
     } catch (error) {
       setError(error.message);
@@ -39,7 +39,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    
     fetchPosts();
   }, []);
 
@@ -47,30 +46,35 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="mt-4 flex flex-col items-center">
       <nav>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=>{ navigate("/categories") } }>
+        <button
+          className="ml-2 rounded border border-black px-2 py-1"
+          onClick={() => {
+            navigate("/categories");
+          }}
+        >
           Categories
         </button>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=> { navigate("/profile/") } }>
-            Profile
+        <button
+          className="ml-2 rounded border border-black px-2 py-1"
+          onClick={() => {
+            navigate("/profile/");
+          }}
+        >
+          Profile
         </button>
         <button
-          className="border border-black rounded px-2 py-1 ml-2"
+          className="ml-2 rounded border border-black px-2 py-1"
           onClick={handleLogout}
         >
           Logout
         </button>
       </nav>
 
-      <div className="flex flex-col border m-5 p-5">
+      <div className="m-5 flex flex-col border p-5">
         {posts.map((post) => (
-          <PostCard
-            key={post._id}
-            post={post}
-          />
+          <PostCard key={post._id} post={post} />
         ))}
       </div>
     </div>

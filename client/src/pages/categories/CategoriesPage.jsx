@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import './CategoriesPage.css'; // Import CSS file
+import React, { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./CategoriesPage.css"; // Import CSS file
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
@@ -12,18 +12,18 @@ const CategoriesPage = () => {
   const navigate = useNavigate();
 
   const navigateToMakeRequest = () => {
-    navigate('/categories/make-request/');
+    navigate("/categories/make-request/");
   };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/category', {
-          method: 'GET',
-          credentials: 'include', // Ensure cookies are sent with the request
+        const response = await fetch("http://localhost:3000/api/category", {
+          method: "GET",
+          credentials: "include", // Ensure cookies are sent with the request
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setCategories(data);
@@ -43,10 +43,16 @@ const CategoriesPage = () => {
   return (
     <div className="categories-container">
       <div className="header">
-        <button onClick={ () => {navigate("/")} }>Home</button>
+        <button
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Home
+        </button>
         <h1>Categories</h1>
         <div className="top-right-buttons">
-          {(user.role === 'teacher' || user.role === 'admin') && (
+          {(user.role === "teacher" || user.role === "admin") && (
             <button onClick={navigateToMakeRequest}>Make Request</button>
           )}
         </div>
@@ -54,10 +60,21 @@ const CategoriesPage = () => {
       {categories.length > 0 ? (
         <div className="categories-grid">
           {categories.map((category, index) => (
-            <div key={category._id} className="category-card" style={{ animationDelay: `${index * 0.1}s` }}>
+            <div
+              key={category._id}
+              className="category-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
               <h2>{category.name}</h2>
               <p>{category.description}</p>
-              <button className="explore-button" onClick={ () => {navigate(`/category/${category._id}`)} }>Explore More</button>
+              <button
+                className="explore-button"
+                onClick={() => {
+                  navigate(`/category/${category._id}`);
+                }}
+              >
+                Explore More
+              </button>
             </div>
           ))}
         </div>

@@ -5,11 +5,13 @@ import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 
 const CommentEditCard = ({ comment, onSave }) => {
-  const [commentContent, setCommentContent] = useState(comment.comment_content || "");
+  const [commentContent, setCommentContent] = useState(
+    comment.comment_content || "",
+  );
   const [error, setError] = useState(null);
 
   const handleInputChange = (value, editor = false) => {
-      setCommentContent( value );
+    setCommentContent(value);
   };
 
   const handleSubmit = async (e) => {
@@ -29,20 +31,19 @@ const CommentEditCard = ({ comment, onSave }) => {
             Accept: "application/json",
           },
           withCredentials: true, // This ensures cookies are sent with the request
-        }
+        },
       );
 
       if (response.status !== 200) {
         throw new Error(
           "Network response was not ok, Status: ",
-          response.status
+          response.status,
         );
       }
       setCommentContent("");
 
       const newComment = response.data;
       onSave(newComment);
-
     } catch (error) {
       setError(error.message);
     }
@@ -51,12 +52,12 @@ const CommentEditCard = ({ comment, onSave }) => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center border border-black p-5 m-5">
+    <div className="m-5 flex flex-col items-center border border-black p-5">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center w-full gap-2"
+        className="flex w-full flex-col items-center gap-2"
       >
-        <div className="flex flex-col w-[25rem]">
+        <div className="flex w-[25rem] flex-col">
           <label htmlFor="content">Comment:</label>
           <ReactQuill
             id="content"
@@ -68,7 +69,7 @@ const CommentEditCard = ({ comment, onSave }) => {
         </div>
 
         <button
-          className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
+          className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
           type="submit"
         >
           Comment

@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 const PostEditor = ({ post, onSave }) => {
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const PostEditor = ({ post, onSave }) => {
   });
 
   const fileInputRef = useRef(null);
-  
+
   // Handle all form input changes including ReactQuill content
   const handleInputChange = (e, editor = false) => {
     const { name, value } = e.target || {};
@@ -37,13 +37,13 @@ const PostEditor = ({ post, onSave }) => {
 
     try {
       const formData = new FormData();
-      formData.append("post_title",  DOMPurify.sanitize(post.post_title));
-      formData.append("post_content",  DOMPurify.sanitize(form.content));
-      formData.append("category_id", post.category_id)
+      formData.append("post_title", DOMPurify.sanitize(post.post_title));
+      formData.append("post_content", DOMPurify.sanitize(form.content));
+      formData.append("category_id", post.category_id);
       if (form.image) {
         formData.append("image", form.image);
       } else {
-        formData.append("image_url", post.image_url)
+        formData.append("image_url", post.image_url);
       }
 
       // console.log(formData)
@@ -57,13 +57,13 @@ const PostEditor = ({ post, onSave }) => {
             Accept: "application/json",
           },
           withCredentials: true, // This ensures cookies are sent with the request
-        }
+        },
       );
 
       if (response.status !== 200) {
         throw new Error(
           "Network response was not ok, Status: ",
-          response.status
+          response.status,
         );
       }
 
@@ -73,7 +73,7 @@ const PostEditor = ({ post, onSave }) => {
 
       setForm({ ...form, title: "", content: "", image: null });
       fileInputRef.current.value = null;
-      onSave(newPost)
+      onSave(newPost);
     } catch (error) {
       setError(error.message);
     }
@@ -82,17 +82,16 @@ const PostEditor = ({ post, onSave }) => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center mt-4">
-
-      <div className="flex flex-col items-center border border-black p-5 m-5">
+    <div className="mt-4 flex flex-col items-center">
+      <div className="m-5 flex flex-col items-center border border-black p-5">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-center w-full gap-2"
+          className="flex w-full flex-col items-center gap-2"
         >
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="title">Title:</label>
             <input
-              className="border border-black rounded p-1"
+              className="rounded border border-black p-1"
               type="text"
               id="title"
               name="title"
@@ -103,7 +102,7 @@ const PostEditor = ({ post, onSave }) => {
             />
           </div>
 
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="content">Content:</label>
             <ReactQuill
               id="content"
@@ -114,7 +113,7 @@ const PostEditor = ({ post, onSave }) => {
             />
           </div>
 
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="image">Image:</label>
             <input
               type="file"
@@ -126,7 +125,7 @@ const PostEditor = ({ post, onSave }) => {
           </div>
 
           <button
-            className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
+            className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
             type="submit"
           >
             Save Post
@@ -135,7 +134,6 @@ const PostEditor = ({ post, onSave }) => {
       </div>
     </div>
   );
+};
 
-}
-
-export default PostEditor
+export default PostEditor;

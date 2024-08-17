@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import './MakeRequest.css'; // Import CSS file
+import "./MakeRequest.css"; // Import CSS file
 
 const MakeRequest = () => {
   const [categoryName, setCategoryName] = useState("");
@@ -32,7 +32,7 @@ const MakeRequest = () => {
             // Authorization: `Bearer ${token}`, // Ensure token is included // We're keeping the token in the cookie
           },
           withCredentials: true, // Ensure cookies are included
-        }
+        },
       );
       if (response.status === 201) {
         navigate("/categories"); // Navigate on success
@@ -41,7 +41,7 @@ const MakeRequest = () => {
       // Log detailed error for debugging
       console.error(
         "Submission error:",
-        error.response ? error.response.data : error.message
+        error.response ? error.response.data : error.message,
       );
       setError("Failed to submit request. Please try again.");
     } finally {
@@ -51,8 +51,20 @@ const MakeRequest = () => {
 
   return (
     <div className="make-request-container">
-      <button onClick={ () => {navigate("/")} }>Home</button>
-      <button onClick={ () => {navigate("/categories")} }>Categories</button>
+      <button
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Home
+      </button>
+      <button
+        onClick={() => {
+          navigate("/categories");
+        }}
+      >
+        Categories
+      </button>
       <h1>Make a Request</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -84,7 +96,7 @@ const MakeRequest = () => {
           />
         </label>
         <button type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? "Submitting..." : "Submit"}
         </button>
         {error && <p className="error">{error}</p>}
       </form>
