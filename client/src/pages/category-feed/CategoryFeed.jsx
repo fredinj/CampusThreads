@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 const CategoryFeed = () => {
   const [posts, setPosts] = useState([]);
@@ -55,7 +55,7 @@ const CategoryFeed = () => {
       const formData = new FormData();
       formData.append("post_title", DOMPurify.sanitize(form.title));
       formData.append("post_content", DOMPurify.sanitize(form.content));
-      formData.append("category_id", categoryId)
+      formData.append("category_id", categoryId);
       if (form.image) {
         formData.append("image", form.image);
       }
@@ -69,13 +69,13 @@ const CategoryFeed = () => {
             Accept: "application/json",
           },
           withCredentials: true, // This ensures cookies are sent with the request
-        }
+        },
       );
 
       if (response.status !== 200) {
         throw new Error(
           "Network response was not ok, Status: ",
-          response.status
+          response.status,
         );
       }
 
@@ -101,10 +101,12 @@ const CategoryFeed = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/category/${categoryId}/posts`, {
-          withCredentials: true, // Ensure cookies are sent with the request
-        });
-        
+        const response = await axios.get(
+          `http://localhost:3000/api/category/${categoryId}/posts`,
+          {
+            withCredentials: true, // Ensure cookies are sent with the request
+          },
+        );
 
         setPosts(response.data);
       } catch (error) {
@@ -121,37 +123,49 @@ const CategoryFeed = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="mt-4 flex flex-col items-center">
       <nav>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=>{ navigate("/") } }>
+        <button
+          className="ml-2 rounded border border-black px-2 py-1"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
           Home
         </button>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=>{ navigate("/categories") } }>
+        <button
+          className="ml-2 rounded border border-black px-2 py-1"
+          onClick={() => {
+            navigate("/categories");
+          }}
+        >
           Categories
         </button>
-        <button className="border border-black rounded px-2 py-1 ml-2"
-         onClick={ ()=> { navigate("/profile/") } }>
-            Profile
+        <button
+          className="ml-2 rounded border border-black px-2 py-1"
+          onClick={() => {
+            navigate("/profile/");
+          }}
+        >
+          Profile
         </button>
         <button
-          className="border border-black rounded px-2 py-1 ml-2"
+          className="ml-2 rounded border border-black px-2 py-1"
           onClick={handleLogout}
         >
           Logout
         </button>
       </nav>
 
-      <div className="flex flex-col items-center border border-black p-5 m-5">
+      <div className="m-5 flex flex-col items-center border border-black p-5">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-center w-full gap-2"
+          className="flex w-full flex-col items-center gap-2"
         >
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="title">Title:</label>
             <input
-              className="border border-black rounded p-1"
+              className="rounded border border-black p-1"
               type="text"
               id="title"
               name="title"
@@ -161,7 +175,7 @@ const CategoryFeed = () => {
             />
           </div>
 
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="content">Content:</label>
             <ReactQuill
               id="content"
@@ -172,7 +186,7 @@ const CategoryFeed = () => {
             />
           </div>
 
-          <div className="flex flex-col w-[25rem]">
+          <div className="flex w-[25rem] flex-col">
             <label htmlFor="image">Image:</label>
             <input
               type="file"
@@ -184,7 +198,7 @@ const CategoryFeed = () => {
           </div>
 
           <button
-            className="bg-blue-500 text-white font-bold py-1 px-1 rounded border border-blue-700 hover:bg-blue-700"
+            className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
             type="submit"
           >
             Add Post
@@ -192,12 +206,9 @@ const CategoryFeed = () => {
         </form>
       </div>
 
-      <div className="flex flex-col border m-5 p-5">
+      <div className="m-5 flex flex-col border p-5">
         {posts.map((post) => (
-          <PostCard
-          key={post._id}
-          post={post}
-        />
+          <PostCard key={post._id} post={post} />
         ))}
       </div>
     </div>
