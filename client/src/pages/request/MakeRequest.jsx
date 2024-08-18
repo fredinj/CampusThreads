@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./MakeRequest.css"; // Import CSS file
 
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 const MakeRequest = () => {
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");

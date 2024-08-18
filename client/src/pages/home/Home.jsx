@@ -3,7 +3,6 @@ import PostCard from "../../components/home/PostCard"; // Import the PostCard co
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-// import DOMPurify from 'dompurify';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
