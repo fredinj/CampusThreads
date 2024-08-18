@@ -5,6 +5,7 @@ import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
+import ReplyCard from "./ReplyCard";
 
 const CommentCard = ({ commentProp })=>{
 
@@ -12,6 +13,7 @@ const CommentCard = ({ commentProp })=>{
   const [comment, setComment] = useState({ ...commentProp });
   const [isEditingComment, setIsEditingComment] = useState(false);
   const [isReplying, setIsReplying] = useState(false)
+  const [reply, setReply] = useState("")
   const [commentEditContent, setCommentEditContent] = useState();
   const [error, setError] = useState(null);
 
@@ -19,6 +21,38 @@ const CommentCard = ({ commentProp })=>{
     setComment({ ...newComment });
     setIsEditingComment(false);
   };
+
+  const handleReplyComment = async ({ comment_content }) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/comments/post/${comment.post}`,
+        {
+          comment_content: comment_content,
+          parent_comment: comment._id
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          withCredentials: true,
+        },
+      );
+
+      if (response.status !== 201) {
+        throw new Error(
+          "Network response was not ok, Status: ",
+          response.status,
+        );
+      }
+
+      const savedComment = response.data;
+      setReply(savedComment);
+      setIsReplying(false)
+    } catch (error) {
+      setError(error.message);
+    }
+  }
 
   const handleInputChange = (value) => {
     setCommentEditContent(value);
@@ -103,6 +137,13 @@ const CommentCard = ({ commentProp })=>{
       )}
 
       <hr />
+
+      { isReplying ? (
+        <div> 
+
+        </div>
+      ) : (<></>)}
+
       <div className="mt-2">
         {comment.author_id === user._id && (
           <button
@@ -116,8 +157,19 @@ const CommentCard = ({ commentProp })=>{
           </button>
         )}
 
-        <button className="rounded-lg border border-black pl-1 pr-1 ml-2"> Reply </button>
+        <button 
+          className="rounded-lg border border-black pl-1 pr-1 ml-2"
+          onClick={()=>{
+            setIsReplying(!isReplying)
+          }}
+        > 
+          { !isReplying? "Reply" : "Cancel Reply" }
+        </button>
       </div>
+
+      {isReplying ? (
+        <ReplyCard onReply={handleReplyComment}/>
+      ):(<></>)}
       
       {comment.child_comments.length > 0 ? (
         <div>
