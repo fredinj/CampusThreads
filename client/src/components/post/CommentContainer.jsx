@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { AuthContext } from "../../contexts/AuthContext";
 import axios from "axios";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
-import DOMPurify from "dompurify";
 import CommentCard from "./CommentCard.jsx";
 import ReplyCard from "./ReplyCard.jsx"
 
