@@ -32,7 +32,7 @@ const addComment = async (req, res) => {
 
 const getCommentsByPost = async (req, res) => {
   const {postId} = req.params
-  if (!isValidObjectId(req.params.postId)) return res.status(400).send({ message: 'Invalid post ID' });
+  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
   
   try{
     const comments = await Comment.find({ post: postId })

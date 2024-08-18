@@ -6,23 +6,22 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 
-const CommentCard = ({ commentProp }) => {
+const CommentCard = ({ commentProp })=>{
+
   const { user } = useContext(AuthContext);
-  const [isEditingComment, setIsEditingComment] = useState(false);
   const [comment, setComment] = useState({ ...commentProp });
+  const [isEditingComment, setIsEditingComment] = useState(false);
+  const [isReplying, setIsReplying] = useState(false)
+  const [commentEditContent, setCommentEditContent] = useState();
+  const [error, setError] = useState(null);
 
   const handleSaveComment = (newComment) => {
     setComment({ ...newComment });
     setIsEditingComment(false);
   };
 
-  const [commentContent, setCommentContent] = useState(
-    comment.comment_content || "",
-  );
-  const [error, setError] = useState(null);
-
   const handleInputChange = (value) => {
-    setCommentContent(value);
+    setCommentEditContent(value);
   };
 
   const handleSubmit = async (e) => {
@@ -30,7 +29,7 @@ const CommentCard = ({ commentProp }) => {
 
     try {
       const comment_content = {
-        comment_content: DOMPurify.sanitize(commentContent),
+        comment_content: DOMPurify.sanitize(commentEditContent),
       };
 
       const response = await axios.put(
@@ -41,7 +40,7 @@ const CommentCard = ({ commentProp }) => {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-          withCredentials: true, // This ensures cookies are sent with the request
+          withCredentials: true,
         },
       );
 
@@ -51,7 +50,7 @@ const CommentCard = ({ commentProp }) => {
           response.status,
         );
       }
-      setCommentContent("");
+      setCommentEditContent("");
 
       const newComment = response.data;
       handleSaveComment(newComment);
@@ -62,54 +61,76 @@ const CommentCard = ({ commentProp }) => {
 
   if (error) return <p>Error: {error}</p>;
 
-  return isEditingComment ? (
-    <div className="m-5 flex flex-col items-center border border-black p-5">
-      <form
+  return (
+    <div className="m-5 border border-black p-3 rounded-lg">
+
+      {!isEditingComment ? (
+        <div>
+        <Link to={`/user/${comment.author_id}`}>
+          <h4 className="text-blue-500 hover:text-blue-700">
+            {comment.author}
+          </h4>
+        </Link>
+        <hr />
+        <div
+          className="prose my-1"
+          dangerouslySetInnerHTML={{ __html: comment.comment_content }}
+        />
+      </div>
+      ) : (
+        <form
         onSubmit={handleSubmit}
-        className="flex w-full flex-col items-center gap-2"
-      >
-        <div className="flex w-[25rem] flex-col">
-          <label htmlFor="content">Comment:</label>
-          <ReactQuill
-            id="content"
-            name="content"
-            value={commentContent}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-
-        <button
-          className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
-          type="submit"
+        className="flex w-full flex-col items-center gap-2 my-1"
         >
-          Comment
-        </button>
-      </form>
-    </div>
-  ) : (
-    <div className="m-5 flex flex-col items-center border border-black p-3 rounded-lg">
-      <Link to={`/user/${comment.author_id}`}>
-        <h4 className="text-blue-500 hover:text-blue-700">
-          {comment.author}
-        </h4>
-      </Link>
-      <div
-        className="prose"
-        dangerouslySetInnerHTML={{ __html: comment.comment_content }}
-      />
+          <div className="flex w-[25rem] flex-col">
+            <label htmlFor="content">Edit Comment:</label>
+            <ReactQuill
+              id="content"
+              name="content"
+              value={commentEditContent}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
 
-      {comment.author_id === user._id && (
-        <button
-          className="rounded-lg border border-black pl-1 pr-1 mt-2"
-          onClick={() => setIsEditingComment(!isEditingComment)}
-        >
-          Edit
-        </button>
+          <button
+            className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
+            type="submit"
+          >
+            Save Comment
+          </button>
+        </form>
       )}
+
+      <hr />
+      <div className="mt-2">
+        {comment.author_id === user._id && (
+          <button
+            className="rounded-lg border border-black pl-1 pr-1 "
+            onClick={() => {
+              setIsEditingComment(!isEditingComment)
+              setCommentEditContent(comment.comment_content || "");
+            }}
+          >
+            { !isEditingComment? "Edit" : "Cancel Edit"}
+          </button>
+        )}
+
+        <button className="rounded-lg border border-black pl-1 pr-1 ml-2"> Reply </button>
+      </div>
+      
+      {comment.child_comments.length > 0 ? (
+        <div>
+        {comment.child_comments.map((childComment) => (
+          <CommentCard key={childComment._id} commentProp={childComment} />
+        ))}
+      </div>
+      ) : (<></>)}
+
     </div>
   )
 
-};
+}
 
-export default CommentCard;
+
+export default CommentCard
