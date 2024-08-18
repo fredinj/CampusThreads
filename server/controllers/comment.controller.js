@@ -8,6 +8,8 @@ const addComment = async (req, res) => {
   const { postId } = req.params;
   const { comment_content, parent_comment = null  } = req.body;
 
+  console.log(req.body)
+
   if (!isValidObjectId(req.params.postId)) return res.status(400).send({ message: 'Invalid request ID' });
   
   try {
@@ -32,7 +34,7 @@ const addComment = async (req, res) => {
       }
     } 
 
-    res.status(201).json({savedComment});
+    res.status(201).json(savedComment);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
