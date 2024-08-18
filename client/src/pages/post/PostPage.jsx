@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainPostCard from "../../components/post/MainPostCard";
 import CommentCard from "../../components/post/CommentCard";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
-import PostEditor from "../../components/post/PostEditor";
 import DOMPurify from "dompurify";
 
 const PostPage = () => {
@@ -15,14 +14,12 @@ const PostPage = () => {
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isEditingPost, setIsEditingPost] = useState(false);
   const [comment, setComment] = useState({
     content: "",
   });
 
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
-  const { user } = useContext(AuthContext);
 
   const handleLogout = async () => {
     try {
@@ -36,11 +33,6 @@ const PostPage = () => {
 
   const handleInputChange = (e) => {
     setComment({ ...comment, content: e });
-  };
-
-  const handleSavePost = (newPost) => {
-    setPost({ ...newPost });
-    setIsEditingPost(false); //toggled with buttons anyways
   };
 
   const handleSubmit = async (e) => {
@@ -153,22 +145,7 @@ const PostPage = () => {
         </button>
       </nav>
 
-      {isEditingPost ? (
-        <PostEditor post={post} onSave={handleSavePost} />
-      ) : (
-        <MainPostCard key={post._id} post={post} />
-      )}
-
-      {post.author_id === user._id && (
-        <div className="post-toolbar">
-          <button
-            className="rounded-lg border border-black p-2"
-            onClick={() => setIsEditingPost(!isEditingPost)}
-          >
-            {isEditingPost ? "Cancel Edit" : "Edit Post"}
-          </button>
-        </div>
-      )}
+      <MainPostCard key={post._id} postProp={post} />
 
       <div className="m-5 flex flex-col items-center border border-black p-5">
         <form
