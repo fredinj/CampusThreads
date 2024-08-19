@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainPostCard from "../../components/post/MainPostCard";
 import CommentContainer from "../../components/post/CommentContainer";
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
 import DOMPurify from "dompurify";
