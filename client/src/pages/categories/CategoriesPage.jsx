@@ -59,7 +59,7 @@ const CategoriesPage = () => {
           {(user.role === "teacher" || user.role === "admin") && (
             <button onClick={navigateToMakeRequest}>Make Request</button>
           )}
-            {userRole === 'admin' && (
+            {user.role === 'admin' && (
             <button onClick={navigateToApproveRequest}>View Requests</button>
           )}
         </div>
