@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import axios from "axios";
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 import ReplyCard from "./ReplyCard";
@@ -20,6 +20,10 @@ const CommentCard = ({ commentProp })=>{
   const handleSaveComment = (newComment) => {
     setComment({ ...newComment });
     setIsEditingComment(false);
+  };
+
+  const handleInputChange = (value) => {
+    setCommentEditContent(value);
   };
 
   const handleReplyComment = async ({ comment_content }) => {
@@ -54,9 +58,9 @@ const CommentCard = ({ commentProp })=>{
     }
   }
 
-  const handleInputChange = (value) => {
-    setCommentEditContent(value);
-  };
+  const handleLoadMore = async ()=> {
+
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -178,6 +182,16 @@ const CommentCard = ({ commentProp })=>{
         ))}
       </div>
       ) : (<></>)}
+
+      {comment.hasMoreChildren ? (
+        <button
+          className="rounded-lg border border-black pl-1 pr-1"
+          onClick={()=> {
+          }}
+        >
+          Load More
+        </button>
+      ):(<></>)}
 
     </div>
   )

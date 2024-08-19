@@ -9,6 +9,7 @@ const CommentContainer = ({ postId }) => {
   const [comment, setComment] = useState({ content: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null)
+  const [childCommentCount, setChildCommentCount] = useState(0)
   // const { user } = useContext(AuthContext)
 
   const handleReplySubmit = async (comment_content) => {
@@ -33,7 +34,11 @@ const CommentContainer = ({ postId }) => {
       }
 
       const savedComment = response.data;
-      setCommentsList([...comments, savedComment]);
+      setCommentsList(prevState => ({
+        ...prevState,
+        comments: [...prevState.comments, savedComment],
+        totalTopLevelComments: prevState.totalTopLevelComments + 1
+      }));
       setComment({ ...comment, content: "" });
     } catch (error) {
       setError(error.message);
@@ -43,7 +48,7 @@ const CommentContainer = ({ postId }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=20`,
+        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=4&childLimit=2&depth=3`,
         {
           withCredentials: true,
         },
@@ -60,7 +65,7 @@ const CommentContainer = ({ postId }) => {
     fetchComments();
   }, []);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading Comments...</div>
   if (error) return <div>Error: {error}</div>
 
   return(
@@ -69,10 +74,18 @@ const CommentContainer = ({ postId }) => {
     <ReplyCard onReply={handleReplySubmit}/>
 
     <div>
-      {comments.map((commentItem)=>(
+      {comments.comments.map((commentItem)=>(
         <CommentCard key={commentItem._id} commentProp={commentItem} />
       ))}
     </div>
+
+    {comments.hasMoreComments ? (
+      <button
+        className="rounded-lg border border-black pl-1 pr-1"
+      >
+        Load More
+      </button>
+    ) : (<></>)}
 
   </div>
   )

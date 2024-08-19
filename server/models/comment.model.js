@@ -1,3 +1,4 @@
+const mongoosePaginate = require('mongoose-paginate-v2');
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
@@ -9,6 +10,8 @@ const commentSchema = new mongoose.Schema({
   child_comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'comment', default: [] }]
 }, 
 { timestamps: true });
+
+commentSchema.plugin(mongoosePaginate);
 
 const Comment = mongoose.model('comment', commentSchema);
 

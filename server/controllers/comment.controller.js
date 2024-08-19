@@ -1,6 +1,7 @@
 const Comment = require("../models/comment.model");
 const Post = require("../models/post.model")
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -40,72 +41,94 @@ const addComment = async (req, res) => {
   }
 };
 
-const getCommentsByPostInitial = async (req, res) => {
-  const { postId } = req.params;
-  const { topLevelLimit = 5, topLevelSkip = 0, childLimit = 5, childSkip = 0, parentCommentId = null } = req.query;
+
+const loadMoreComments = async (req, res) => {
+  const { postId, parentId } = req.params;
+  const { topLevelLimit = 5, topLevelSkip = 0, childLimit = 1, childSkip = 0, parentCommentId = null } = req.query
 
   if (!isValidObjectId(postId)) {
     return res.status(400).send({ message: 'Invalid post ID' });
   }
 
   try {
-    // Fetch top-level comments
-    const topLevelComments = await Comment.find({ post: postId, parent_comment: parentCommentId })
-      .sort({ createdAt: 1 })
-      .limit(parseInt(topLevelLimit))
-      .skip(parseInt(topLevelSkip))
-      .lean();
 
-    // Fetch child comments for each top-level comment
-    const topLevelCommentIds = topLevelComments.map(comment => comment._id);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting comments", error: error.message });
+  }
+}
+
+const getCommentsByPost = async (req, res) => {
+  const { postId } = req.params;
+  const {
+    topLevelLimit = 5,
+    topLevelSkip = 0,
+    childLimit = 2,
+    childSkip = 0,
+    parentCommentId = null,
+    depth = 1
+  } = req.query;
+
+  if (!isValidObjectId(postId)) {
+    return res.status(400).send({ message: 'Invalid post ID' });
+  }
+
+  try {
+    const fetchComments = async (parentId, currentDepth) => {
+      if (currentDepth > depth) return [];
+   
+      const options = {
+        limit: parseInt(parentId ? childLimit : topLevelLimit),
+        page: Math.ceil((parentId ? childSkip : topLevelSkip) / (parentId ? childLimit : topLevelLimit)) + 1,
+        sort: { createdAt: 1 },
+        lean: true,
+      };
+   
+      const result = await Comment.paginate({
+        post: postId,
+        parent_comment: parentId
+      }, options);
+   
+      const comments = result.docs;
+   
+      for (let comment of comments) {
+        const totalChildComments = await Comment.countDocuments({ parent_comment: comment._id });
+        const childComments = await fetchComments(comment._id, currentDepth + 1);
+        comment.child_comments = childComments;
+        
+        const fetchedChildCount = childComments.length;
+        comment.totalChildComments = totalChildComments;
+        comment.hasMoreChildren = totalChildComments > (childSkip + fetchedChildCount);
+    }
     
-    // Count total child comments for pagination purposes
-    const childCommentsCountPromises = topLevelCommentIds.map(id => 
-      Comment.countDocuments({ parent_comment: id })
-    );
-    const childCommentsCounts = await Promise.all(childCommentsCountPromises);
+   
+      return comments;
+    };
 
-    // Fetch child comments
-    const childComments = await Comment.find({ parent_comment: { $in: topLevelCommentIds } })
-      .sort({ createdAt: 1 })
-      .limit(parseInt(childLimit))
-      .skip(parseInt(childSkip))
-      .lean();
+    const comments = await fetchComments(parentCommentId, 1);
 
-    // Create a map of top-level comments by their ID
-    const commentsMap = new Map(topLevelComments.map(comment => {
-      comment.child_comments = [];
-      comment.hasMoreChildren = false; // Add a flag to indicate more children
-      return [comment._id.toString(), comment];
-    }));
-
-    // Add child comments to their respective parent comments
-    childComments.forEach(child => {
-      const parentId = child.parent_comment.toString();
-      if (commentsMap.has(parentId)) {
-        commentsMap.get(parentId).child_comments.push(child);
-      }
+    // Get total number of comments for the given parent (or top-level if parentCommentId is null)
+    const totalComments = await Comment.countDocuments({
+      post: postId,
+      parent_comment: parentCommentId
+    });
+    
+    // The rest of the code remains the same
+    const fetchedCount = comments.length;
+    const skip = parentCommentId ? parseInt(childSkip) : parseInt(topLevelSkip);
+    const hasMoreComments = totalComments > (skip + fetchedCount);
+    
+    res.status(200).json({
+      comments: comments,
+      ...(parentCommentId === null ? {
+        totalComments: totalComments,
+        hasMoreComments: hasMoreComments
+      } : {})
     });
 
-    // Check if there are more child comments
-    topLevelCommentIds.forEach((id, index) => {
-      const totalChildCount = childCommentsCounts[index];
-      if (totalChildCount > parseInt(childSkip) + parseInt(childLimit)) {
-        commentsMap.get(id.toString()).hasMoreChildren = true;
-      }
-    });
-
-    // Convert map values to an array
-    const commentsWithChildren = Array.from(commentsMap.values());
-
-    res.status(200).json(commentsWithChildren);
   } catch (error) {
     res.status(500).json({ message: "Error getting comments", error: error.message });
   }
 };
-
-
-
 
 const updateComment = async (req, res) => {
   const { commentId } = req.params
@@ -144,7 +167,8 @@ const deleteComment = async (req, res) => {
 
 module.exports = {
   addComment,
-  getCommentsByPostInitial,
+  getCommentsByPost,
   updateComment,
   deleteComment,
+  loadMoreComments
 };

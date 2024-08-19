@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 

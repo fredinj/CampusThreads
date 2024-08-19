@@ -3,7 +3,7 @@ import PostCard from "../../components/home/PostCard"; // Import the PostCard co
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReactQuill from "react-quill";
+import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 import { AuthContext } from "../../contexts/AuthContext";
