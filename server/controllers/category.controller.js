@@ -49,6 +49,7 @@ const categoryRequest = async (req, res) => {
     });
 
     await request.save();
+    console.log(req.body.tags)
     res.status(201).send({ message: "Request created successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -81,6 +82,7 @@ const approveCategoryRequest = async (req, res) => {
       description: request.description,
       requestedBy: request.requestedBy,
       requestId: request._id,
+      tags: request.tags // Ensure tags are included when creating a category
     }).save();
 
     // await category.save();

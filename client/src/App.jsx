@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 
 
-import ApproveRequest from './pages/Request/ApproveRequests'; // Ensure this path is correct
+import ApproveRequest from './pages/request/ApproveRequests.jsx'; // Ensure this path is correct
 
 
 import Home from "./pages/home/Home";
@@ -32,8 +32,8 @@ function App() {
         <>
           <Route path="/" element={<Home />} />
           <Route path="/categories" element={<CategoriesPage />} />
-          {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />}
-          {userRole === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
+          {/* {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />} */}
+          {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
 
 
           <Route path="/login" element={<Navigate to="/" />} />
