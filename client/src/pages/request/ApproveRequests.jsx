@@ -16,11 +16,11 @@ const ApproveRequests = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('http://localhost:3000/api/category/request', {
+        const response = await axios.get('http://localhost:3000/api/category/request/pending', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
           },
-          withCredentials: true
+          withCredentials: true,
         });
         setRequests(response.data);
       } catch (error) {
@@ -38,15 +38,25 @@ const ApproveRequests = () => {
     setLoading(true);
     setError(null);
     try {
-      await axios.post(`http://localhost:3000/api/category/requests/${id}/approve`, {}, {
+      const response = await fetch(`http://localhost:3000/api/category/${id}/approve`, {
+        method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        withCredentials: true
+        credentials: 'include',
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
+      }
+
+      const data = await response.json();
+      console.log('Approval response:', data);
       setRequests(requests.filter(request => request._id !== id));
     } catch (error) {
-      console.error('Error approving request:', error.response ? error.response.data : error.message);
+      console.error('Error approving request:', error.message);
       setError('Failed to approve request.');
     } finally {
       setLoading(false);
@@ -57,13 +67,18 @@ const ApproveRequests = () => {
     setLoading(true);
     setError(null);
     try {
-      await axios.post(`http://localhost:3000/api/category/requests/${id}/reject`, {}, {
+      const response = await axios.put(`http://localhost:3000/api/category/${id}/reject`, {}, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
-        withCredentials: true
+        withCredentials: true,
       });
-      setRequests(requests.filter(request => request._id !== id));
+
+      if (response.status === 200) {
+        setRequests(requests.filter(request => request._id !== id));
+      } else {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
     } catch (error) {
       console.error('Error rejecting request:', error.response ? error.response.data : error.message);
       setError('Failed to reject request.');
@@ -78,6 +93,7 @@ const ApproveRequests = () => {
       {loading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
       <div className="requests-list">
+        {requests.length === 0 && <p>No requests to display.</p>}
         {requests.map(request => (
           <div key={request._id} className="request-card">
             <h2>{request.categoryName}</h2>
