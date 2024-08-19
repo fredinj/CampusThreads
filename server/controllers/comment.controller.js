@@ -57,6 +57,76 @@ const loadMoreComments = async (req, res) => {
   }
 }
 
+// const getCommentsByPost = async (req, res) => {
+//   const { postId } = req.params;
+//   const {
+//     topLevelLimit = 5,
+//     topLevelSkip = 0,
+//     childLimit = 2,
+//     childSkip = 0,
+//     parentCommentId = null,
+//     depth = 1
+//   } = req.query;
+
+//   if (!isValidObjectId(postId)) {
+//     return res.status(400).send({ message: 'Invalid post ID' });
+//   }
+
+//   try {
+//     const fetchComments = async (parentId, currentDepth, isTopLevel) => {
+//       if (currentDepth > depth) return [];
+
+//       const options = {
+//         limit: isTopLevel ? parseInt(topLevelLimit) : parseInt(childLimit),
+//         skip: isTopLevel ? parseInt(topLevelSkip) : parseInt(childSkip),
+//         sort: { createdAt: 1 },
+//         lean: true,
+//       };
+
+//       const comments = await Comment.find({
+//         post: postId,
+//         parent_comment: parentId
+//       })
+//         .skip(options.skip)
+//         .limit(options.limit)
+//         .sort(options.sort)
+//         .lean();
+
+//       for (let comment of comments) {
+//         const totalChildComments = await Comment.countDocuments({ parent_comment: comment._id });
+//         const childComments = await fetchComments(comment._id, currentDepth + 1, false);
+//         comment.child_comments = childComments;
+        
+//         const fetchedChildCount = childComments.length;
+//         comment.totalChildComments = totalChildComments;
+//         comment.hasMoreChildren = totalChildComments > (childSkip + fetchedChildCount);
+//       }
+
+//       return comments;
+//     };
+
+//     const comments = await fetchComments(parentCommentId, 1, true);
+
+//     // Get total number of comments for the given parent (or top-level if parentCommentId is null)
+//     const totalComments = await Comment.countDocuments({
+//       post: postId,
+//       parent_comment: parentCommentId
+//     });
+
+//     const fetchedCount = comments.length;
+//     const hasMoreComments = totalComments > (topLevelSkip + fetchedCount);
+
+//     res.status(200).json({
+//       comments: comments,
+//       totalComments: totalComments,
+//       hasMoreComments: hasMoreComments
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({ message: "Error getting comments", error: error.message });
+//   }
+// };
+
 const getCommentsByPost = async (req, res) => {
   const { postId } = req.params;
   const {
@@ -73,58 +143,60 @@ const getCommentsByPost = async (req, res) => {
   }
 
   try {
-    const fetchComments = async (parentId, currentDepth) => {
+    const fetchComments = async (parentId, currentDepth, isTopLevel) => {
       if (currentDepth > depth) return [];
-   
+
       const options = {
-        limit: parseInt(parentId ? childLimit : topLevelLimit),
-        page: Math.ceil((parentId ? childSkip : topLevelSkip) / (parentId ? childLimit : topLevelLimit)) + 1,
+        limit: isTopLevel ? parseInt(topLevelLimit) : parseInt(childLimit),
+        skip: isTopLevel ? parseInt(topLevelSkip) : parseInt(childSkip),
         sort: { createdAt: 1 },
         lean: true,
       };
-   
-      const result = await Comment.paginate({
+
+      const comments = await Comment.find({
         post: postId,
         parent_comment: parentId
-      }, options);
-   
-      const comments = result.docs;
-   
+      })
+        .skip(options.skip)
+        .limit(options.limit)
+        .sort(options.sort)
+        .lean();
+
       for (let comment of comments) {
         const totalChildComments = await Comment.countDocuments({ parent_comment: comment._id });
-        const childComments = await fetchComments(comment._id, currentDepth + 1);
+        const childComments = await fetchComments(comment._id, currentDepth + 1, false);
         comment.child_comments = childComments;
-        
+       
         const fetchedChildCount = childComments.length;
         comment.totalChildComments = totalChildComments;
-        comment.hasMoreChildren = totalChildComments > (childSkip + fetchedChildCount);
-    }
-    
-   
+        comment.hasMoreComments = totalChildComments > (parseInt(childSkip) + fetchedChildCount);
+      }
+
       return comments;
     };
 
-    const comments = await fetchComments(parentCommentId, 1);
+    const comments = await fetchComments(parentCommentId, 1, true);
 
     // Get total number of comments for the given parent (or top-level if parentCommentId is null)
     const totalComments = await Comment.countDocuments({
       post: postId,
       parent_comment: parentCommentId
     });
-    
-    // The rest of the code remains the same
-    const fetchedCount = comments.length;
-    const skip = parentCommentId ? parseInt(childSkip) : parseInt(topLevelSkip);
-    const hasMoreComments = totalComments > (skip + fetchedCount);
-    
-    res.status(200).json({
-      comments: comments,
-      ...(parentCommentId === null ? {
-        totalComments: totalComments,
-        hasMoreComments: hasMoreComments
-      } : {})
+
+    // Get total number of top-level comments for the given parent
+    const totalTopLevelComments = await Comment.countDocuments({
+      post: postId,
+      parent_comment: parentCommentId
     });
 
+    const fetchedCount = comments.length;
+    const hasMoreComments = totalTopLevelComments > (parseInt(topLevelSkip) + fetchedCount);
+
+    res.status(200).json({
+      comments: comments,
+      totalComments: totalComments,
+      hasMoreComments: hasMoreComments
+    });
   } catch (error) {
     res.status(500).json({ message: "Error getting comments", error: error.message });
   }
@@ -144,6 +216,7 @@ const updateComment = async (req, res) => {
 
     comment.comment_content = comment_content;
     await comment.save();
+    console.log(comment)
     res.status(200).json( comment )
   } catch (error) {
     res.status(500).json({ message: error.message })
