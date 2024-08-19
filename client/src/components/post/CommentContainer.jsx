@@ -76,7 +76,7 @@ const CommentContainer = ({ postId }) => {
     <div>
       {comments.comments.map((commentItem)=>(
         <CommentCard key={commentItem._id} commentProp={commentItem} />
-      ))}
+      ))} 
     </div>
 
     {comments.hasMoreComments ? (

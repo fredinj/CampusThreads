@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import axios from "axios";
@@ -16,6 +16,10 @@ const CommentCard = ({ commentProp })=>{
   const [reply, setReply] = useState("")
   const [commentEditContent, setCommentEditContent] = useState();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [childCount, setChildCount] = useState(0)
+  const [fetchedChildCount, setFetchedChildCount] = useState(0)
+  const [skip, setSkip] = useState(0)
 
   const handleSaveComment = (newComment) => {
     setComment({ ...newComment });
@@ -51,18 +55,51 @@ const CommentCard = ({ commentProp })=>{
       }
 
       const savedComment = response.data;
-      setReply(savedComment);
+      // setReply(savedComment);
       setIsReplying(false)
+
+      // const newList = {
+      //   ...comment,
+      //   child_comments: [...comment.child_comments, ...response.data.comments],
+      //   hasMoreComments: response.data.hasMoreComments
+      // };
+
+      // console.log(savedComment)
+
     } catch (error) {
       setError(error.message);
     }
   }
 
   const handleLoadMore = async ()=> {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/comments/post/${comment.post}?topLevelLimit=2&childLimit=2&depth=2&parentCommentId=${comment._id}&topLevelSkip=${fetchedChildCount}`,
+        {
+          withCredentials: true,
+        },
+      );
 
+      console.log(response.data)
+      console.log(response.data.hasMoreComments)
+
+      const newList = {
+        ...comment,
+        child_comments: [...comment.child_comments, ...response.data.comments],
+        hasMoreComments: response.data.hasMoreComments
+      };
+
+      console.log(newList)
+      setComment(newList)
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const handleSubmit = async (e) => {
+  const handleCommentEdit = async (e) => {
     e.preventDefault();
 
     try {
@@ -90,12 +127,19 @@ const CommentCard = ({ commentProp })=>{
       }
       setCommentEditContent("");
 
-      const newComment = response.data;
+      // const newComment = response.data;
+      const newComment = {...comment, ...comment_content }
+      console.log(newComment)
       handleSaveComment(newComment);
     } catch (error) {
       setError(error.message);
     }
   };
+
+  useEffect(()=> {
+    setChildCount(comment.totalChildComments)
+    setFetchedChildCount(comment.child_comments.length)
+  }, [comment])
 
   if (error) return <p>Error: {error}</p>;
 
@@ -117,7 +161,7 @@ const CommentCard = ({ commentProp })=>{
       </div>
       ) : (
         <form
-        onSubmit={handleSubmit}
+        onSubmit={handleCommentEdit}
         className="flex w-full flex-col items-center gap-2 my-1"
         >
           <div className="flex w-[25rem] flex-col">
@@ -183,10 +227,11 @@ const CommentCard = ({ commentProp })=>{
       </div>
       ) : (<></>)}
 
-      {comment.hasMoreChildren ? (
+      {comment.hasMoreComments ? (
         <button
           className="rounded-lg border border-black pl-1 pr-1"
           onClick={()=> {
+            handleLoadMore()
           }}
         >
           Load More
