@@ -53,8 +53,6 @@ const CommentCard = ({ commentProp })=>{
         );
       }
 
-      // console.log(response.data)
-
       setReply(response.data)
       setIsReplying(false)
 
@@ -147,6 +145,16 @@ const CommentCard = ({ commentProp })=>{
         withCredentials: true,
       },
     );
+
+    const deletedComment = {
+      ...comment,
+      comment_content: response.data.comment.comment_content,
+      author: response.data.comment.author,
+      author_id: response.data.comment.author_id,
+      is_deleted: response.data.comment.is_deleted
+    }
+
+    setComment(deletedComment)
   }
 
   useEffect(()=> {
@@ -227,14 +235,14 @@ const CommentCard = ({ commentProp })=>{
           { !isReplying? "Reply" : "Cancel Reply" }
         </button>
 
-        <button 
+        {!comment.is_deleted ? (<button 
           className="rounded-lg border border-black pl-1 pr-1 ml-2"
           onClick={()=>{
             handleDeleteComment()
           }}
         > 
           Delete
-        </button>
+        </button>) : (<></>)}
       </div>
 
       {isReplying ? (
