@@ -33,11 +33,17 @@ const CommentContainer = ({ postId }) => {
       }
 
       const savedComment = response.data;
-      setCommentsList(prevState => ({
-        ...prevState,
-        commentsList: [...prevState.comments, savedComment],
-        totalTopLevelComments: prevState.totalTopLevelComments + 1
-      }));
+
+      const commentsWithReply = {
+        ...commentsList,
+        comments: [...commentsList.comments, savedComment]
+      }
+      setCommentsList(commentsWithReply)
+      // setCommentsList(prevState => ({
+      //   ...prevState,
+      //   commentsList: [...prevState.comments, savedComment],
+      //   totalTopLevelComments: prevState.totalTopLevelComments + 1
+      // }));
       setReply({ ...reply, content: "" });
     } catch (error) {
       setError(error.message);
