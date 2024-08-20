@@ -49,7 +49,7 @@ const categoryRequest = async (req, res) => {
     });
 
     await request.save();
-    console.log(req.body.tags)
+    // console.log(req.body.tags)
     res.status(201).send({ message: "Request created successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -127,7 +127,7 @@ const deleteCategory = async (req, res) => {
 
   try {
     // Find the category by ID and delete it
-    console.log(req.params.id);
+    // console.log(req.params.id);
     const category = await Category.findByIdAndDelete(req.params.id);
 
     if (!category) {
