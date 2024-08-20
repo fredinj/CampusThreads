@@ -10,8 +10,9 @@ import PostPage from "./pages/post/PostPage";
 import CategoriesPage from "./pages/categories/CategoriesPage";
 import MakeRequest from "./pages/request/MakeRequest";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
-import EditorTest from "./pages/editor-test/EditorTest";
-import EditorTest2 from "./pages/editor-test2/EditorTest2";
+import UserProfile from "./pages/user-profile/UserProfile";
+// import EditorTest from "./pages/editor-test/EditorTest";
+// import EditorTest2 from "./pages/editor-test2/EditorTest2";
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
@@ -33,6 +34,7 @@ function App() {
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:categoryId" element={<CategoryFeed />} />
+          <Route path="/profile" element={<UserProfile />} />
           {(user.role === "teacher" || user.role === "admin") && (
             <Route path="/categories/make-request" element={<MakeRequest />} />
           )}
