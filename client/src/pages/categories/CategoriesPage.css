@@ -1,0 +1,94 @@
+/* Dark theme styles */
+
+.categories-container {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: "Arial", sans-serif;
+  padding: 20px;
+  height: 100vh;
+}
+
+.categories-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+  transition:
+    transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+    box-shadow 0.3s ease;
+  animation: fadeIn 0.5s ease-in-out forwards;
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.category-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 10px 8px 12px rgba(94, 82, 82, 0.9);
+}
+
+.category-card h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #ffffff;
+}
+
+.category-card p {
+  font-size: 1em;
+  color: #b0b0b0;
+}
+
+.explore-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.top-right-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.top-right-buttons button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.top-right-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.explore-button:hover {
+  background-color: #0056b3;
+}
+
+@keyframes fadeIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -21,8 +21,10 @@ const postSchema = new mongoose.Schema({
   image_url : {
     type: String,
     default: null
-  }
-}, { timestamps: true }); // Adds createdAt and updatedAt fields
+  },
+  author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+  category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: true}
+}, { timestamps: true }); 
 
 const Post = mongoose.model('Post', postSchema);
 

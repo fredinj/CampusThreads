@@ -1,6 +1,8 @@
 const Post = require("../models/post.model");
 const mongoose = require('mongoose');
 
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
 const getPosts = async (req, res) => {
   try {
     const posts = await Post.find({});
@@ -11,13 +13,12 @@ const getPosts = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
-  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+  const { postId } = req.params;
+  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid request ID' });
 
   try {
-    const { id } = req.params;
-    const post = await Post.findById(id);
-    res.status(200).json(post);
+    const post = await Post.findById(postId);
+    res.status(200).send(post);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -29,8 +30,8 @@ const addPost = async (req, res) => {
     const newPost = new Post({
       ...req.body,
       image_url: file ? file.path : null, // filepath if exists or null
+      author_id: req.user._id
     });
-
     const post = await newPost.save();
     res.status(200).json(post);
   } catch (error) {
@@ -39,35 +40,41 @@ const addPost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
-  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+  const { postId } = req.params;
+
+  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid request ID' });
 
   try {
-    const { id } = req.params;
-    const post = await Post.findByIdAndUpdate(id, req.body);
-
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+    const { file } = req;
+    const updatedContent = {
+      ...req.body,
+      image_url: file ? file.path : req.body.image_url ? req.body.image_url : null , // filepath if exists or null
+      author_id: req.user._id
     }
 
-    const updatedPost = await Post.findById(id);
-    res.status(200).json({ updatedPost });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
+    
+    const updatedPost = await Post.findByIdAndUpdate(postId, updatedContent, { new: true });
+    res.status(200).json( updatedPost );
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+
 };
 
 const deletePost = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
-  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: 'Invalid request ID' });
+  const { postId } = req.params;
+  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid request ID' });
   
   try {
-    const { id } = req.params;
-    const post = await Post.findByIdAndDelete(id);
+    const post = await Post.findById(postId);
 
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
+
+    await Post.findByIdAndDelete(postId);
 
     return res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {

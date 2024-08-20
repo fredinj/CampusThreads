@@ -1,0 +1,44 @@
+/* src/pages/UserProfile.css */
+
+.user-profile-container {
+    @apply min-w-[400px] max-w-xl mx-auto my-10 p-8 bg-white rounded-lg shadow-md;
+  }
+  
+  .user-profile-heading {
+    @apply text-2xl font-bold text-center text-gray-800 mb-4;
+  }
+  
+  .user-profile-details {
+    @apply text-lg text-gray-600;
+  }
+  
+  .user-profile-detail {
+    @apply mb-4 flex justify-between items-center;
+  }
+  
+  .user-profile-field {
+    @apply flex-grow;
+  }
+  
+  .user-profile-detail-label {
+    @apply font-semibold text-gray-700 mr-2;
+  }
+  
+  .user-profile-input {
+    @apply border border-gray-300 rounded-md p-1 w-full;
+  }
+  
+  .user-profile-edit-icon {
+    @apply text-gray-500 cursor-pointer;
+    transition: color 0.2s;
+  }
+  
+  .user-profile-edit-icon:hover {
+    @apply text-blue-500;
+  }
+  
+  .user-profile-save-button {
+    @apply mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600;
+    width: 100%; /* Make the button full width */
+  }
+  
