@@ -19,7 +19,6 @@ const CommentCard = ({ commentProp })=>{
   const [loading, setLoading] = useState(true);
   const [childCount, setChildCount] = useState(0)
   const [fetchedChildCount, setFetchedChildCount] = useState(0)
-  const [skip, setSkip] = useState(0)
 
   const handleSaveComment = (newComment) => {
     setComment({ ...newComment });
@@ -54,17 +53,17 @@ const CommentCard = ({ commentProp })=>{
         );
       }
 
-      const savedComment = response.data;
-      // setReply(savedComment);
+      // console.log(response.data)
+
+      setReply(response.data)
       setIsReplying(false)
 
-      // const newList = {
-      //   ...comment,
-      //   child_comments: [...comment.child_comments, ...response.data.comments],
-      //   hasMoreComments: response.data.hasMoreComments
-      // };
+      const commentWithReply = {
+        ...comment,
+        child_comments: [...comment.child_comments, response.data],
+      };
 
-      // console.log(savedComment)
+      setComment(commentWithReply)
 
     } catch (error) {
       setError(error.message);
@@ -80,8 +79,8 @@ const CommentCard = ({ commentProp })=>{
         },
       );
 
-      console.log(response.data)
-      console.log(response.data.hasMoreComments)
+      // console.log(response.data)
+      // console.log(response.data.hasMoreComments)
 
       const newList = {
         ...comment,
@@ -89,7 +88,7 @@ const CommentCard = ({ commentProp })=>{
         hasMoreComments: response.data.hasMoreComments
       };
 
-      console.log(newList)
+      // console.log(newList)
       setComment(newList)
 
     } catch (error) {
@@ -129,12 +128,26 @@ const CommentCard = ({ commentProp })=>{
 
       // const newComment = response.data;
       const newComment = {...comment, ...comment_content }
-      console.log(newComment)
+      // console.log(newComment)
       handleSaveComment(newComment);
     } catch (error) {
       setError(error.message);
     }
   };
+
+  const handleDeleteComment = async () => {
+    
+    const response = await axios.delete(
+      `http://localhost:3000/api/comments/${comment._id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        withCredentials: true,
+      },
+    );
+  }
 
   useEffect(()=> {
     setChildCount(comment.totalChildComments)
@@ -212,6 +225,15 @@ const CommentCard = ({ commentProp })=>{
           }}
         > 
           { !isReplying? "Reply" : "Cancel Reply" }
+        </button>
+
+        <button 
+          className="rounded-lg border border-black pl-1 pr-1 ml-2"
+          onClick={()=>{
+            handleDeleteComment()
+          }}
+        > 
+          Delete
         </button>
       </div>
 
