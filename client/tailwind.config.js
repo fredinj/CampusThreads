@@ -6,5 +6,8 @@ export default {
       colors: {},
     },
   },
-  plugins: ["@tailwindcss/typography", "prettier-plugin-tailwindcss"],
+  plugins: [
+    require('@tailwindcss/typography'),
+    // require('prettier-plugin-tailwindcss'),
+  ],
 };
