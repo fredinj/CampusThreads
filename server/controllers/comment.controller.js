@@ -39,22 +39,6 @@ const addComment = async (req, res) => {
   }
 };
 
-
-const loadMoreComments = async (req, res) => {
-  const { postId, parentId } = req.params;
-  const { topLevelLimit = 5, topLevelSkip = 0, childLimit = 1, childSkip = 0, parentCommentId = null } = req.query
-
-  if (!isValidObjectId(postId)) {
-    return res.status(400).send({ message: 'Invalid post ID' });
-  }
-
-  try {
-
-  } catch (error) {
-    res.status(500).json({ message: "Error getting comments", error: error.message });
-  }
-}
-
 const getCommentsByPost = async (req, res) => {
   const { postId } = req.params;
   const {
@@ -181,5 +165,4 @@ module.exports = {
   getCommentsByPost,
   updateComment,
   deleteComment,
-  loadMoreComments
 };
