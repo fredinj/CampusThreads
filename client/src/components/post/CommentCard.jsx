@@ -235,7 +235,7 @@ const CommentCard = ({ commentProp })=>{
           { !isReplying? "Reply" : "Cancel Reply" }
         </button>
 
-        {!comment.is_deleted ? (<button 
+        { (!comment.is_deleted && comment.author_id === user._id) ? (<button 
           className="rounded-lg border border-black pl-1 pr-1 ml-2"
           onClick={()=>{
             handleDeleteComment()
