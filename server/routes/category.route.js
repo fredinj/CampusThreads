@@ -36,7 +36,7 @@ router.get("/", [auth], viewCategories);
 router.delete("/:id", [auth, admin], deleteCategory); // add admin middleware
 
 //get posts from a category
-router.get("/:categoryId/posts", getPostsByCategory)
+// router.get("/:categoryId/posts", getPostsByCategory)
 
 //add category update routes and logic
 

@@ -13,7 +13,21 @@ const userSchema = new mongoose.Schema({
     enum: ["student", "teacher", "admin"],
     default: "student",
   },
-});
+  categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: [] }],
+  profilePicture: { type: String, default: '' },
+  bio: { type: String, default: '' },
+  lastLogin: { type: Date },
+  accountStatus: {
+    type: String,
+    enum: ["active", "suspended", "deleted"],
+    default: "active",
+  },
+  emailVerified: { type: Boolean, default: false },
+  emailVerificationToken: { type: String },  
+  emailVerificationTokenExpires: { type: Date },
+},
+{ timestamps: true });
+
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
@@ -23,6 +37,7 @@ userSchema.methods.generateAuthToken = function () {
   );
   return token;
 };
+
 
 const User = mongoose.model("user", userSchema);
 

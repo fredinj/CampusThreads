@@ -154,23 +154,6 @@ const validateRequest = (data) => {
   return schema.validate(data);
 };
 
-const getPostsByCategory = async (req, res) => {
-  const { categoryId } = req.params;
-  if (!isValidObjectId(categoryId))
-    return res.status(400).send({ message: "Invalid category ID" });
-
-  try {
-    const category = await Category.findById(categoryId);
-    if (!category)
-      return res.status(404).json({ message: "Category not found" });
-
-    const posts = await Post.find({ category_id: categoryId }).lean();
-    return res.status(200).send(posts);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-
 module.exports = {
   categoryRequest,
   approveCategoryRequest,
@@ -179,5 +162,4 @@ module.exports = {
   viewPendingCategoryRequests,
   deleteCategory,
   viewCategories,
-  getPostsByCategory,
 };

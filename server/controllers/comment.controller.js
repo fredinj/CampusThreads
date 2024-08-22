@@ -150,7 +150,7 @@ const deleteComment = async (req, res) => {
     comment.author_id = null
     comment.is_deleted = true // Add a flag to indicate the comment is deleted
 
-    console.log(comment)
+    // console.log(comment)
 
     await comment.save()
 
