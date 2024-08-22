@@ -5,9 +5,14 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [posts, setPosts] = useState([]);
+  const [postsData, setPostsData] = useState({
+    posts:[],
+    hasMorePosts: false
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [fetchedPostsCount, setFetchedPostsCount] = useState(0);
+  const [totalPostsCount, setTotalPostsCount] = useState(0);
 
   // using auth context
   const { logout, user } = useContext(AuthContext);
@@ -25,11 +30,17 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/posts", {
-        withCredentials: true, // Ensure cookies are sent with the request
+      const response = await axios.get(`http://localhost:3000/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3`, {
+        withCredentials: true, 
       });
 
-      setPosts(response.data);
+      const newPostsData = {
+        ...response.data,
+        posts: [...postsData.posts, ...response.data.posts]
+      }
+      console.log(newPostsData)
+      setPostsData(newPostsData);
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -41,11 +52,18 @@ const Home = () => {
     fetchPosts();
   }, []);
 
+  useEffect(()=> {
+    if (postsData.posts){
+      setFetchedPostsCount(postsData.posts.length)
+      setTotalPostsCount(postsData.posts.totalPosts)
+    }
+  }, [postsData])
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="mt-4 flex flex-col items-center">
+    <div className="my-4 flex flex-col items-center">
       <nav>
         <button
           className="ml-2 rounded border border-black px-2 py-1"
@@ -72,10 +90,22 @@ const Home = () => {
       </nav>
 
       <div className="m-5 flex flex-col border p-5">
-        {posts.map((post) => (
+        {postsData.posts.map((post) => (
           <PostCard key={post._id} post={post} />
         ))}
       </div>
+
+      {postsData.hasMorePosts ? (
+        <button
+          className="rounded-lg border border-black pl-1 pr-1"
+          onClick={()=> {
+            fetchPosts()
+          }}
+        >
+          Load More
+        </button>
+      ):(<></>)}
+
     </div>
   );
 };

@@ -1,10 +1,12 @@
 const { User } = require('../models/user.model');
+const Category = require("../models/category.model");
+
 
 const updateUserProfile = async (req, res) => {
-  const { _id } = req.user; // Assuming _id is extracted from the token in the auth middleware
+  const { _id } = req.user; 
   const { firstName, lastName, email } = req.body;
 
-  if (req.user._id.toString() !== req.body._id) return res.status(401).json({message: "different user"})
+  if (req.user._id.toString() !== req.body._id) return res.status(401).json({message: "Unauthorized access: You do not have permission to perform this action."})
 
   try {
     // Find the user by ID and update the fields
@@ -26,4 +28,44 @@ const updateUserProfile = async (req, res) => {
   }
 }
 
-module.exports = {updateUserProfile};
+const subscribeCategory = async (req, res) => {
+  const { categoryId } = req.params
+  
+  try{
+    const user = await User.findById(req.user._id)
+    if (!user) return res.status(404).send({ message: "User not found." });
+    if (user.categories.includes(categoryId)) return res.status(409).send({ message: "User already subscribed" })
+
+    const category = await Category.exists({_id: categoryId})
+    if(!category) return res.status(404).send({ message: "Category not found" })
+
+    user.categories.push(categoryId)
+    await user.save()
+    return res.status(200).send({ message: "Subscribed successfully" })
+
+  } catch (error) {
+    res.status(500).send({ error: error.message })
+  }
+}
+
+const unsubscribeCategory = async (req, res) => {
+  const { categoryId } = req.params
+
+  try{
+    const user = await User.findById(req.user._id)
+    if (!user) return res.status(404).send({ message: "User not found." });
+    if (!user.categories.includes(categoryId)) return res.status(409).send({ message: "User not subscribed" })
+
+    const category = await Category.exists({_id: categoryId})
+    if(!category) return res.status(404).send({ message: "Category not found" })
+
+    user.categories = user.categories.filter((id) => id.toString() !== categoryId.toString());
+    await user.save()
+    return res.status(200).send({ message: "Unsubscribed successfully" })
+    
+  } catch (error) {
+    res.status(500).send({ error: error.message })
+  }
+}
+
+module.exports = {updateUserProfile, subscribeCategory, unsubscribeCategory};
