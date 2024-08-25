@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
-import PostEditorJs from "../../components/editorjs/PostEditorJs";
+// import PostEditorJs from "../../components/editorjs/PostEditorJs";
 
 const CategoryFeed = () => {
   const [postsData, setPostsData] = useState({

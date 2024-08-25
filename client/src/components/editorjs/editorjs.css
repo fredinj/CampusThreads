@@ -1,0 +1,27 @@
+/* .testtesttest{
+  border: 2px solid black; 
+}
+
+.ce-block__content, .ce-toolbar__content{ 
+  max-width: 700px !important;
+  word-wrap: break-word; 
+} 
+
+.cdx-block { max-width: 100% !important; } */
+
+.codex-editor__redactor {
+  padding-bottom: 20px !important;
+  padding-top: 20px !important;
+  border: 1px solid black;
+}
+
+.ce-block__content, .ce-toolbar__content { 
+  max-width: calc(75%) !important; 
+  word-wrap: break-word !important;
+} 
+
+.cdx-block { max-width: 100% !important; }
+
+.editorjs-container{
+  
+}
