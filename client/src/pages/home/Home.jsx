@@ -3,6 +3,7 @@ import PostCard from "../../components/home/PostCard"; // Import the PostCard co
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import PostCardTest from "../../components/post/PostCardTest";
 
 const Home = () => {
   const [postsData, setPostsData] = useState({
@@ -38,7 +39,6 @@ const Home = () => {
         ...response.data,
         posts: [...postsData.posts, ...response.data.posts]
       }
-      console.log(newPostsData)
       setPostsData(newPostsData);
 
     } catch (error) {
@@ -91,7 +91,7 @@ const Home = () => {
 
       <div className="m-5 flex flex-col border p-5">
         {postsData.posts.map((post) => (
-          <PostCard key={post._id} post={post} />
+          <PostCardTest key={post._id} post={post} />
         ))}
       </div>
 
