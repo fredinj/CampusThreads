@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
+// import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import "react-quill/dist/quill.core.css"; // Import Quill styles
+import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 
 const ReplyCard = ({ onReply }) => {
@@ -36,6 +38,7 @@ const ReplyCard = ({ onReply }) => {
       <div className="flex w-[25rem] flex-col">
         <label htmlFor="content">Comment:</label>
         <ReactQuill
+          theme="bubble"
           id="content"
           name="content"
           value={comment.content}

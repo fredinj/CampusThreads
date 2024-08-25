@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const PostCardTest = ({ post }) => {
+const PostCard = ({ post }) => {
 
   return (
     <div className="m-4 flex w-[25rem] flex-col rounded-lg border border-black p-2">
@@ -17,4 +17,4 @@ const PostCardTest = ({ post }) => {
   );
 };
 
-export default PostCardTest;
+export default PostCard;
