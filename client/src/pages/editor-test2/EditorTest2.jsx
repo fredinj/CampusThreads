@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { createReactEditorJS } from "react-editor-js";
+import { createReactEditorJS } from 'react-editor-js'
 import { EDITOR_JS_TOOLS } from "./tools";
 import DisplayComponent from "./DisplayComponent";
 
-const ReactEditorJS = createReactEditorJS();
+const ReactEditorJS = createReactEditorJS()
 
 const EditorTest2 = () => {
   const editorCore = React.useRef(null);
@@ -42,5 +42,6 @@ const EditorTest2 = () => {
     </div>
   );
 };
+
 
 export default EditorTest2;

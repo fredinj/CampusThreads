@@ -12,7 +12,7 @@
   "dependencies": {
     "@editorjs/code": "^2.9.0",
     "@editorjs/delimiter": "^1.4.0",
-    "@editorjs/editorjs": "^2.30.4",
+    "@editorjs/editorjs": "^2.30.5",
     "@editorjs/embed": "^2.7.4",
     "@editorjs/header": "^2.8.7",
     "@editorjs/image": "^2.9.3",
@@ -21,10 +21,10 @@
     "@editorjs/list": "^1.10.0",
     "@editorjs/marker": "^1.4.0",
     "@editorjs/paragraph": "^2.11.6",
-    "@editorjs/quote": "^2.6.0",
+    "@editorjs/quote": "^2.7.2",
     "@editorjs/raw": "^2.5.0",
     "@editorjs/simple-image": "^1.6.0",
-    "@editorjs/table": "^2.3.0",
+    "@editorjs/table": "^2.4.1",
     "@editorjs/warning": "^1.4.0",
     "@tailwindcss/typography": "^0.5.14",
     "axios": "^1.7.2",
@@ -41,7 +41,8 @@
     "react-icons": "^5.3.0",
     "react-quill": "^2.0.0",
     "react-quill-new": "^3.3.0",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.25.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@editorjs/checklist": "^1.6.0",

@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import DOMPurify from "dompurify";
+import PostEditorJs from "../../components/editorjs/PostEditorJs";
 
 const CategoryFeed = () => {
   const [postsData, setPostsData] = useState({
@@ -214,7 +215,7 @@ const CategoryFeed = () => {
         </button>
       </div>
 
-      <div className="m-5 flex flex-col items-center border border-black p-5">
+      {/* <div className="m-5 flex flex-col items-center border border-black p-5">
         <form
           onSubmit={handlePostSubmit}
           className="flex w-full flex-col items-center gap-2"
@@ -261,7 +262,9 @@ const CategoryFeed = () => {
             Add Post
           </button>
         </form>
-      </div>
+      </div> */}
+
+      <PostEditorJs />
 
       <div className="m-5 flex flex-col border p-5">
         {postsData.posts.map((post) => (
