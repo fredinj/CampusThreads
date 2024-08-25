@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import axios from "axios";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css"; // Import Quill styles
+// import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import "react-quill/dist/quill.core.css"; // Import Quill styles
+import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 import ReplyCard from "./ReplyCard";
 
@@ -188,6 +190,7 @@ const CommentCard = ({ commentProp })=>{
           <div className="flex w-[25rem] flex-col">
             <label htmlFor="content">Edit Comment:</label>
             <ReactQuill
+              theme="bubble"
               id="content"
               name="content"
               value={commentEditContent}
