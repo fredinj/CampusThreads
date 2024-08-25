@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   post_content: {
-    type: String,
+    type: Object,
     required: true,
   },
   post_likes: {
@@ -17,10 +17,6 @@ const postSchema = new mongoose.Schema({
   post_dislikes: {
     type: Number,
     default: 0, // Default value for dislikes
-  },
-  image_url : {
-    type: String,
-    default: null
   },
   author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: true}

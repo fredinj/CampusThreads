@@ -125,12 +125,11 @@ const getPostsByCategory = async (req, res) => {
 
 const addPost = async (req, res) => {
   try {
-    const { file } = req;
     const newPost = new Post({
       ...req.body,
-      image_url: file ? file.path : null, // filepath if exists or null
       author_id: req.user._id
     });
+
     const post = await newPost.save();
     res.status(200).json(post);
   } catch (error) {
@@ -142,12 +141,9 @@ const updatePost = async (req, res) => {
   const { postId } = req.params;
 
   if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
-
   try {
-    const { file } = req;
     const updatedContent = {
       ...req.body,
-      image_url: file ? file.path : req.body.image_url ? req.body.image_url : null , // filepath if exists or null
       author_id: req.user._id
     }
 

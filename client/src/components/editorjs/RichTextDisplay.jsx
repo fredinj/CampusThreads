@@ -12,7 +12,7 @@ import edjsHTML from "editorjs-renderer";
 //     Code
 //     Embed
 
-const ContentDisplay = ({ data }) => {
+const RichTextDisplay = ({ data }) => {
   const editorHtmlParser = useMemo(() => edjsHTML(), []);
   const htmlContent = useMemo(
     () => editorHtmlParser.parse(data),
@@ -27,4 +27,4 @@ const ContentDisplay = ({ data }) => {
   );
 };
 
-export default ContentDisplay;
+export default RichTextDisplay;

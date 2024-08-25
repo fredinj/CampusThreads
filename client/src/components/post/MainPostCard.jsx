@@ -61,7 +61,6 @@ const MainPostCard = ({ postProp }) => {
         formData.append("image_url", post.image_url);
       }
 
-      // console.log(formData)
 
       const response = await axios.put(
         `http://localhost:3000/api/posts/${post._id}`,
@@ -84,7 +83,6 @@ const MainPostCard = ({ postProp }) => {
 
       const newPost = response.data;
 
-      // console.log(newPost)
 
       setForm({ ...form, title: "", content: "", image: null });
       fileInputRef.current.value = null;
