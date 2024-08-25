@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef } from "react";
 import EditorJS from "@editorjs/editorjs";
 import { EDITOR_JS_TOOLS } from "./tools";
 
-const Editor = ({ data, onChange, editorblock }) => {
+const Editor = ({ data, onChange, editorblock, readOnly = false, classNameProp }) => {
   const ref = useRef();
   //Initialize editorjs
   useEffect(() => {
@@ -13,6 +13,7 @@ const Editor = ({ data, onChange, editorblock }) => {
 
         tools: EDITOR_JS_TOOLS,
         data: data,
+        readOnly: readOnly, 
         async onChange(api, event) {
           const data = await api.saver.save();
           onChange(data);
@@ -28,7 +29,16 @@ const Editor = ({ data, onChange, editorblock }) => {
       }
     };
   }, []);
-  return <div id={editorblock} />;
+  return <div 
+    className={ classNameProp } 
+    id={editorblock} 
+    // style={{
+    //   '--ce-block-content-width': '100%',
+    //   '--ce-block-content-max-width': 'none'
+    // }}
+    />;
 };
+
+// export default Editor;
 
 export default memo(Editor);

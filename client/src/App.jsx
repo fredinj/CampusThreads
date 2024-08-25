@@ -2,17 +2,15 @@ import { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 
-import ApproveRequest from './pages/request/ApproveRequests.jsx'; // Ensure this path is correct
+import ApproveRequest from './pages/request/ApproveRequests.jsx';
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import PostPage from "./pages/post/PostPage";
 import CategoriesPage from "./pages/categories/CategoriesPage";
 import MakeRequest from "./pages/request/MakeRequest";
-import CategoryFeed from "./pages/category-feed/CategoryFeed";
 import UserProfile from "./pages/user-profile/UserProfile";
-// import EditorTest from "./pages/editor-test/EditorTest";
-// import EditorTest2 from "./pages/editor-test2/EditorTest2";
+import CategoryFeed from "./pages/category-feed/CategoryFeed";
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);

@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import PostCard from "../../components/home/PostCard"; // Import the PostCard component
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import PostCard from "../../components/post/PostCard";
 
 const Home = () => {
   const [postsData, setPostsData] = useState({
@@ -38,7 +38,6 @@ const Home = () => {
         ...response.data,
         posts: [...postsData.posts, ...response.data.posts]
       }
-      console.log(newPostsData)
       setPostsData(newPostsData);
 
     } catch (error) {
