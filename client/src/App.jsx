@@ -12,6 +12,7 @@ import MakeRequest from "./pages/request/MakeRequest";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
 import UserProfile from "./pages/user-profile/UserProfile";
 
+import CategoryFeedTest from "./pages/category-feed/CategoryFeedTest";
 // import EditorTest from "./pages/editor-test/EditorTest";
 // import EditorTest2 from "./pages/editor-test2/EditorTest2";
 
@@ -34,7 +35,7 @@ function App() {
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/category/:categoryId" element={<CategoryFeed />} />
+          <Route path="/category/:categoryId" element={<CategoryFeedTest />} />
           <Route path="/profile" element={<UserProfile />} />
           {(user.role === "teacher" || user.role === "admin") && (
             <Route path="/categories/make-request" element={<MakeRequest />} />
