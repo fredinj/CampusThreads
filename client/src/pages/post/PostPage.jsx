@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import MainPostCard from "../../components/post/MainPostCard";
 import CommentContainer from "../../components/post/CommentContainer";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
-import MainPostCardTest from "../../components/post/MainPostCardTest";
+import MainPostCard from "../../components/post/MainPostCard";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -88,7 +87,7 @@ const PostPage = () => {
         </button>
       </nav>
 
-      <MainPostCardTest key={post._id} postProp={post} />
+      <MainPostCard key={post._id} postProp={post} />
 
       <CommentContainer postId={post._id} />
 

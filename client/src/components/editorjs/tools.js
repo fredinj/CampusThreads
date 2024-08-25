@@ -25,7 +25,7 @@ export const EDITOR_JS_TOOLS = {
     config: { placeholder: "Enter text" },
   },
   embed: Embed,
-  //table: Table,
+  table: Table,
   list: {
     class: List,
     inlineToolbar: true,
@@ -78,7 +78,7 @@ export const EDITOR_JS_TOOLS = {
     },
   },
 
-  //raw: Raw,
+  raw: Raw,
   header: {
     class: Header,
     inlineToolbar: true,
@@ -87,12 +87,12 @@ export const EDITOR_JS_TOOLS = {
       levels: [1, 2, 3, 4, 5, 6],
     },
   },
-  quote: Quote,
+  // quote: Quote,
   marker: {
     class: Marker,
     inlineToolbar: true,
   },
-  //checklist: CheckList,
+  checklist: CheckList,
   delimiter: Delimiter,
   inlineCode: InlineCode,
   //simpleImage: SimpleImage,

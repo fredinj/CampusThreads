@@ -29,3 +29,11 @@
 .ce-code__textarea{
   min-height: 100px !important;
 }
+
+.cdx-quote__text{
+  min-height: auto !important;
+}
+
+/* .image-tool__caption{
+  display: none;
+} */
