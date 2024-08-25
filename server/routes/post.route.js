@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const upload = require("../middleware/upload.middleware");
+// const upload = require("../middleware/upload.middleware");
 const auth = require("../middleware/auth.middleware")
 
 const {
@@ -18,9 +18,10 @@ const {
 router.get("/home", auth, getUserHomePosts);
 router.get("/:postId", getPost);
 router.get("/", getPosts);
-router.post("/", auth, upload.single("image"), addPost);
-router.put("/:postId", auth,upload.single("image"), updatePost);
+router.post("/", auth, addPost);
+router.put("/:postId", auth, updatePost);
 router.delete("/:postId", auth, deletePost);
 router.get("/category/:categoryId", getPostsByCategory)
+
 
 module.exports = router;

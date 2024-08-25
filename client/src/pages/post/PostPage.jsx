@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import MainPostCard from "../../components/post/MainPostCard";
 import CommentContainer from "../../components/post/CommentContainer";
-import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
-import DOMPurify from "dompurify";
+import MainPostCard from "../../components/post/MainPostCard";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -46,6 +44,10 @@ const PostPage = () => {
   useEffect(() => {
     fetchPost();
   }, []);
+
+  useEffect(() => {
+    // console.log("Updated post:", post);
+  }, [post]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

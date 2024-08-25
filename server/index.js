@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
 
@@ -10,6 +9,7 @@ const userRoute = require("./routes/user.route.js");
 const authRoute = require("./routes/auth.route.js");
 const categoryRoute = require("./routes/category.route.js");
 const commentRoute = require("./routes/comment.route.js");
+const uploadRoute = require("./routes/upload.route.js")
 
 const app = express();
 
@@ -35,9 +35,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/comments", commentRoute);
-
-// move to a route + controller for media
-app.use("/images/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/uploads", uploadRoute)
 
 app.get("/", (req, res) => {
   res.send("Hi");
