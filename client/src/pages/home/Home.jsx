@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PostCard from "../../components/post/PostCard";
+import Navbar from '../../components/navbar/Navbar'
 
 const Home = () => {
   const [postsData, setPostsData] = useState({
@@ -62,51 +63,37 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="my-4 flex flex-col items-center">
-      <nav>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/categories");
-          }}
-        >
-          Categories
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/profile/");
-          }}
-        >
-          Profile
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+    <div className="w-full min-h-screen bg-zinc-100 p-5">
+      <Navbar />  
+  
+      <div className="flex flex-col items-center w-full">
+        {/* Parent container with fixed width and centered content */}
 
-      <div className="m-5 flex flex-col border p-5">
-        {postsData.posts.map((post) => (
-          <PostCard key={post._id} post={post} />
-        ))}
+        <div className="w-[50rem] mx-auto flex flex-col items-center mt-10">
+          {/* Posts container */}
+
+          <div className="flex flex-col items-center w-full">
+            {postsData.posts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+  
+          {/* Load More button */}
+          {postsData.hasMorePosts ? (
+            <button
+              className="mt-4 rounded-lg border border-black px-3 py-1"
+              onClick={() => {
+                fetchPosts();
+              }}
+            >
+              Load More
+            </button>
+          ) : null}
+        </div>
       </div>
-
-      {postsData.hasMorePosts ? (
-        <button
-          className="rounded-lg border border-black pl-1 pr-1"
-          onClick={()=> {
-            fetchPosts()
-          }}
-        >
-          Load More
-        </button>
-      ):(<></>)}
-
     </div>
   );
+  
 };
 
 export default Home;

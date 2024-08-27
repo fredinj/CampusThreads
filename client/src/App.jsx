@@ -49,8 +49,6 @@ function App() {
     </Routes>
   );
 
-  // return(<EditorTest />)
-  // return(<TiptapEditor />)
 }
 
 export default App;

@@ -10,7 +10,6 @@ const MainPostCard = ({ postProp }) => {
   const [postTitle, setPostTitle] = useState(postProp.post_title || "")
   const { user } = useContext(AuthContext)
   const [error, setError] = useState(null);
-  const [isDeletedPost, setIsDeletedPost] = useState(postProp.is_deleted || false)
 
   const [isEditingPost, setIsEditingPost] = useState(false);
 
@@ -39,9 +38,9 @@ const MainPostCard = ({ postProp }) => {
     }
   }
 
-  useEffect( ()=>{
-    setIsDeletedPost(post.is_deleted)
-  } ,[post])
+  useEffect(()=>{
+    console.log(post.post_content)
+  }, [post])
 
   const handlePostEdit = async (dataFromEditor) => {
     const postData = {
@@ -86,13 +85,13 @@ const MainPostCard = ({ postProp }) => {
       {!isEditingPost ? (    
         <div className="m-5 flex flex-col rounded-lg border border-black p-2 min-w-[60vw]">
           <Link to={`/user/${post.author_id}`}>
-            <h3 className="text-blue-500 hover:text-blue-700">Author</h3>
+            <h3 className="text-blue-500 hover:text-blue-700">{post.author}</h3>
           </Link>
 
           <h2 className="font-bold">{post.post_title}</h2>
 
           {/* <RichTextDisplay data={post.post_content} /> */}
-          <RichTextEditor INITIAL_DATA_PROP={post.post_content} onSave={handlePostEdit} readOnly={true} isEditingPost={isEditingPost}/>
+          <RichTextEditor key={JSON.stringify(post.post_content)} INITIAL_DATA_PROP={post.post_content} onSave={handlePostEdit} readOnly={true} isEditingPost={isEditingPost}/>
 
         </div> ) : (
 
@@ -110,7 +109,7 @@ const MainPostCard = ({ postProp }) => {
 
       )}
 
-      {post.author_id === user._id && !isDeletedPost && (
+      {post.author_id === user._id && !post.is_deleted && (
           <div className="post-toolbar items-center flex flex-col mt-2">
             <button
               className="rounded-lg border border-black p-2"
@@ -121,7 +120,7 @@ const MainPostCard = ({ postProp }) => {
           </div>
       )}
 
-      {post.author_id === user._id && !isDeletedPost && (
+      {post.author_id === user._id && !post.is_deleted && (
           <div className="post-toolbar items-center flex flex-col mt-2">
             <button
               className="rounded-lg border border-black p-2"

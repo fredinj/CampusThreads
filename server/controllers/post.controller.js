@@ -127,7 +127,7 @@ const addPost = async (req, res) => {
   try {
     const newPost = new Post({
       ...req.body,
-      author: req.user.firstName + " " + req.user.lastName,
+      author: req.user.firstName,
       author_id: req.user._id
     });
 
