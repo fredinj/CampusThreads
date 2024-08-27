@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -10,6 +10,7 @@ const MainPostCard = ({ postProp }) => {
   const [postTitle, setPostTitle] = useState(postProp.post_title || "")
   const { user } = useContext(AuthContext)
   const [error, setError] = useState(null);
+  const [isDeletedPost, setIsDeletedPost] = useState(postProp.is_deleted || false)
 
   const [isEditingPost, setIsEditingPost] = useState(false);
 
@@ -18,6 +19,29 @@ const MainPostCard = ({ postProp }) => {
     // setPostTitle("")
     setIsEditingPost(false); //toggled with buttons anyways
   };
+
+  const handlePostDelete = async ()=> {
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/posts/${post._id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          withCredentials: true, // This ensures cookies are sent with the request
+        },
+      );
+
+      setPost(response.data.post)
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
+  useEffect( ()=>{
+    setIsDeletedPost(post.is_deleted)
+  } ,[post])
 
   const handlePostEdit = async (dataFromEditor) => {
     const postData = {
@@ -86,7 +110,7 @@ const MainPostCard = ({ postProp }) => {
 
       )}
 
-      {post.author_id === user._id && (
+      {post.author_id === user._id && !isDeletedPost && (
           <div className="post-toolbar items-center flex flex-col mt-2">
             <button
               className="rounded-lg border border-black p-2"
@@ -95,7 +119,18 @@ const MainPostCard = ({ postProp }) => {
               {!isEditingPost ? "Edit Post" : "Cancel Edit"}
             </button>
           </div>
-        )}
+      )}
+
+      {post.author_id === user._id && !isDeletedPost && (
+          <div className="post-toolbar items-center flex flex-col mt-2">
+            <button
+              className="rounded-lg border border-black p-2"
+              onClick={handlePostDelete}
+            >
+              Delete Post
+            </button>
+          </div>
+      )}
     </div>
   )
 };
