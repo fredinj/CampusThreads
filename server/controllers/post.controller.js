@@ -141,7 +141,6 @@ const addPost = async (req, res) => {
 const updatePost = async (req, res) => {
   const { postId } = req.params;
   if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
-
   try {
     const post = await Post.findById(postId);
     if (!post) return res.status(404).json({ message: "Post not found" });
