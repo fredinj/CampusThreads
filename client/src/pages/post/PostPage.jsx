@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CommentContainer from "../../components/post/CommentContainer";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import { AuthContext } from "../../contexts/AuthContext";
 import MainPostCard from "../../components/post/MainPostCard";
 
