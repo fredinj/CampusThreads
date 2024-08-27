@@ -53,7 +53,7 @@ const CommentContainer = ({ postId }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=2&childLimit=2&depth=3`,
+        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=2&childLimit=3&depth=3`,
         {
           withCredentials: true,
         },
