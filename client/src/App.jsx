@@ -11,6 +11,7 @@ import CategoriesPage from "./pages/categories/CategoriesPage";
 import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
+import UpdateCategory from './pages/categories/UpdateCategory'; // Import the component
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
@@ -19,15 +20,11 @@ function App() {
 
   return (
     <Routes>
-      {/* <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} /> */}
-
       <Route path="/signup" element={<SignUp />} />
 
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
-          {/* {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />} */}
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
@@ -36,8 +33,8 @@ function App() {
           {(user.role === "teacher" || user.role === "admin") && (
             <Route path="/categories/make-request" element={<MakeRequest />} />
           )}
-          {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
-          {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
+<Route path="/categories/:id/update" element={<UpdateCategory />} />
+{user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
@@ -48,9 +45,6 @@ function App() {
       )}
     </Routes>
   );
-
-  // return(<EditorTest />)
-  // return(<TiptapEditor />)
 }
 
 export default App;

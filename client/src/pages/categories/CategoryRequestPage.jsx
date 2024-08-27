@@ -6,10 +6,24 @@ import {
   Button,
   Typography,
   Box,
-  Paper,
+  Card,
   AppBar,
   Toolbar,
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
 } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1e88e5",
+    },
+    secondary: {
+      main: "#1565c0",
+    },
+  },
+});
 
 function CategoryRequestPage() {
   const [name, setName] = useState("");
@@ -40,8 +54,9 @@ function CategoryRequestPage() {
   };
 
   return (
-    <>
-      <AppBar position="static" color="transparent" elevation={0}>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AppBar position="static" color="transparent" elevation={1} sx={{ padding: 1 }}>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }} />
           <Button color="primary" sx={{ marginRight: 2 }}>
@@ -51,12 +66,12 @@ function CategoryRequestPage() {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="sm" sx={{ marginTop: 8 }}>
-        <Paper
-          elevation={4}
+      <Container maxWidth="sm" sx={{ marginTop: 10 }}>
+        <Card
+          elevation={3}
           sx={{
             padding: 4,
-            borderRadius: 2,
+            borderRadius: 3,
             textAlign: "center",
           }}
         >
@@ -93,14 +108,21 @@ function CategoryRequestPage() {
               type="submit"
               variant="contained"
               color="primary"
-              sx={{ marginTop: 2, width: "100%" }}
+              sx={{
+                marginTop: 2,
+                width: "100%",
+                backgroundColor: "#1e88e5",
+                "&:hover": {
+                  backgroundColor: "#1565c0",
+                },
+              }}
             >
               Submit Request
             </Button>
           </Box>
-        </Paper>
+        </Card>
       </Container>
-    </>
+    </ThemeProvider>
   );
 }
 

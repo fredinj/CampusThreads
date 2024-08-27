@@ -1,4 +1,4 @@
-.make-request-container {
+/* .make-request-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,4 +39,4 @@
 .make-request-container .error {
   color: red;
   margin-top: 10px;
-}
+} */
