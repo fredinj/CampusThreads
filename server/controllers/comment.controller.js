@@ -146,7 +146,7 @@ const deleteComment = async (req, res) => {
 
     // Update the comment instead of deleting it
     comment.comment_content = "[deleted]"
-    comment.author = "[deleted]"
+    // comment.author = "[deleted]"
     comment.is_deleted = true // Add a flag to indicate the comment is deleted
 
     // console.log(comment)
