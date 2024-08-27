@@ -217,7 +217,7 @@ const CommentCard = ({ commentProp })=>{
       ) : (<></>)}
 
       <div className="mt-2">
-        {comment.author_id === user._id && (
+        {comment.author_id === user._id && !comment.is_deleted && (
           <button
             className="rounded-lg border border-black pl-1 pr-1 "
             onClick={() => {
