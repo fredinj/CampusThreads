@@ -18,18 +18,17 @@ const UpdateCategory = () => {
   });
 
   useEffect(() => {
-    // Fetch the current category details
     const fetchCategory = async () => {
       try {
-        const { data } = await axios.get(`/api/category/${id}`); // Updated URL here
+        const {data} = await axios.get( `http://localhost:3000/api/category/${id}`, { withCredentials: true } ); // Updated URL here
         setCategory(data);
+
         setFormData({
-          description: data.description || '', // Default to empty string if not available
-          tags: (data.tags || []).join(', '), // Default to empty array if not available
+          description: data.description || '', 
+          tags: (data.tags || []).join(', '), 
         });
       } catch (error) {
         console.error('Failed to fetch category:', error);
-        // Optionally, set an error state here or show a user-friendly message
       }
     };
 
@@ -44,7 +43,7 @@ const UpdateCategory = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleCategoryUpdateSubmit = async (e) => {
     e.preventDefault();
 
     const updatedCategory = {
@@ -53,7 +52,7 @@ const UpdateCategory = () => {
     };
 
     try {
-      await axios.put(`/api/category/${id}`, updatedCategory); // Updated URL here
+      await axios.put(`http://localhost:3000/api/category/${id}/update`, updatedCategory, {withCredentials: true}); // Updated URL here
       navigate('/categories'); // Redirect after successful update
     } catch (error) {
       console.error('Failed to update category:', error);
@@ -67,7 +66,7 @@ const UpdateCategory = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Update Category
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleCategoryUpdateSubmit}>
           <Box sx={{ marginBottom: 2 }}>
             <TextField
               fullWidth

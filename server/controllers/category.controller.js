@@ -15,6 +15,21 @@ const viewCategoryRequests = async (req, res) => {
   }
 };
 
+const getSpecificCategory = async (req, res) => {
+  const categoryId = req.params.id
+  if (!isValidObjectId(categoryId)) return res.status(400).send({ message: "Invalid request ID" });
+
+  try{
+    const category = await Category.findById(categoryId)
+    
+    if (!category) return res.status(404).send({ message: "Category not found" });
+
+    return res.status(200).send(category)
+  } catch (error) {
+    return res.status(500).send({error: error.message})
+  }
+}
+
 const updateCategory = async (req, res) => {
   // Log the ID from the request
   console.log("Update category request received. ID:", req.params.id);
@@ -104,8 +119,7 @@ const categoryRequest = async (req, res) => {
 };
 
 const approveCategoryRequest = async (req, res) => {
-  if (!isValidObjectId(req.params.id))
-    return res.status(400).send({ message: "Invalid request ID" });
+  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid request ID" });
 
   try {
     const request = await CategoryRequest.findById(req.params.id);
@@ -196,4 +210,5 @@ module.exports = {
   deleteCategory,
   updateCategory, 
   viewCategories,
+  getSpecificCategory
 };
