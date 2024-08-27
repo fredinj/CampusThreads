@@ -11,7 +11,8 @@ const {
   deleteCategory,
   viewCategories,
   viewPendingCategoryRequests,
-  getPostsByCategory
+  getPostsByCategory,
+  updateCategory,
 } = require("../controllers/category.controller");
 
 
@@ -34,6 +35,11 @@ router.get("/", [auth], viewCategories);
 
 //delete a category
 router.delete("/:id", [auth, admin], deleteCategory); // add admin middleware
+
+// Update a category's tags and description
+// category.routes.js
+router.put('/:id/update', [auth, admin], updateCategory);
+
 
 //get posts from a category
 // router.get("/:categoryId/posts", getPostsByCategory)

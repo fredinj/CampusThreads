@@ -15,6 +15,56 @@ const viewCategoryRequests = async (req, res) => {
   }
 };
 
+const updateCategory = async (req, res) => {
+  // Log the ID from the request
+  console.log("Update category request received. ID:", req.params.id);
+  
+  // Validate Object ID
+  if (!isValidObjectId(req.params.id)) {
+    console.log("Invalid Object ID:", req.params.id);
+    return res.status(400).send({ message: "Invalid category ID" });
+  }
+
+  // Validate Request Body
+  const { error } = validateUpdate(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    return res.status(400).send({ message: error.details[0].message });
+  }
+
+  try {
+    // Find the Category
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+      console.log("Category not found for ID:", req.params.id);
+      return res.status(404).send({ message: "Category not found" });
+    }
+
+    // Update Category
+    category.description = req.body.description || category.description;
+    category.tags = req.body.tags || category.tags;
+
+    // Save Changes
+    await category.save();
+    console.log("Category updated successfully:", category);
+    res.send({ message: "Category updated successfully", category });
+  } catch (error) {
+    console.error("Error in updateCategory:", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+const validateUpdate = (data) => {
+  const schema = Joi.object({
+    description: Joi.string().optional().label("Description"),
+    tags: Joi.array().items(Joi.string()).optional().label("Tags"),
+  });
+  return schema.validate(data);
+};
+
 const viewPendingCategoryRequests = async (req, res) => {
   try {
     const requests = await CategoryRequest.find({ status: "pending" });
@@ -30,16 +80,14 @@ const categoryRequest = async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    const categoryRequest = await CategoryRequest.findOne({
+    const existingRequest = await CategoryRequest.findOne({
       categoryName: req.body.categoryName,
     });
-    if (categoryRequest) {
-      if (categoryRequest.status === "pending")
-        return res.status(409).send({
-          message: "Pending category request with same name exists",
-          firstDuplicateId: categoryRequest._id,
-        });
-    }
+    if (existingRequest && existingRequest.status === "pending")
+      return res.status(409).send({
+        message: "Pending category request with same name exists",
+        firstDuplicateId: existingRequest._id,
+      });
 
     const request = new CategoryRequest({
       categoryName: req.body.categoryName,
@@ -49,7 +97,6 @@ const categoryRequest = async (req, res) => {
     });
 
     await request.save();
-    // console.log(req.body.tags)
     res.status(201).send({ message: "Request created successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -57,7 +104,6 @@ const categoryRequest = async (req, res) => {
 };
 
 const approveCategoryRequest = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
     return res.status(400).send({ message: "Invalid request ID" });
 
@@ -82,10 +128,9 @@ const approveCategoryRequest = async (req, res) => {
       description: request.description,
       requestedBy: request.requestedBy,
       requestId: request._id,
-      tags: request.tags // Ensure tags are included when creating a category
+      tags: request.tags,
     }).save();
 
-    // await category.save();
     res.send({ message: "Request approved and category created" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -93,7 +138,6 @@ const approveCategoryRequest = async (req, res) => {
 };
 
 const rejectCategoryRequest = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
     return res.status(400).send({ message: "Invalid request ID" });
 
@@ -113,35 +157,24 @@ const rejectCategoryRequest = async (req, res) => {
 
 const viewCategories = async (req, res) => {
   try {
-    const requests = await Category.find();
-    res.status(200).json(requests);
+    const categories = await Category.find();
+    res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
 const deleteCategory = async (req, res) => {
-  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
-    return res.status(400).send({ message: "Invalid request ID" });
+    return res.status(400).send({ message: "Invalid category ID" });
 
   try {
-    // Find the category by ID and delete it
-    // console.log(req.params.id);
     const category = await Category.findByIdAndDelete(req.params.id);
+    if (!category) return res.status(404).json({ message: "Category not found" });
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
-    }
-
-    return res
-      .status(200)
-      .json({ message: "Category deleted successfully", category });
+    res.status(200).json({ message: "Category deleted successfully", category });
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Failed to delete category", error: error.message });
+    res.status(500).json({ message: "Failed to delete category", error: error.message });
   }
 };
 
@@ -161,5 +194,6 @@ module.exports = {
   viewCategoryRequests,
   viewPendingCategoryRequests,
   deleteCategory,
+  updateCategory, 
   viewCategories,
 };

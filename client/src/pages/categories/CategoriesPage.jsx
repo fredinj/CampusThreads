@@ -31,6 +31,12 @@ const CategoriesPage = () => {
     navigate("/approve-request");
   };
 
+  const navigateToUpdateCategory = (categoryId) => {
+    navigate(`/categories/${categoryId}/update`);
+  };
+  
+  
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -161,7 +167,7 @@ const CategoriesPage = () => {
                       {category.description}
                     </Typography>
                   </CardContent>
-                  <CardActions sx={{ justifyContent: "flex-end" }}>
+                  <CardActions sx={{ justifyContent: "space-between" }}>
                     <Button
                       size="small"
                       color="primary"
@@ -169,6 +175,23 @@ const CategoriesPage = () => {
                     >
                       Explore More
                     </Button>
+                    {(user.role === "teacher" || user.role === "admin") && (
+                      <Button
+                        size="small"
+                        color="secondary"
+                        onClick={() => navigateToUpdateCategory(category._id)}
+                        sx={{
+                          backgroundColor: "#ff9800",
+                          color: "#fff",
+                          "&:hover": {
+                            backgroundColor: "#fb8c00",
+                          },
+                          borderRadius: 2,
+                        }}
+                      >
+                        Update Category
+                      </Button>
+                    )}
                   </CardActions>
                 </Card>
               </Grid>
