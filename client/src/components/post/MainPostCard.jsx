@@ -130,7 +130,6 @@ const MainPostCard = ({ postProp }) => {
             </button>
           </div>
       )}
-
     </div>
   )
 };
