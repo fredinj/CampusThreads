@@ -32,7 +32,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3`, {
+      const response = await axios.get(`http://localhost:3000/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3&userId=${user._id}`, {
         withCredentials: true, 
       });
 
@@ -58,7 +58,6 @@ const Home = () => {
       setFetchedPostsCount(postsData.posts.length)
       setTotalPostsCount(postsData.posts.totalPosts)
     }
-    console.log(postsData)
   }, [postsData])
 
   if (error) return <p>Error: {error}</p>;
@@ -77,7 +76,7 @@ const Home = () => {
 
           <div className="flex flex-col items-center w-full">
             {postsData.posts.map((post) => (
-              <PostCard key={post._id} post={post} />
+              <PostCard key={post._id} postProp={post} />
             ))}
           </div>
   

@@ -3,8 +3,12 @@ import axios from "axios";
 import CommentCard from "./CommentCard.jsx";
 import ReplyCard from "./ReplyCard.jsx"
 import LoadingIndicator from "../ui/LoadingIndicator.jsx"
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-const CommentContainer = ({ postId }) => {
+
+const CommentContainer = ({ postId, commentBox=true }) => {
   const [commentsList, setCommentsList] = useState([]);
   const [reply, setReply] = useState({ content: "" });
   const [loadingComments, setLoadingComments] = useState(true);
@@ -105,31 +109,38 @@ const CommentContainer = ({ postId }) => {
 
   if (error) return <div>Error: {error}</div>
 
-  return(
-  loadingComments ? ( <LoadingIndicator /> ) : (
-
-    <div className="m-5 border border-black p-5">
-
-    <ReplyCard onReply={handleReplySubmit}/>
-
-    <div>
-      {commentsList.comments.map((commentItem)=>(
-        <CommentCard key={commentItem._id} commentProp={commentItem} />
-      ))} 
-    </div>
-
-    {commentsList.hasMoreComments ? (
-      <button
-        className="rounded-lg border border-black pl-1 pr-1"
-        onClick={handleLoadMore}
-      >
-        Load More
-      </button>
-    ) : (<></>)}
-
-  </div>
-  )
-  )
+  return (
+    loadingComments ? (
+      <LoadingIndicator />
+    ) : (
+      <div className="flex flex-col items-center mt-4 p-3 border border-gray-300 rounded-lg bg-white w-full max-w-4xl">
+        {commentBox && <ReplyCard onReply={handleReplySubmit} />}
+  
+        {commentsList.comments.length > 0 ? (
+          commentsList.comments.map((commentItem) => (
+            <CommentCard key={commentItem._id} commentProp={commentItem} />
+          ))
+        ) : (
+          <Typography variant="body2" color="textSecondary" align="center">
+            No comments yet.
+          </Typography>
+        )}
+  
+        {commentsList.hasMoreComments && (
+          <Button
+            variant="outlined"
+            size="small"
+            className="mt-2"
+            onClick={handleLoadMore}
+          >
+            Load More
+          </Button>
+        )}
+      </div>
+    )
+  );
+  
+  
 
 };
 

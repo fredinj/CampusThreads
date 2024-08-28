@@ -5,6 +5,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.core.css"; // Import Quill styles
 import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import DOMPurify from "dompurify";
+import { Button, TextField, Box, Typography } from '@mui/material';
 
 const ReplyCard = ({ onReply }) => {
   const [comment, setComment] = useState({ content: "" });
@@ -30,14 +31,14 @@ const ReplyCard = ({ onReply }) => {
 
   if (error) return <div>{error}</div>
 
-  return(
+  return (
     <form
-    onSubmit={handleSubmit}
-    className="flex w-full flex-col items-center gap-2 border border-black p-5"
+      onSubmit={handleSubmit}
+      className="flex flex-col mt-4 mb-7 items-center gap-4 w-full max-w-xl border border-gray-300 rounded-lg bg-white p-5 shadow-md hover:shadow-lg transition-shadow duration-300"
     >
-      <div className="flex w-[25rem] flex-col">
-        <label htmlFor="content">Comment:</label>
-        <ReactQuill
+      <div className="w-full">
+      <ReactQuill
+          className="border relative z-10"
           theme="bubble"
           id="content"
           name="content"
@@ -46,15 +47,21 @@ const ReplyCard = ({ onReply }) => {
           required
         />
       </div>
-
-      <button
-        className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
+  
+      <Button
         type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        sx={{ px:6, mt: 0, width: '5rem', py: 1, fontWeight: 'bold', borderRadius: '0.5rem', color: 'white', backgroundColor: 'blue.600', '&:hover': { backgroundColor: 'blue.700' }, transition: 'background-color 200ms' }}
+
       >
         Comment
-      </button>
+      </Button>
     </form>
-  )
+  );
+  
+  
 }
 
 export default ReplyCard

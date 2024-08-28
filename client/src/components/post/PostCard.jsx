@@ -1,11 +1,48 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useContext, useState} from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ThumbUp, Comment, Share } from '@mui/icons-material';
 import { Avatar, Chip } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 
-const PostCard = ({ post }) => {
+const PostCard = ({ postProp }) => {
+  const navigate = useNavigate()
+  const {user} = useContext(AuthContext)
+  const [post, setPost] = useState(postProp)
+
+  const handleReaction = async ()=>{
+    try{
+
+      const reactionContent = {
+        userId: user._id,
+        postId: postProp._id
+      }
+
+      const response = await axios.put(
+        `http://localhost:3000/api/posts/${postProp._id}/react`,
+        reactionContent,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+
+      setPost(prevPost => ({
+        ...prevPost,
+        likedByUser: response.data.type,
+        post_likes: response.data.post_likes
+      }));
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="m-4 flex flex-col rounded-lg border border-gray-300 bg-white p-5 shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-xl">
       {/* Header Section */}
@@ -46,11 +83,15 @@ const PostCard = ({ post }) => {
 
       {/* Footer Section with Icons */}
       <div className="mt-3 flex items-center space-x-4 text-gray-600">
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
-          <ThumbUp fontSize="small" />
-          <span>Like</span>
+        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
+          onClick={handleReaction}
+        >
+          <ThumbUp fontSize="small"  sx={{ color: post.likedByUser ? 'blue' : 'inherit' }} />
+          <span>{post.post_likes}</span>
         </button>
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
+        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
+          onClick={()=>navigate(`/post/${post._id}`)}
+        >
           <Comment fontSize="small" />
           <span>Comment</span>
         </button>
