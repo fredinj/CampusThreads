@@ -14,15 +14,12 @@ const postSchema = new mongoose.Schema({
     type: Number,
     default: 0, // Default value for likes
   },
-  post_dislikes: {
-    type: Number,
-    default: 0, // Default value for dislikes
-  },
   // author: {type: String, required: true},
   author: {type: String, required: true}, // set to required later
   author_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   category_id: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: true},
   is_deleted: {type: Boolean, default: false },
+  category_name: {type: String, required: true}
 }, { timestamps: true }); 
 
 const Post = mongoose.model('Post', postSchema);

@@ -4,6 +4,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import RichTextEditor from "../../components/editorjs/RichTextEditor";
 import PostCard from "../../components/post/PostCard";
+import Navbar from "../../components/navbar/Navbar";
+import Button from "@mui/material/Button";
+import LoadingIndicator from "../../components/ui/LoadingIndicator";
 
 const editorInitData = {
   time: new Date().getTime(),
@@ -21,7 +24,7 @@ const CategoryFeed = () => {
   const [editorData, setEditorData] = useState({...editorInitData})
   const [postTitle, setPostTitle] = useState("")
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
   const [fetchedPostsCount, setFetchedPostsCount] = useState(0);
   const [totalPostsCount, setTotalPostsCount] = useState(0);
@@ -128,7 +131,7 @@ const CategoryFeed = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingPosts(false);
     }
   };
 
@@ -146,89 +149,76 @@ const CategoryFeed = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="my-4 flex flex-col items-center">
+    <div className="w-full min-h-screen bg-zinc-100 p-5">
+      <Navbar home={true} />
 
-      <nav>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Home
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/categories");
-          }}
-        >
-          Categories
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/profile/");
-          }}
-        >
-          Profile
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+      { loadingPosts ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
 
-      <div className="my-3">
-        <button
-          className="border border-black p-2 rounded"
-          onClick={handleSubscribe}
-        >
-          {user.categories.includes(categoryId)? "Unsubscribe" : "Subscribe"}
-        </button>
+
+      <div className="flex flex-col items-center w-full mx-auto my-10">
+
+          {/* Subscribe/Unsubscribe Button */}
+          <Button
+            variant="contained"
+            color="info"
+            onClick={handleSubscribe}
+            className=""
+            sx={{ mb:3 }}
+          >
+            {user.categories.includes(categoryId)
+              ? "Unsubscribe"
+              : "Subscribe"}
+          </Button>
+
+          {/* Post Editor */}
+          {isPosting && (
+            <div className="post-editor-form w-full max-w-5xl p-5 flex flex-col items-center bg-white shadow-md rounded-lg">
+              <input
+                type="text"
+                value={postTitle}
+                onChange={(e) => setPostTitle(e.target.value)}
+                placeholder="Enter post title"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <RichTextEditor
+                INITIAL_DATA_PROP={editorData}
+                onSave={handlePostSubmit}
+              />
+            </div>
+          )}
+
+          {/* Make Post Button */}
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setIsPosting(!isPosting)}
+            sx={{ mt:2 }}
+          >
+            {isPosting ? "Cancel Post" : "Make Post"}
+          </Button>
+
+          {/* Posts Display */}
+          <div className="mt-5 flex flex-col items-center w-full">
+            {postsData.posts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+
+          {/* Load More Button */}
+          {postsData.hasMorePosts && (
+            <Button
+              variant="contained"
+              color="info"
+              onClick={() => fetchPosts()}
+              sx={{ my:4 }}
+            >
+              Load More
+            </Button>
+          )}
       </div>
 
-      {isPosting? (
-        <div className="post-editor-form max-w-[80%] p-5 flex flex-col items-center">
-          <input
-            type="text"
-            value={postTitle}
-            onChange={(e) => setPostTitle(e.target.value)}
-            placeholder="Enter post title"
-            className="w-[calc(80%)] p-2 mb-4 border border-gray-300 rounded"
-          />
-          <RichTextEditor INITIAL_DATA_PROP={editorData} onSave={handlePostSubmit}/>
-        </div>
-      ) : (
-        <></>
       )}
 
-      <div>
-        <button 
-          className="rounded-lg border border-black px-1"
-          onClick={ ()=> setIsPosting(!isPosting) }
-        >
-          {isPosting ? "Cancel Post" : "Make Post"}
-        </button>
-      </div>
-
-      <div className="m-5 flex flex-col border p-5">
-        {postsData.posts.map((post) => (
-          <PostCard key={post._id} post={post} />
-        ))}
-      </div>
-      {postsData.hasMorePosts ? (
-        <button
-          className="rounded-lg border border-black px-1"
-          onClick={()=> {
-            fetchPosts()
-          }}
-        >
-          Load More
-        </button>
-      ):(<></>)}
     </div>
   );
 };
