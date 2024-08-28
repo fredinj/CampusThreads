@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CommentCard from "./CommentCard.jsx";
 import ReplyCard from "./ReplyCard.jsx"
+import LoadingIndicator from "../ui/LoadingIndicator.jsx"
 
 const CommentContainer = ({ postId }) => {
   const [commentsList, setCommentsList] = useState([]);
   const [reply, setReply] = useState({ content: "" });
-  const [loading, setLoading] = useState(true);
+  const [loadingComments, setLoadingComments] = useState(true);
   const [error, setError] = useState(null)
   const [fetchedTopCount, setFetchedTopCount] = useState(0)
   const [totalTopLevel, setTotalTopLevel] = useState(0)
@@ -63,7 +64,7 @@ const CommentContainer = ({ postId }) => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingComments(false);
     }
   };
 
@@ -87,7 +88,7 @@ const CommentContainer = ({ postId }) => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingComments(false);
     }
   }
 
@@ -102,11 +103,12 @@ const CommentContainer = ({ postId }) => {
     }
   }, [commentsList]);
 
-  if (loading) return <div>Loading Comments...</div>
   if (error) return <div>Error: {error}</div>
 
   return(
-  <div className="m-5 border border-black p-5">
+  loadingComments ? ( <LoadingIndicator /> ) : (
+
+    <div className="m-5 border border-black p-5">
 
     <ReplyCard onReply={handleReplySubmit}/>
 
@@ -126,6 +128,7 @@ const CommentContainer = ({ postId }) => {
     ) : (<></>)}
 
   </div>
+  )
   )
 
 };

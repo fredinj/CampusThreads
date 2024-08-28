@@ -4,11 +4,13 @@ import axios from "axios";
 import CommentContainer from "../../components/post/CommentContainer";
 import { AuthContext } from "../../contexts/AuthContext";
 import MainPostCard from "../../components/post/MainPostCard";
+import Navbar from "../../components/navbar/Navbar";
+import LoadingIndicator from "../../components/ui/LoadingIndicator";
 
 const PostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ const PostPage = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingPost(false);
     }
   };
 
@@ -44,53 +46,26 @@ const PostPage = () => {
     fetchPost();
   }, []);
 
-  useEffect(() => {
-    // console.log("Updated post:", post);
-  }, [post]);
-
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center">
-      <nav className="mt-4">
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Home
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate(`/category/${post.category_id}`);
-          }}
-        >
-          Category
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate(`/profile`);
-          }}
-        >
-          Profile
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+    loadingPost ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
 
-      <MainPostCard key={post._id} postProp={post} />
+    <div className="w-full min-h-screen bg-zinc-100 p-5">
 
-      <CommentContainer postId={post._id} />
+      <Navbar home={true} categoryButtonName={post.category_name} categoryId={post.category_id} />
+
+      <div className="flex flex-col items-center">
+
+        <MainPostCard key={post._id} postProp={post} />
+
+        <CommentContainer postId={post._id} />
+
+      </div>
 
     </div>
+  )
+
   );
 };
 

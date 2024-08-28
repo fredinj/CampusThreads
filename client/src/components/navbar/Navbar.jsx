@@ -5,10 +5,10 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
-const Navbar = ({categoryButtonProp, categoryId}) => {
+const Navbar = ({categoryButtonName, categoryId, home=false}) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [ categoryButton, setCategoryButton ] = useState(categoryButtonProp ? categoryButtonProp : "Categories")
+  const [ categoryButton, setCategoryButton ] = useState(categoryButtonName ? categoryButtonName : "Categories")
   const { logout, user } = useContext(AuthContext);
 
   const handleMenuOpen = (event) => {
@@ -33,16 +33,25 @@ const Navbar = ({categoryButtonProp, categoryId}) => {
       >
         <Toolbar className="flex justify-between">
           {/* Logo */}
-          <Typography variant="h6" className="text-gray-800 font-semibold">
+          <Typography variant="h6" className="text-gray-800 font-semibold" onClick={()=>navigate('/')}>
             YourLogo
           </Typography>
 
           {/* Links/Buttons */}
           <div className="flex items-center space-x-6">
+
+            { home? (
+              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={ ()=> navigate('/') }
+              >
+                Home
+              </Button>
+            ) : (<></>)}
+
             <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
               onClick={ ()=> {
                 if (categoryButton === "Categories") navigate('/categories')
-                else navigate(categoryId)
+                else navigate(`/category/${categoryId}`)
               }}
             >
               {categoryButton}

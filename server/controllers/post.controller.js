@@ -2,6 +2,7 @@ const Post = require("../models/post.model");
 const Category = require("../models/category.model")
 const mongoose = require('mongoose');
 const { User } = require ("../models/user.model")
+const Reaction = require('../models/reactions.model'); // Assuming this is the path to your Reaction model
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -125,10 +126,14 @@ const getPostsByCategory = async (req, res) => {
 
 const addPost = async (req, res) => {
   try {
+
+    const category = await Category.findById(req.body.category_id)
+
     const newPost = new Post({
       ...req.body,
       author: req.user.firstName,
-      author_id: req.user._id
+      author_id: req.user._id,
+      category_name: category.name
     });
 
     const post = await newPost.save();
@@ -162,24 +167,6 @@ const updatePost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// const deletePost = async (req, res) => {
-//   const { postId } = req.params;
-//   if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
-  
-//   try {
-//     const post = await Post.findById(postId);
-
-//     if (!post) return res.status(404).json({ message: "Post not found" });
-//     if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
-
-//     await Post.findByIdAndDelete(postId);
-
-//     return res.status(200).json({ message: "Post deleted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 const deletePost = async (req, res) => {
   const { postId } = req.params;
@@ -221,6 +208,59 @@ const deletePost = async (req, res) => {
   }
 };
 
+const toggleReaction = async (req, res)=> {
+  const { userId, postId } = req.body;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Check if a reaction already exists
+    const existingReaction = await Reaction.findOne({ user: userId, post: postId }).session(session);
+
+    let updatedPost;
+
+    if (existingReaction) {
+      // If reaction exists, remove it and decrement post_likes
+      await Reaction.findByIdAndDelete(existingReaction._id).session(session);
+      updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { post_likes: -1 } },
+        { new: true, session }
+      );
+    } else {
+      // If reaction doesn't exist, create it and increment post_likes
+      const newReaction = new Reaction({
+        user: userId,
+        post: postId,
+        type: 'like' // Assuming we're only handling likes for now
+      });
+      await newReaction.save({ session });
+      updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { post_likes: 1 } },
+        { new: true, session }
+      );
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.json({
+      success: true,
+      message: existingReaction ? 'Reaction removed' : 'Reaction added',
+      type: existingReaction ? 'like' : 'dislike',
+      post_likes: updatedPost.post_likes
+    });
+
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Error toggling reaction:', error);
+    return res.status(500).json({ success: false, message: 'Error toggling reaction', error: error.message });
+  }
+}
+
 module.exports = {
   getPosts,
   getPost,
@@ -228,5 +268,6 @@ module.exports = {
   updatePost,
   deletePost,
   getPostsByCategory,
-  getUserHomePosts
+  getUserHomePosts,
+  toggleReaction
 };

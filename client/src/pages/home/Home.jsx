@@ -4,13 +4,14 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PostCard from "../../components/post/PostCard";
 import Navbar from '../../components/navbar/Navbar'
+import LoadingIndicator from "../../components/ui/LoadingIndicator";
 
 const Home = () => {
   const [postsData, setPostsData] = useState({
     posts:[],
     hasMorePosts: false
   });
-  const [loading, setLoading] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
   const [error, setError] = useState(null);
   const [fetchedPostsCount, setFetchedPostsCount] = useState(0);
   const [totalPostsCount, setTotalPostsCount] = useState(0);
@@ -44,7 +45,7 @@ const Home = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingPosts(false);
     }
   };
 
@@ -57,15 +58,17 @@ const Home = () => {
       setFetchedPostsCount(postsData.posts.length)
       setTotalPostsCount(postsData.posts.totalPosts)
     }
+    console.log(postsData)
   }, [postsData])
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  return (
+  return(
     <div className="w-full min-h-screen bg-zinc-100 p-5">
       <Navbar />  
   
+      { loadingPosts ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
+
       <div className="flex flex-col items-center w-full">
         {/* Parent container with fixed width and centered content */}
 
@@ -91,6 +94,7 @@ const Home = () => {
           ) : null}
         </div>
       </div>
+      )}
     </div>
   );
   

@@ -2,8 +2,9 @@ import React, { useRef, useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
-import RichTextDisplay from "../../components/editorjs/RichTextDisplay"
 import RichTextEditor from "../editorjs/RichTextEditor";
+import { ThumbUp, Comment, Share, Edit, Delete } from "@mui/icons-material";
+import { Avatar, Chip, Divider, IconButton } from "@mui/material";
 
 const MainPostCard = ({ postProp }) => {
   const [post, setPost] = useState({ ...postProp })
@@ -39,7 +40,7 @@ const MainPostCard = ({ postProp }) => {
   }
 
   useEffect(()=>{
-    console.log(post.post_content)
+    // console.log(post.post_content)
   }, [post])
 
   const handlePostEdit = async (dataFromEditor) => {
@@ -79,59 +80,108 @@ const MainPostCard = ({ postProp }) => {
 
   if (error) return <p>Error: {error}</p>;
 
-  
-  return(
-    <div>
-      {!isEditingPost ? (    
-        <div className="m-5 flex flex-col rounded-lg border border-black p-2 min-w-[60vw]">
+
+  return (
+    <div className="m-4 mt-10 flex flex-col rounded-lg border border-gray-300 bg-white p-5 shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-5xl">
+      {/* Header Section */}
+      <div className="flex items-center mb-3">
+        <Avatar alt={post.author} src={post.authorAvatarUrl || "/default-avatar.png"} className="mr-3" />
+        <div>
           <Link to={`/user/${post.author_id}`}>
-            <h3 className="text-blue-500 hover:text-blue-700">{post.author}</h3>
+            <Chip
+              label={post.author}
+              clickable
+              className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 transition-colors duration-200"
+              sx={{
+                fontWeight: "bold",
+                backgroundColor: "transparent",
+                padding: 0,
+              }}
+            />
           </Link>
+          <p className="text-sm text-gray-500">Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
+        </div>
+      </div>
 
-          <h2 className="font-bold">{post.post_title}</h2>
+      <Divider />
 
-          {/* <RichTextDisplay data={post.post_content} /> */}
-          <RichTextEditor key={JSON.stringify(post.post_content)} INITIAL_DATA_PROP={post.post_content} onSave={handlePostEdit} readOnly={true} isEditingPost={isEditingPost}/>
+      {/* Post Title */}
+      {!isEditingPost ? (
+        <div className="mt-3 mb-3 max-w-full">
 
-        </div> ) : (
+          <h2 className="text-gray-800 font-semibold mt-3 mb-3">
+            {post.post_title}
+          </h2>
 
-        <div className="m-5 mt-4 flex flex-col rounded-lg items-center border border-black p-2 min-w-[60vw]">
+          <RichTextEditor
+          key={JSON.stringify(post.post_content)}
+          INITIAL_DATA_PROP={post.post_content}
+          onSave={handlePostEdit}
+          readOnly={true}
+          isEditingPost={isEditingPost}
+          />
+
+        </div>
+        
+      ) : (
+        <div className="mt-3 mb-3 max-w-full">
+
           <input
             type="text"
             value={postTitle}
             onChange={(e) => setPostTitle(e.target.value)}
             placeholder="Enter post title"
-            className="w-[calc(80%)] p-2 mb-4 border border-gray-300 rounded"
+            className="w-full p-2 mb-4 border border-gray-300 rounded"
+          />
+          <RichTextEditor
+          INITIAL_DATA_PROP={post.post_content}
+          onSave={handlePostEdit}
+          isEditingPost={isEditingPost}
+          buttonText="Save Post"
           />
 
-        <RichTextEditor INITIAL_DATA_PROP={post.post_content} onSave={handlePostEdit} buttonText="Save Post"/>
+        </div>
+      )}
+
+      {/* Post Content */}  
+
+      {/* <RichTextEditor key={JSON.stringify(post.post_content)} INITIAL_DATA_PROP={post.post_content} onSave={handlePostEdit} readOnly={true} isEditingPost={isEditingPost}/> */}
+
+      <Divider />
+
+      {/* Footer Section with Action Icons */}
+      <div className="mt-3 flex items-center justify-between text-gray-600">
+        <div className="flex space-x-4">
+          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+            <ThumbUp fontSize="small" />
+          </IconButton>
+          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+            <Comment fontSize="small" />
+          </IconButton>
+          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+            <Share fontSize="small" />  
+          </IconButton>
         </div>
 
-      )}
-
-      {post.author_id === user._id && !post.is_deleted && (
-          <div className="post-toolbar items-center flex flex-col mt-2">
-            <button
-              className="rounded-lg border border-black p-2"
+        {post.author_id === user._id && !post.is_deleted && (
+          <div className="flex space-x-2">
+            <IconButton
+              className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
               onClick={() => setIsEditingPost(!isEditingPost)}
             >
-              {!isEditingPost ? "Edit Post" : "Cancel Edit"}
-            </button>
-          </div>
-      )}
-
-      {post.author_id === user._id && !post.is_deleted && (
-          <div className="post-toolbar items-center flex flex-col mt-2">
-            <button
-              className="rounded-lg border border-black p-2"
+              <Edit fontSize="small" />
+            </IconButton>
+            <IconButton
+              className="text-gray-600 hover:text-red-600 transition-colors duration-200"
               onClick={handlePostDelete}
             >
-              Delete Post
-            </button>
+              <Delete fontSize="small" />
+            </IconButton>
           </div>
-      )}
+        )}
+      </div>
     </div>
-  )
+  );
 };
 
 export default MainPostCard;

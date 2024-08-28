@@ -2,10 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./CategoriesPage.css"; // Import CSS file
+import LoadingIndicator from "../../components/ui/LoadingIndicator";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [error, setError] = useState(null);
 
   const { user } = useContext(AuthContext); // Assuming AuthContext provides the token and userRole
@@ -34,17 +35,17 @@ const CategoriesPage = () => {
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoadingCategories(false);
       }
     };
 
     fetchCategories();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  return (
+  return(
+    loadingCategories ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
     <div className="categories-container">
       <div className="header">
         <button
@@ -89,6 +90,7 @@ const CategoriesPage = () => {
         <p>No categories found.</p>
       )}
     </div>
+    )
   );
 };
 
