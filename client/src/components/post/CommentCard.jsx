@@ -9,6 +9,11 @@ import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 import ReplyCard from "./ReplyCard";
 
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
+
 const CommentCard = ({ commentProp })=>{
 
   const { user } = useContext(AuthContext);
@@ -164,31 +169,39 @@ const CommentCard = ({ commentProp })=>{
     setFetchedChildCount(comment.child_comments.length)
   }, [comment])
 
-  if (error) return <p>Error: {error}</p>;
-
+  if (error) return <Typography color="error">{error}</Typography>;
+  
   return (
-    <div className="m-5 border border-black p-3 rounded-lg">
-
+    <div className="my-4 p-3 rounded-lg border border-gray-300 bg-gray-50 max-w-lg w-full mx-auto">
       {!isEditingComment ? (
-        <div>
-        <Link to={`/user/${comment.author_id}`}>
-          <h4 className="text-blue-500 hover:text-blue-700">
-            {comment.author}
-          </h4>
-        </Link>
-        <hr />
-        <div
-          className="prose my-1"
-          dangerouslySetInnerHTML={{ __html: comment.comment_content }}
-        />
-      </div>
+        <>
+          <Link to={`/user/${comment.author_id}`}>
+            <Typography variant="subtitle2" color="primary" gutterBottom>
+              {comment.author}
+            </Typography>
+          </Link>
+          <Divider className="my-2" />
+          <Typography
+            variant="body2"
+            component="div"
+            dangerouslySetInnerHTML={{ __html: comment.comment_content }}
+            className="mb-2"
+          />
+        </>
       ) : (
         <form
-        onSubmit={handleCommentEdit}
-        className="flex w-full flex-col items-center gap-2 my-1"
+          onSubmit={handleCommentEdit}
+          className="flex w-full flex-col items-center gap-2 my-1"
         >
-          <div className="flex w-[25rem] flex-col">
-            <label htmlFor="content">Edit Comment:</label>
+          <div className="flex w-full flex-col">
+            <Typography
+              component="label"
+              htmlFor="content"
+              variant="body2"
+              className="mb-1 font-semibold"
+            >
+              Edit Comment:
+            </Typography>
             <ReactQuill
               theme="bubble"
               id="content"
@@ -198,84 +211,77 @@ const CommentCard = ({ commentProp })=>{
               required
             />
           </div>
-
-          <button
-            className="rounded border border-blue-700 bg-blue-500 px-1 py-1 font-bold text-white hover:bg-blue-700"
-            type="submit"
-          >
+  
+          <Button variant="contained" color="primary" type="submit" className="mt-2">
             Save Comment
-          </button>
+          </Button>
         </form>
       )}
-
-      <hr />
-
-      { isReplying ? (
-        <div> 
-
-        </div>
-      ) : (<></>)}
-
-      <div className="mt-2">
+  
+      <Divider className="my-4" />
+  
+      <div className="flex gap-2">
         {comment.author_id === user._id && !comment.is_deleted && (
-          <button
-            className="rounded-lg border border-black pl-1 pr-1 "
+          <Button
+            variant="outlined"
+            size="small"
+            color="primary"
             onClick={() => {
-              setIsEditingComment(!isEditingComment)
+              setIsEditingComment(!isEditingComment);
               setCommentEditContent(comment.comment_content || "");
             }}
           >
-            { !isEditingComment? "Edit" : "Cancel Edit"}
-          </button>
+            {isEditingComment ? "Cancel Edit" : "Edit"}
+          </Button>
         )}
-        
-        {!comment.is_deleted ? (
-          <button 
-            className="rounded-lg border border-black pl-1 pr-1 ml-2"
-            onClick={()=>{
-              setIsReplying(!isReplying)
-            }}
-          > 
-            { !isReplying? "Reply" : "Cancel Reply" }
-          </button>
-        ) : (<></>) }
-
-        { (!comment.is_deleted && comment.author_id === user._id) ? (<button 
-          className="rounded-lg border border-black pl-1 pr-1 ml-2"
-          onClick={()=>{
-            handleDeleteComment()
-          }}
-        > 
-          Delete
-        </button>) : (<></>)}
+  
+        {!comment.is_deleted && (
+          <Button
+            variant="outlined"
+            size="small"
+            color="primary"
+            onClick={() => setIsReplying(!isReplying)}
+          >
+            {isReplying ? "Cancel Reply" : "Reply"}
+          </Button>
+        )}
+  
+        {comment.author_id === user._id && !comment.is_deleted && (
+          <Button
+            variant="outlined"
+            size="small"
+            color="error"
+            onClick={handleDeleteComment}
+          >
+            Delete
+          </Button>
+        )}
       </div>
-
-      {isReplying ? (
-        <ReplyCard onReply={handleReplyComment}/>
-      ):(<></>)}
-      
-      {comment.child_comments.length > 0 ? (
-        <div>
-        {comment.child_comments.map((childComment) => (
-          <CommentCard key={childComment._id} commentProp={childComment} />
-        ))}
-      </div>
-      ) : (<></>)}
-
-      {comment.hasMoreComments ? (
-        <button
-          className="rounded-lg border border-black pl-1 pr-1"
-          onClick={()=> {
-            handleLoadMore()
-          }}
+  
+      {isReplying && <ReplyCard onReply={handleReplyComment} />}
+  
+      {comment.child_comments.length > 0 && (
+        <div className="mt-2">
+          {comment.child_comments.map((childComment) => (
+            <CommentCard key={childComment._id} commentProp={childComment} />
+          ))}
+        </div>
+      )}
+  
+      {comment.hasMoreComments && (
+        <Button
+          variant="text"
+          size="small"
+          className="mt-2"
+          onClick={handleLoadMore}
         >
           Load More
-        </button>
-      ):(<></>)}
-
+        </Button>
+      )}
     </div>
-  )
-
+  );
+  
+  
 }
 
 

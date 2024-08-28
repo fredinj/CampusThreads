@@ -12,9 +12,14 @@ const PostPage = () => {
   const [post, setPost] = useState({});
   const [loadingPost, setLoadingPost] = useState(true);
   const [error, setError] = useState(null);
+  const [commentBox, setCommentBox] = useState(false)
 
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
+
+  const handleReplyToggle = ()=> {
+    setCommentBox(!commentBox)
+  }
 
   const handleLogout = async () => {
     try {
@@ -29,7 +34,7 @@ const PostPage = () => {
   const fetchPost = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/posts/${postId}`,
+        `http://localhost:3000/api/posts/${postId}?userId=${user._id}`,
         {
           withCredentials: true,
         },
@@ -46,6 +51,10 @@ const PostPage = () => {
     fetchPost();
   }, []);
 
+  useEffect(() => {
+    console.log(post)
+  }, [post]);
+
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -57,9 +66,9 @@ const PostPage = () => {
 
       <div className="flex flex-col items-center">
 
-        <MainPostCard key={post._id} postProp={post} />
+        <MainPostCard key={post._id} postProp={post} handleReplyToggle={handleReplyToggle} />
 
-        <CommentContainer postId={post._id} />
+        <CommentContainer postId={post._id} commentBox={commentBox} />
 
       </div>
 

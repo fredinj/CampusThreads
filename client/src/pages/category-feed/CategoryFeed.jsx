@@ -116,7 +116,7 @@ const CategoryFeed = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/posts/category/${categoryId}?postLimit=3&postSkip=${fetchedPostsCount}`,
+        `http://localhost:3000/api/posts/category/${categoryId}?postLimit=3&postSkip=${fetchedPostsCount}&userId=${user._id}`,
         {
           withCredentials: true, // Ensure cookies are sent with the request
         },
@@ -200,7 +200,7 @@ const CategoryFeed = () => {
           {/* Posts Display */}
           <div className="mt-5 flex flex-col items-center w-full">
             {postsData.posts.map((post) => (
-              <PostCard key={post._id} post={post} />
+              <PostCard key={post._id} postProp={post} />
             ))}
           </div>
 

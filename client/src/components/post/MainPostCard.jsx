@@ -4,9 +4,9 @@ import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import RichTextEditor from "../editorjs/RichTextEditor";
 import { ThumbUp, Comment, Share, Edit, Delete } from "@mui/icons-material";
-import { Avatar, Chip, Divider, IconButton } from "@mui/material";
+import { Avatar, Chip, Divider, IconButton, Box } from "@mui/material";
 
-const MainPostCard = ({ postProp }) => {
+const MainPostCard = ({ postProp, handleReplyToggle }) => {
   const [post, setPost] = useState({ ...postProp })
   const [postTitle, setPostTitle] = useState(postProp.post_title || "")
   const { user } = useContext(AuthContext)
@@ -15,7 +15,11 @@ const MainPostCard = ({ postProp }) => {
   const [isEditingPost, setIsEditingPost] = useState(false);
 
   const handleSavePost = (newPost) => {
-    setPost({ ...newPost });
+    // setPost({ ...newPost });
+    setPost(prevPost => ({
+      ...prevPost,
+      ...newPost
+    }))
     // setPostTitle("")
     setIsEditingPost(false); //toggled with buttons anyways
   };
@@ -42,6 +46,37 @@ const MainPostCard = ({ postProp }) => {
   useEffect(()=>{
     // console.log(post.post_content)
   }, [post])
+
+  const handleReaction = async ()=>{
+    try{
+
+      const reactionContent = {
+        userId: user._id,
+        postId: postProp._id
+      }
+
+      const response = await axios.put(
+        `http://localhost:3000/api/posts/${postProp._id}/react`,
+        reactionContent,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+
+      setPost(prevPost => ({
+        ...prevPost,
+        likedByUser: response.data.type,
+        post_likes: response.data.post_likes
+      }));
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handlePostEdit = async (dataFromEditor) => {
     const postData = {
@@ -151,17 +186,22 @@ const MainPostCard = ({ postProp }) => {
 
       {/* Footer Section with Action Icons */}
       <div className="mt-3 flex items-center justify-between text-gray-600">
-        <div className="flex space-x-4">
-          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
-            <ThumbUp fontSize="small" />
+
+        <div className="flex space-x-4 items-center">
+          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200" onClick={handleReaction}>
+            <ThumbUp fontSize="small" sx={{ color: post.likedByUser ? 'blue' : 'inherit' }} />
+            <span className="ml-2 text-sm"> {post.post_likes} </span>
           </IconButton>
-          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+          <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+            onClick={handleReplyToggle}
+          >
             <Comment fontSize="small" />
           </IconButton>
           <IconButton className="text-gray-600 hover:text-blue-600 transition-colors duration-200">
-            <Share fontSize="small" />  
+            <Share fontSize="small" />
           </IconButton>
         </div>
+
 
         {post.author_id === user._id && !post.is_deleted && (
           <div className="flex space-x-2">
