@@ -8,11 +8,8 @@ import "react-quill/dist/quill.core.css"; // Import Quill styles
 import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import DOMPurify from "dompurify";
 import ReplyCard from "./ReplyCard";
-
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
-import { Box } from "@mui/material";
+import { IconButton, Typography, Divider, Button } from '@mui/material';
+import { Edit, Delete, Reply } from '@mui/icons-material';
 
 const CommentCard = ({ commentProp })=>{
 
@@ -172,117 +169,127 @@ const CommentCard = ({ commentProp })=>{
   if (error) return <Typography color="error">{error}</Typography>;
   
   return (
-    <div className="my-4 p-3 rounded-lg border border-gray-300 bg-gray-50 max-w-lg w-full mx-auto">
-      {!isEditingComment ? (
-        <>
-          <Link to={`/user/${comment.author_id}`}>
-            <Typography variant="subtitle2" color="primary" gutterBottom>
-              {comment.author}
-            </Typography>
-          </Link>
-          <Divider className="my-2" />
-          <Typography
-            variant="body2"
-            component="div"
-            dangerouslySetInnerHTML={{ __html: comment.comment_content }}
-            className="mb-2"
-          />
-        </>
-      ) : (
-        <form
-          onSubmit={handleCommentEdit}
-          className="flex w-full flex-col items-center gap-2 my-1"
-        >
-          <div className="flex w-full flex-col">
+    <div className="my-4 p-3 max-w-lg w-full mx-auto flex">
+      {/* Left line indicator */}
+      <div className="border-l-2 border-gray-300 mr-3"></div>
+  
+      <div
+        className={`flex-1 ${comment.depth > 0 ? `ml-${comment.depth * 4}` : ''}`}
+      >
+        {!isEditingComment ? (
+          <>
+            <Link to={`/user/${comment.author_id}`}>
+              <Typography
+                variant="subtitle2"
+                color="primary"
+                gutterBottom
+                sx={{ fontWeight: 'bold' }}
+              >
+                {comment.author}
+              </Typography>
+            </Link>
+            <Divider sx={{ my: 1 }} />
             <Typography
-              component="label"
-              htmlFor="content"
               variant="body2"
-              className="mb-1 font-semibold"
-            >
-              Edit Comment:
-            </Typography>
-            <ReactQuill
-              theme="bubble"
-              id="content"
-              name="content"
-              value={commentEditContent}
-              onChange={handleInputChange}
-              required
+              component="div"
+              dangerouslySetInnerHTML={{ __html: comment.comment_content }}
+              sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary' }}
             />
+          </>
+        ) : (
+          <form
+            onSubmit={handleCommentEdit}
+            className="flex w-full flex-col items-center gap-2 my-1"
+          >
+            <div className="flex w-full flex-col">
+              <Typography
+                component="label"
+                htmlFor="content"
+                variant="body2"
+                className="mb-1 font-semibold"
+              >
+                Edit Comment:
+              </Typography>
+              <ReactQuill
+                theme="bubble"
+                id="content"
+                name="content"
+                value={commentEditContent}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+  
+            <Button variant="contained" color="primary" type="submit" className="mt-2">
+              Save Comment
+            </Button>
+          </form>
+        )}
+  
+        <Divider sx={{ my: 2 }} />
+  
+        <div className="flex gap-2">
+          {comment.author_id === user._id && !comment.is_deleted && (
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                setIsEditingComment(!isEditingComment);
+                setCommentEditContent(comment.comment_content || '');
+              }}
+              sx={{ fontSize: '20px', padding: '6px' }}
+            >
+              <Edit fontSize="inherit" />
+            </IconButton>
+          )}
+  
+          {!comment.is_deleted && (
+            <IconButton
+              color="inherit"
+              onClick={() => setIsReplying(!isReplying)}
+              sx={{ fontSize: '20px', padding: '6px' }}
+            >
+              <Reply fontSize="inherit" />
+            </IconButton>
+          )}
+  
+          {comment.author_id === user._id && !comment.is_deleted && (
+            <IconButton
+              color="inherit"
+              onClick={handleDeleteComment}
+              sx={{ fontSize: '20px', padding: '6px' }}
+            >
+              <Delete fontSize="inherit" />
+            </IconButton>
+          )}
+        </div>
+  
+        {isReplying && <ReplyCard onReply={handleReplyComment} />}
+  
+        {comment.child_comments.length > 0 && (
+          <div className="mt-2">
+            {comment.child_comments.map((childComment) => (
+              <CommentCard key={childComment._id} commentProp={childComment} />
+            ))}
           </div>
-  
-          <Button variant="contained" color="primary" type="submit" className="mt-2">
-            Save Comment
-          </Button>
-        </form>
-      )}
-  
-      <Divider className="my-4" />
-  
-      <div className="flex gap-2">
-        {comment.author_id === user._id && !comment.is_deleted && (
-          <Button
-            variant="outlined"
-            size="small"
-            color="primary"
-            onClick={() => {
-              setIsEditingComment(!isEditingComment);
-              setCommentEditContent(comment.comment_content || "");
-            }}
-          >
-            {isEditingComment ? "Cancel Edit" : "Edit"}
-          </Button>
         )}
   
-        {!comment.is_deleted && (
+        {comment.hasMoreComments && (
           <Button
-            variant="outlined"
+            variant="text"
             size="small"
-            color="primary"
-            onClick={() => setIsReplying(!isReplying)}
+            className="mt-2"
+            sx={{ textTransform: 'none' }}
+            onClick={handleLoadMore}
           >
-            {isReplying ? "Cancel Reply" : "Reply"}
-          </Button>
-        )}
-  
-        {comment.author_id === user._id && !comment.is_deleted && (
-          <Button
-            variant="outlined"
-            size="small"
-            color="error"
-            onClick={handleDeleteComment}
-          >
-            Delete
+            Load More
           </Button>
         )}
       </div>
-  
-      {isReplying && <ReplyCard onReply={handleReplyComment} />}
-  
-      {comment.child_comments.length > 0 && (
-        <div className="mt-2">
-          {comment.child_comments.map((childComment) => (
-            <CommentCard key={childComment._id} commentProp={childComment} />
-          ))}
-        </div>
-      )}
-  
-      {comment.hasMoreComments && (
-        <Button
-          variant="text"
-          size="small"
-          className="mt-2"
-          onClick={handleLoadMore}
-        >
-          Load More
-        </Button>
-      )}
     </div>
   );
   
-  
-}
 
+};
+  
 
 export default CommentCard

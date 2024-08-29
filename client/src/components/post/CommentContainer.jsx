@@ -7,6 +7,15 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+const isEmptyContent = (htmlContent) => {
+  // Parse the HTML content using DOMParser
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlContent, 'text/html');
+
+  // Get the text content, replace all whitespace characters, and trim any remaining whitespace
+  const textContent = (doc.body.textContent || '').replace(/\s+/g, '').trim();
+  return textContent === '';
+};
 
 const CommentContainer = ({ postId, commentBox=true }) => {
   const [commentsList, setCommentsList] = useState([]);
@@ -17,6 +26,8 @@ const CommentContainer = ({ postId, commentBox=true }) => {
   const [totalTopLevel, setTotalTopLevel] = useState(0)
 
   const handleReplySubmit = async (comment_content) => {
+    if (isEmptyContent(comment_content)) return;
+    
     try {
       const response = await axios.post(
         `http://localhost:3000/api/comments/post/${postId}`,

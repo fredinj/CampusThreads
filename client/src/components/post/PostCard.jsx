@@ -1,24 +1,23 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThumbUp, Comment, Share } from '@mui/icons-material';
-import { Avatar, Chip } from '@mui/material';
+import { Avatar, Chip, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 
-
 const PostCard = ({ postProp }) => {
-  const navigate = useNavigate()
-  const {user} = useContext(AuthContext)
-  const [post, setPost] = useState(postProp)
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const [post, setPost] = useState(postProp);
+  const [open, setOpen] = useState(false);
 
-  const handleReaction = async ()=>{
-    try{
-
+  const handleReaction = async () => {
+    try {
       const reactionContent = {
         userId: user._id,
         postId: postProp._id
-      }
+      };
 
       const response = await axios.put(
         `http://localhost:3000/api/posts/${postProp._id}/react`,
@@ -30,7 +29,7 @@ const PostCard = ({ postProp }) => {
           },
           withCredentials: true,
         }
-      )
+      );
 
       setPost(prevPost => ({
         ...prevPost,
@@ -39,9 +38,22 @@ const PostCard = ({ postProp }) => {
       }));
 
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleShareClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.origin + `/post/${post._id}`);
+    // alert("Link copied to clipboard!");
+  };
 
   return (
     <div className="m-4 flex flex-col rounded-lg border border-gray-300 bg-white p-5 shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-xl">
@@ -86,20 +98,44 @@ const PostCard = ({ postProp }) => {
         <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
           onClick={handleReaction}
         >
-          <ThumbUp fontSize="small"  sx={{ color: post.likedByUser ? 'blue' : 'inherit' }} />
+          <ThumbUp fontSize="small" sx={{ color: post.likedByUser ? 'blue' : 'inherit' }} />
           <span>{post.post_likes}</span>
         </button>
         <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
-          onClick={()=>navigate(`/post/${post._id}`)}
+          onClick={() => navigate(`/post/${post._id}`)}
         >
           <Comment fontSize="small" />
           <span>Comment</span>
         </button>
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200">
+        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
+          onClick={handleShareClick}
+        >
           <Share fontSize="small" />
           <span>Share</span>
         </button>
       </div>
+
+      {/* Share Modal */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Share Post</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            value={window.location.origin + `/post/${post._id}`}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCopyLink} color="primary">
+            Copy Link
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

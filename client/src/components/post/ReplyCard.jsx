@@ -52,7 +52,7 @@ const ReplyCard = ({ onReply }) => {
         type="submit"
         fullWidth
         variant="contained"
-        color="primary"
+        color="inherit"
         sx={{ px:6, mt: 0, width: '5rem', py: 1, fontWeight: 'bold', borderRadius: '0.5rem', color: 'white', backgroundColor: 'blue.600', '&:hover': { backgroundColor: 'blue.700' }, transition: 'background-color 200ms' }}
 
       >
