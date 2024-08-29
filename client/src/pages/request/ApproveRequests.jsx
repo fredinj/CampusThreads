@@ -62,7 +62,7 @@ const ApproveRequests = () => {
       }
 
       const data = await response.json();
-      console.log('Approval response:', data);
+      // console.log('Approval response:', data);
       setRequests(requests.filter(request => request._id !== id));
     } catch (error) {
       console.error('Error approving request:', error.message);
