@@ -2,7 +2,16 @@ import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './ApproveRequests.css'; // Import CSS file for styling
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 
 const ApproveRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -88,25 +97,85 @@ const ApproveRequests = () => {
   };
 
   return (
-    <div className="approve-requests-container">
-      <h1>Approve Category Requests</h1>
-      {loading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
-      <div className="requests-list">
-        {requests.length === 0 && <p>No requests to display.</p>}
+    <Container maxWidth="md" sx={{ marginTop: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom align="center">
+        Approve Category Requests
+      </Typography>
+      {loading && (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+          <CircularProgress />
+        </Box>
+      )}
+      {error && (
+        <Typography variant="h6" color="error" align="center" gutterBottom>
+          Error: {error}
+        </Typography>
+      )}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {requests.length === 0 && !loading && (
+          <Typography variant="body1" align="center">
+            No requests to display.
+          </Typography>
+        )}
         {requests.map(request => (
-          <div key={request._id} className="request-card">
-            <h2>{request.categoryName}</h2>
-            <p>{request.description}</p>
-            <p><strong>Tags:</strong> {request.tags.join(', ')}</p>
-            <div className="request-card-actions">
-              <button onClick={() => handleApprove(request._id)} disabled={loading}>Approve</button>
-              <button onClick={() => handleReject(request._id)} disabled={loading}>Reject</button>
-            </div>
-          </div>
+          <Card key={request._id} sx={{ 
+            boxShadow: 3, 
+            borderRadius: 2, 
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': {
+              transform: 'scale(1.02)',
+              boxShadow: 6,
+            },
+          }}>
+            <CardContent>
+              <Typography variant="h6" component="h2" gutterBottom>
+                {request.categoryName}
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                {request.description}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <strong>Tags:</strong> {request.tags.join(', ')}
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ justifyContent: 'flex-end' }}>
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={() => handleApprove(request._id)}
+                disabled={loading}
+                sx={{ 
+                  '&:hover': {
+                    backgroundColor: '#1E88E5',
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                Approve
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                color="error"
+                onClick={() => handleReject(request._id)}
+                disabled={loading}
+                sx={{ 
+                  ml: 2,
+                  '&:hover': {
+                    borderColor: '#d32f2f',
+                    color: '#d32f2f',
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                Reject
+              </Button>
+            </CardActions>
+          </Card>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 };
 

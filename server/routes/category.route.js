@@ -44,6 +44,8 @@ router.delete("/:id", [auth, admin], deleteCategory); // add admin middleware
 // category.routes.js
 router.put('/:id/update', [auth, admin], updateCategory);
 
+router.put('/:id/delete', [auth, admin], deleteCategory);
+
 
 //get posts from a category
 // router.get("/:categoryId/posts", getPostsByCategory)
