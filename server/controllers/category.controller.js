@@ -15,6 +15,71 @@ const viewCategoryRequests = async (req, res) => {
   }
 };
 
+const getSpecificCategory = async (req, res) => {
+  const categoryId = req.params.id
+  if (!isValidObjectId(categoryId)) return res.status(400).send({ message: "Invalid request ID" });
+
+  try{
+    const category = await Category.findById(categoryId)
+    
+    if (!category) return res.status(404).send({ message: "Category not found" });
+
+    return res.status(200).send(category)
+  } catch (error) {
+    return res.status(500).send({error: error.message})
+  }
+}
+
+const updateCategory = async (req, res) => {
+  // Log the ID from the request
+  console.log("Update category request received. ID:", req.params.id);
+  
+  // Validate Object ID
+  if (!isValidObjectId(req.params.id)) {
+    console.log("Invalid Object ID:", req.params.id);
+    return res.status(400).send({ message: "Invalid category ID" });
+  }
+
+  // Validate Request Body
+  const { error } = validateUpdate(req.body);
+  if (error) {
+    console.log("Validation error:", error.details[0].message);
+    return res.status(400).send({ message: error.details[0].message });
+  }
+
+  try {
+    // Find the Category
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+      console.log("Category not found for ID:", req.params.id);
+      return res.status(404).send({ message: "Category not found" });
+    }
+
+    // Update Category
+    category.description = req.body.description || category.description;
+    category.tags = req.body.tags || category.tags;
+
+    // Save Changes
+    await category.save();
+    // console.log("Category updated successfully:", category);
+    res.send({ message: "Category updated successfully", category });
+  } catch (error) {
+    console.error("Error in updateCategory:", error);
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+const validateUpdate = (data) => {
+  const schema = Joi.object({
+    description: Joi.string().optional().label("Description"),
+    tags: Joi.array().items(Joi.string()).optional().label("Tags"),
+  });
+  return schema.validate(data);
+};
+
 const viewPendingCategoryRequests = async (req, res) => {
   try {
     const requests = await CategoryRequest.find({ status: "pending" });
@@ -30,16 +95,14 @@ const categoryRequest = async (req, res) => {
     if (error)
       return res.status(400).send({ message: error.details[0].message });
 
-    const categoryRequest = await CategoryRequest.findOne({
+    const existingRequest = await CategoryRequest.findOne({
       categoryName: req.body.categoryName,
     });
-    if (categoryRequest) {
-      if (categoryRequest.status === "pending")
-        return res.status(409).send({
-          message: "Pending category request with same name exists",
-          firstDuplicateId: categoryRequest._id,
-        });
-    }
+    if (existingRequest && existingRequest.status === "pending")
+      return res.status(409).send({
+        message: "Pending category request with same name exists",
+        firstDuplicateId: existingRequest._id,
+      });
 
     const request = new CategoryRequest({
       categoryName: req.body.categoryName,
@@ -113,8 +176,8 @@ const rejectCategoryRequest = async (req, res) => {
 
 const viewCategories = async (req, res) => {
   try {
-    const requests = await Category.find();
-    res.status(200).json(requests);
+    const categories = await Category.find();
+    res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -132,7 +195,7 @@ const viewOneCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
-    return res.status(400).send({ message: "Invalid request ID" });
+    return res.status(400).send({ message: "Invalid category ID" });
 
   try {
     // Find the category by ID and delete it
@@ -171,5 +234,7 @@ module.exports = {
   viewPendingCategoryRequests,
   deleteCategory,
   viewCategories,
-  viewOneCategory
+  updateCategory,
+  viewOneCategory,
+  getSpecificCategory
 };
