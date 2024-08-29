@@ -17,7 +17,7 @@ import {
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [error, setError] = useState(null);
 
   const { user } = useContext(AuthContext);
@@ -71,7 +71,7 @@ const CategoriesPage = () => {
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoadingCategories(false);
       }
     };
 
