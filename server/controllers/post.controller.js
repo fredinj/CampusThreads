@@ -303,6 +303,56 @@ const toggleReaction = async (req, res)=> {
   }
 }
 
+const getPostsByTag = async (req, res) => {
+  const { tag } = req.query;
+
+  // Log the received tag for debugging
+  console.log("Received tag:", tag);
+
+  // Ensure the tag parameter is provided
+  if (!tag) {
+    console.log("Error: Tag is required");
+    return res.status(400).json({ message: "Tag is required" });
+  }
+
+  try {
+    // Find posts with the given tag and not marked as deleted
+    const posts = await Post.find({
+      tag: tag,
+      is_deleted: { $ne: true }
+    })
+    .sort({ createdAt: -1 })  // Sort posts by creation date in descending order
+    .lean();  // Convert to plain JavaScript objects
+
+    // Log the retrieved posts for debugging
+    console.log("Posts retrieved:", posts);
+
+    // Respond with the retrieved posts
+    res.status(200).json({ posts });
+  } catch (error) {
+    // Log the error and respond with a 500 status
+    console.error("Error in getPostsByTag:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const fetchTags = async (req, res) => {
+  try {
+    // Aggregate tags from the Category collection
+    const tags = await Category.aggregate([
+      { $unwind: "$tags" }, // Unwind the tags array to treat each tag as a separate document
+      { $group: { _id: "$tags" } }, // Group by tag to get distinct tags
+      { $project: { _id: 0, tag: "$_id" } } // Project the result in desired format
+    ]);
+
+    res.status(200).json({ tags: tags.map(tag => tag.tag) });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
 module.exports = {
   getPosts,
   getPost,
@@ -311,5 +361,7 @@ module.exports = {
   deletePost,
   getPostsByCategory,
   getUserHomePosts,
-  toggleReaction
+  toggleReaction,
+  getPostsByTag,
+  fetchTags
 };
