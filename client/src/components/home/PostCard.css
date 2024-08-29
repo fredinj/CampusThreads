@@ -1,9 +1,0 @@
-.post-card {
-  border: 1px solid #000;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-  width: 20rem;
-  padding: 5px;
-}
