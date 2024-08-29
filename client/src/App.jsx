@@ -19,15 +19,12 @@ function App() {
 
   return (
     <Routes>
-      {/* <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} /> */}
-
       <Route path="/signup" element={<SignUp />} />
 
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
-          {/* {userRole === 'teacher' && <Route path="/make-request" element={<MakeRequest />} />} */}
+          <Route path="/verify-email" element={<UserProfile />} /> 
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
@@ -37,18 +34,17 @@ function App() {
             <Route path="/categories/make-request" element={<MakeRequest />} />
           )}
           {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
-          {/* <Route path="/user/:userId" element={<Navigate to="/user/:userId" />} /> pass it to the component */}
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
         <>
-          <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<UserProfile />} /> 
+          <Route path="*" element={<Navigate to="/login" />} />
         </>
       )}
     </Routes>
   );
-
 }
 
 export default App;
