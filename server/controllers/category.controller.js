@@ -179,6 +179,7 @@ const viewCategories = async (req, res) => {
 };
 
 const deleteCategory = async (req, res) => {
+  console.log(req.params.id)
   if (!isValidObjectId(req.params.id))
     return res.status(400).send({ message: "Invalid category ID" });
 
