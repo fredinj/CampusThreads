@@ -38,6 +38,49 @@ userSchema.methods.generateAuthToken = function () {
   return token;
 };
 
+userSchema.methods.generateEmailVerificationToken = function () {
+  // Generate a JWT token for email verification
+  const token = jwt.sign(
+    { _id: this._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" } // Set the token to expire in 30 (you can adjust this as needed)
+  );
+
+  // Store the token and expiration time in the user object
+  this.emailVerificationToken = token;
+  this.emailVerificationTokenExpires = Date.now() + 0.5 * 60 * 60 * 1000; // 24 hours from now
+
+  // Return the token so it can be used in the verification email
+  return token;
+};
+
+userSchema.methods.verifyEmailToken = function (token) {
+  // Verify the token using the secret key
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Check if the token matches the stored token and hasn't expired
+    if (
+      token === this.emailVerificationToken &&
+      this.emailVerificationTokenExpires > Date.now()
+    ) {
+      // Token is valid, mark email as verified
+      this.emailVerified = true;
+      
+      // Remove the token and expiration date from the user object
+      this.emailVerificationToken = undefined;
+      this.emailVerificationTokenExpires = undefined;
+
+      return { success: true, message: "Email verified successfully." };
+    } else {
+      return { success: false, message: "Token is invalid or has expired." };
+    }
+  } catch (err) {
+    // Handle any errors that occur during token verification
+    return { success: false, message: "Invalid token." };
+  }
+};
+
 
 const User = mongoose.model("user", userSchema);
 
@@ -51,5 +94,7 @@ const validateRegistration = (data) => {
   });
   return schema.validate(data);
 };
+
+
 
 module.exports = { User, validateRegistration };
