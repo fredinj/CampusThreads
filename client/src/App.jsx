@@ -11,6 +11,7 @@ import CategoriesPage from "./pages/categories/CategoriesPage";
 import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
+import UpdateCategory from './pages/categories/UpdateCategory'; // Import the component
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
@@ -30,6 +31,7 @@ function App() {
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:categoryId" element={<CategoryFeed />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/categories/:id/update" element={<UpdateCategory />} />
           {(user.role === "teacher" || user.role === "admin") && (
             <Route path="/categories/make-request" element={<MakeRequest />} />
           )}
