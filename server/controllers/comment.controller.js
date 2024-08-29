@@ -8,6 +8,8 @@ const addComment = async (req, res) => {
   const { postId } = req.params;
   const { comment_content, parent_comment = null  } = req.body;
 
+  if (comment_content === '') return res.status(200)
+
 
   if (!isValidObjectId(req.params.postId)) return res.status(400).send({ message: 'Invalid request ID' });
   
@@ -24,7 +26,6 @@ const addComment = async (req, res) => {
     });
 
     const savedComment = await newComment.save();
-
     if (parent_comment) {
       const parent = await Comment.findById(parent_comment);
       if (parent) {
@@ -146,7 +147,7 @@ const deleteComment = async (req, res) => {
 
     // Update the comment instead of deleting it
     comment.comment_content = "[deleted]"
-    comment.author = "[deleted]"
+    // comment.author = "[deleted]"
     comment.is_deleted = true // Add a flag to indicate the comment is deleted
 
     // console.log(comment)

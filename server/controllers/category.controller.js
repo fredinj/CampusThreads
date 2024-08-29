@@ -61,7 +61,7 @@ const updateCategory = async (req, res) => {
 
     // Save Changes
     await category.save();
-    console.log("Category updated successfully:", category);
+    // console.log("Category updated successfully:", category);
     res.send({ message: "Category updated successfully", category });
   } catch (error) {
     console.error("Error in updateCategory:", error);
@@ -112,6 +112,7 @@ const categoryRequest = async (req, res) => {
     });
 
     await request.save();
+    // console.log(req.body.tags)
     res.status(201).send({ message: "Request created successfully" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -119,7 +120,9 @@ const categoryRequest = async (req, res) => {
 };
 
 const approveCategoryRequest = async (req, res) => {
-  if (!isValidObjectId(req.params.id)) return res.status(400).send({ message: "Invalid request ID" });
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+  if (!isValidObjectId(req.params.id))
+    return res.status(400).send({ message: "Invalid request ID" });
 
   try {
     const request = await CategoryRequest.findById(req.params.id);
@@ -142,9 +145,10 @@ const approveCategoryRequest = async (req, res) => {
       description: request.description,
       requestedBy: request.requestedBy,
       requestId: request._id,
-      tags: request.tags,
+      tags: request.tags // Ensure tags are included when creating a category
     }).save();
 
+    // await category.save();
     res.send({ message: "Request approved and category created" });
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
@@ -152,6 +156,7 @@ const approveCategoryRequest = async (req, res) => {
 };
 
 const rejectCategoryRequest = async (req, res) => {
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
     return res.status(400).send({ message: "Invalid request ID" });
 
@@ -178,18 +183,37 @@ const viewCategories = async (req, res) => {
   }
 };
 
+const viewOneCategory = async (req, res) => {
+  try{
+    const category = await Category.findById(req.params.id)
+    return res.status(200).json(category)
+  } catch (error) {
+    return res.status(500).send({error: error.message})
+  }
+}
+
 const deleteCategory = async (req, res) => {
-  console.log(req.params.id)
+  const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
     return res.status(400).send({ message: "Invalid category ID" });
 
   try {
+    // Find the category by ID and delete it
+    // console.log(req.params.id);
     const category = await Category.findByIdAndDelete(req.params.id);
-    if (!category) return res.status(404).json({ message: "Category not found" });
 
-    res.status(200).json({ message: "Category deleted successfully", category });
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Category deleted successfully", category });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete category", error: error.message });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Failed to delete category", error: error.message });
   }
 };
 
@@ -209,7 +233,8 @@ module.exports = {
   viewCategoryRequests,
   viewPendingCategoryRequests,
   deleteCategory,
-  updateCategory, 
   viewCategories,
+  updateCategory,
+  viewOneCategory,
   getSpecificCategory
 };

@@ -11,7 +11,6 @@ const categoryRoute = require("./routes/category.route.js");
 const commentRoute = require("./routes/comment.route.js");
 const uploadRoute = require("./routes/upload.route.js")
 
-
 const app = express();
 
 // connect to db

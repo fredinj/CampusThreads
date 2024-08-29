@@ -25,22 +25,24 @@ function App() {
       {isAuthenticated ? (
         <>
           <Route path="/" element={<Home />} />
+          <Route path="/verify-email" element={<UserProfile />} /> 
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:categoryId" element={<CategoryFeed />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/categories/:id/update" element={<UpdateCategory />} />
           {(user.role === "teacher" || user.role === "admin") && (
             <Route path="/categories/make-request" element={<MakeRequest />} />
           )}
-<Route path="/categories/:id/update" element={<UpdateCategory />} />
-{user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
+          {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
           <Route path="*" element={<Navigate to="/" />} />
         </>
       ) : (
         <>
-          <Route path="*" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<UserProfile />} /> 
+          <Route path="*" element={<Navigate to="/login" />} />
         </>
       )}
     </Routes>
