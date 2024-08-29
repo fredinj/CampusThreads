@@ -4,15 +4,22 @@ import axios from "axios";
 import CommentContainer from "../../components/post/CommentContainer";
 import { AuthContext } from "../../contexts/AuthContext";
 import MainPostCard from "../../components/post/MainPostCard";
+import Navbar from "../../components/navbar/Navbar";
+import LoadingIndicator from "../../components/ui/LoadingIndicator";
 
 const PostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(true);
   const [error, setError] = useState(null);
+  const [commentBox, setCommentBox] = useState(false)
 
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout, user } = useContext(AuthContext);
+
+  const handleReplyToggle = ()=> {
+    setCommentBox(!commentBox)
+  }
 
   const handleLogout = async () => {
     try {
@@ -27,7 +34,7 @@ const PostPage = () => {
   const fetchPost = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/posts/${postId}`,
+        `http://localhost:3000/api/posts/${postId}?userId=${user._id}`,
         {
           withCredentials: true,
         },
@@ -36,7 +43,7 @@ const PostPage = () => {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setLoadingPost(false);
     }
   };
 
@@ -45,52 +52,29 @@ const PostPage = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("Updated post:", post);
+    // console.log(post)
   }, [post]);
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="flex flex-col items-center">
-      <nav className="mt-4">
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Home
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate(`/category/${post.category_id}`);
-          }}
-        >
-          Category
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => {
-            navigate(`/profile`);
-          }}
-        >
-          Profile
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+    loadingPost ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
 
-      <MainPostCard key={post._id} postProp={post} />
+    <div className="w-full min-h-screen bg-zinc-100 p-5">
 
-      <CommentContainer postId={post._id} />
+      <Navbar home={true} categoryButtonName={post.category_name} categoryId={post.category_id} />
+
+      <div className="flex flex-col items-center">
+
+        <MainPostCard key={post._id} postProp={post} handleReplyToggle={handleReplyToggle} />
+
+        <CommentContainer postId={post._id} commentBox={commentBox} />
+
+      </div>
 
     </div>
+  )
+
   );
 };
 

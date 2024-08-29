@@ -2,6 +2,7 @@ const Post = require("../models/post.model");
 const Category = require("../models/category.model")
 const mongoose = require('mongoose');
 const { User } = require ("../models/user.model")
+const Reaction = require('../models/reactions.model'); // Assuming this is the path to your Reaction model
 
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -16,11 +17,24 @@ const getPosts = async (req, res) => {
 
 const getPost = async (req, res) => {
   const { postId } = req.params;
-  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
+  const { userId } = req.query
 
+  if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
+  
   try {
-    const post = await Post.findById(postId);
-    res.status(200).send(post);
+    const post = await Post.findById(postId).lean();
+    
+    if (!post) {
+      return res.status(404).send({ message: 'Post not found' });
+    }
+
+    let likedByUser = false;
+    if (userId && isValidObjectId(userId)) {
+      const reaction = await Reaction.findOne({ user: userId, post: postId, type: 'like' });
+      likedByUser = !!reaction;
+    }
+
+    res.status(200).send({ ...post, likedByUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -28,18 +42,21 @@ const getPost = async (req, res) => {
 
 const getUserHomePosts = async (req, res) => {
   const { postLimit = 3, postSkip = 0 } = req.query;
+  const { userId } = req.query;
+
   try {
     const limit = parseInt(postLimit);
     const skip = parseInt(postSkip);
     const user = await User.findById(req.user._id);
     if (!user) return res.status(404).send({ message: "User not found." });
+    
     const userCategories = user.categories;
-
+    
     const result = await Post.aggregate([
       {
         $match: {
           category_id: { $in: userCategories.map(id => new mongoose.Types.ObjectId(id)) },
-          is_deleted: { $ne: true } // This line ensures we only get non-deleted posts
+          is_deleted: { $ne: true }
         }
       },
       {
@@ -60,9 +77,23 @@ const getUserHomePosts = async (req, res) => {
       }
     ]);
 
-    const posts = result[0].paginatedResults;
+    let posts = result[0].paginatedResults;
     const totalPosts = result[0].totalCount[0] ? result[0].totalCount[0].count : 0;
     const hasMorePosts = totalPosts > (skip + posts.length);
+
+    if (userId && isValidObjectId(userId)) {
+      const postIds = posts.map(post => post._id);
+      const reactions = await Reaction.find({ user: userId, post: { $in: postIds }, type: 'like' });
+      
+      const likedPostIds = new Set(reactions.map(reaction => reaction.post.toString()));
+      
+      posts = posts.map(post => ({
+        ...post,
+        likedByUser: likedPostIds.has(post._id.toString())
+      }));
+    } else {
+      posts = posts.map(post => ({ ...post, likedByUser: false }));
+    }
 
     res.status(200).json({
       posts,
@@ -77,44 +108,56 @@ const getUserHomePosts = async (req, res) => {
 const getPostsByCategory = async (req, res) => {
   const { categoryId } = req.params;
   const { postLimit = 10, postSkip = 0 } = req.query;
+  const { userId } = req.query;
+
   if (!isValidObjectId(categoryId)) {
     return res.status(400).json({ message: "Invalid category ID" });
   }
+
   try {
-    // Convert postLimit and postSkip to integers
     const limit = parseInt(postLimit);
     const skip = parseInt(postSkip);
-
+    
     const category = await Category.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    // Fetch non-deleted posts for the specific category with pagination
-    const posts = await Post.find({ 
+    let posts = await Post.find({
       category_id: categoryId,
-      // is_deleted: { $ne: true } // This line ensures we only get non-deleted posts
+      is_deleted: { $ne: true }
     })
-      .sort({ createdAt: -1 }) // Sort by creation date, newest first
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .lean(); // Use lean() for better performance
+      .lean();
 
-    // Get total number of non-deleted posts in this category
-    const totalPosts = await Post.countDocuments({ 
+    const totalPosts = await Post.countDocuments({
       category_id: categoryId,
-      // is_deleted: { $ne: true } // Count only non-deleted posts
+      is_deleted: { $ne: true }
     });
 
-    // Calculate if there are more posts
+    if (userId && isValidObjectId(userId)) {
+      const postIds = posts.map(post => post._id);
+      const reactions = await Reaction.find({ user: userId, post: { $in: postIds }, type: 'like' });
+      
+      const likedPostIds = new Set(reactions.map(reaction => reaction.post.toString()));
+      
+      posts = posts.map(post => ({
+        ...post,
+        likedByUser: likedPostIds.has(post._id.toString())
+      }));
+    } else {
+      posts = posts.map(post => ({ ...post, likedByUser: false }));
+    }
+
     const hasMorePosts = totalPosts > (skip + posts.length);
 
-    // Prepare the response object
     const response = {
       posts: posts,
       totalPosts: totalPosts,
       hasMorePosts: hasMorePosts,
-      category: category.name // Assuming the category has a 'name' field
+      category: category.name
     };
 
     res.status(200).send(response);
@@ -125,10 +168,14 @@ const getPostsByCategory = async (req, res) => {
 
 const addPost = async (req, res) => {
   try {
+
+    const category = await Category.findById(req.body.category_id)
+
     const newPost = new Post({
       ...req.body,
       author: req.user.firstName,
-      author_id: req.user._id
+      author_id: req.user._id,
+      category_name: category.name
     });
 
     const post = await newPost.save();
@@ -162,24 +209,6 @@ const updatePost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// const deletePost = async (req, res) => {
-//   const { postId } = req.params;
-//   if (!isValidObjectId(postId)) return res.status(400).send({ message: 'Invalid post ID' });
-  
-//   try {
-//     const post = await Post.findById(postId);
-
-//     if (!post) return res.status(404).json({ message: "Post not found" });
-//     if (post.author_id.toString() !== req.user._id.toString()) return res.status(403).send('Unauthorized');
-
-//     await Post.findByIdAndDelete(postId);
-
-//     return res.status(200).json({ message: "Post deleted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 const deletePost = async (req, res) => {
   const { postId } = req.params;
@@ -221,6 +250,59 @@ const deletePost = async (req, res) => {
   }
 };
 
+const toggleReaction = async (req, res)=> {
+  const { userId, postId } = req.body;
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // Check if a reaction already exists
+    const existingReaction = await Reaction.findOne({ user: userId, post: postId }).session(session);
+
+    let updatedPost;
+
+    if (existingReaction) {
+      // If reaction exists, remove it and decrement post_likes
+      await Reaction.findByIdAndDelete(existingReaction._id).session(session);
+      updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { post_likes: -1 } },
+        { new: true, session }
+      );
+    } else {
+      // If reaction doesn't exist, create it and increment post_likes
+      const newReaction = new Reaction({
+        user: userId,
+        post: postId,
+        type: 'like' // Assuming we're only handling likes for now
+      });
+      await newReaction.save({ session });
+      updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $inc: { post_likes: 1 } },
+        { new: true, session }
+      );
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.json({
+      success: true,
+      message: existingReaction ? 'Reaction removed' : 'Reaction added',
+      type: !existingReaction,
+      post_likes: updatedPost.post_likes
+    });
+
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    console.error('Error toggling reaction:', error);
+    return res.status(500).json({ success: false, message: 'Error toggling reaction', error: error.message });
+  }
+}
+
 module.exports = {
   getPosts,
   getPost,
@@ -228,5 +310,6 @@ module.exports = {
   updatePost,
   deletePost,
   getPostsByCategory,
-  getUserHomePosts
+  getUserHomePosts,
+  toggleReaction
 };

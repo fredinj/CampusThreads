@@ -11,7 +11,7 @@ const {
   deleteCategory,
   viewCategories,
   viewPendingCategoryRequests,
-  getPostsByCategory
+  viewOneCategory
 } = require("../controllers/category.controller");
 
 
@@ -28,6 +28,9 @@ router.put("/:id/reject", [auth, admin], rejectCategoryRequest); // add admin mi
 router.get("/request", [auth, admin], viewCategoryRequests); // add admin middleware
 
 router.get("/request/pending", [auth, admin], viewPendingCategoryRequests);
+
+// view one
+router.get("/:id", auth, viewOneCategory)
 
 // view all categories
 router.get("/", [auth], viewCategories);
