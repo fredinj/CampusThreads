@@ -10,7 +10,8 @@ const {
   updatePost,
   deletePost,
   getPostsByCategory,
-  getUserHomePosts
+  getUserHomePosts,
+  toggleReaction
 } = require("../controllers/post.controller");
 
 
@@ -19,6 +20,7 @@ router.get("/home", auth, getUserHomePosts);
 router.get("/:postId", getPost);
 router.get("/", getPosts);
 router.post("/", auth, addPost);
+router.put("/:postId/react", toggleReaction)
 router.put("/:postId", auth, updatePost);
 router.delete("/:postId", auth, deletePost);
 router.get("/category/:categoryId", getPostsByCategory)

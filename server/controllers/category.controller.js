@@ -120,6 +120,15 @@ const viewCategories = async (req, res) => {
   }
 };
 
+const viewOneCategory = async (req, res) => {
+  try{
+    const category = await Category.findById(req.params.id)
+    return res.status(200).json(category)
+  } catch (error) {
+    return res.status(500).send({error: error.message})
+  }
+}
+
 const deleteCategory = async (req, res) => {
   const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
   if (!isValidObjectId(req.params.id))
@@ -162,4 +171,5 @@ module.exports = {
   viewPendingCategoryRequests,
   deleteCategory,
   viewCategories,
+  viewOneCategory
 };
