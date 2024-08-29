@@ -52,7 +52,7 @@ const PostPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(post)
+    // console.log(post)
   }, [post]);
 
   if (error) return <p>Error: {error}</p>;

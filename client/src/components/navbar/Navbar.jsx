@@ -5,7 +5,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
-const Navbar = ({categoryButtonName, categoryId, home=false}) => {
+const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [ categoryButton, setCategoryButton ] = useState(categoryButtonName ? categoryButtonName : "Categories")
@@ -48,14 +48,17 @@ const Navbar = ({categoryButtonName, categoryId, home=false}) => {
               </Button>
             ) : (<></>)}
 
-            <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
-              onClick={ ()=> {
-                if (categoryButton === "Categories") navigate('/categories')
-                else navigate(`/category/${categoryId}`)
-              }}
-            >
-              {categoryButton}
-            </Button>
+            { categories? (
+              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={ ()=> {
+                  if (categoryButton === "Categories") navigate('/categories')
+                  else navigate(`/category/${categoryId}`)
+                }}
+              >
+                {categoryButton}
+              </Button>
+            ) : (<></>) }
+              
             
             {/* User Profile */}
             <IconButton onClick={handleMenuOpen}>
