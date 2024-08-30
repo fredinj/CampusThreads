@@ -1,14 +1,40 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PostCard from "../../components/post/PostCard";
-import Navbar from '../../components/navbar/Navbar'
+import Navbar from '../../components/navbar/Navbar';
 import LoadingIndicator from "../../components/ui/LoadingIndicator";
+import TagSidebar from "../../components/SideBar/SideBarComponent"; // Import the TagSidebar component
+import RightBarComponent from "../../components/SideBar/RightBarComponent"; // Import the RightBarComponent
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const ScrollableContainer = styled(Box)({
+  flexGrow: 1,
+  overflowY: 'auto', // Enables vertical scrolling
+  scrollbarWidth: 'thin', /* For Firefox */
+  scrollbarColor: 'transparent transparent', /* For Firefox */
+  '&::-webkit-scrollbar': {
+    width: '8px',
+    backgroundColor: 'transparent', // Hide the scrollbar background
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'transparent', // Hide the scrollbar thumb
+    borderRadius: '8px',
+    transition: 'background-color 0.3s ease',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    backgroundColor: '#b0b0b0', // Show thumb color on hover
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+});
 
 const Home = () => {
   const [postsData, setPostsData] = useState({
-    posts:[],
+    posts: [],
     hasMorePosts: false
   });
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -33,7 +59,7 @@ const Home = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3&userId=${user._id}`, {
-        withCredentials: true, 
+        withCredentials: true,
       });
 
       const newPostsData = {
@@ -53,50 +79,57 @@ const Home = () => {
     fetchPosts();
   }, []);
 
-  useEffect(()=> {
-    if (postsData.posts){
-      setFetchedPostsCount(postsData.posts.length)
-      setTotalPostsCount(postsData.posts.totalPosts)
+  useEffect(() => {
+    if (postsData.posts) {
+      setFetchedPostsCount(postsData.posts.length);
+      setTotalPostsCount(postsData.posts.totalPosts);
     }
-  }, [postsData])
+  }, [postsData]);
 
   if (error) return <p>Error: {error}</p>;
 
-  return(
-    <div className="w-full min-h-screen bg-zinc-100 p-5">
-      <Navbar />  
-  
-      { loadingPosts ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
+  return (
+    <div className="w-full min-h-screen bg-zinc-100">
+      <Navbar />
+      <div className="flex">
+        {/* TagSidebar */}
+        <TagSidebar />
 
-      <div className="flex flex-col items-center w-full">
-        {/* Parent container with fixed width and centered content */}
+        {/* Main content */}
+        <div className="flex-grow p-5 h-[calc(100vh-80px)] flex flex-col">
+          {loadingPosts ? (
+            <div className="flex flex-col items-center justify-center w-full">
+              <LoadingIndicator />
+            </div>
+          ) : (
+            <ScrollableContainer>
+              <div className="w-full max-w-[50rem] mx-auto flex flex-col items-center">
+                {/* Posts container */}
+                <div className="flex flex-col items-center w-full">
+                  {postsData.posts.map((post) => (
+                    <PostCard key={post._id} postProp={post} />
+                  ))}
+                </div>
 
-        <div className="w-[50rem] mx-auto flex flex-col items-center mt-10">
-          {/* Posts container */}
-
-          <div className="flex flex-col items-center w-full">
-            {postsData.posts.map((post) => (
-              <PostCard key={post._id} postProp={post} />
-            ))}
-          </div>
-  
-          {/* Load More button */}
-          {postsData.hasMorePosts ? (
-            <button
-              className="mt-4 rounded-lg border border-black px-3 py-1"
-              onClick={() => {
-                fetchPosts();
-              }}
-            >
-              Load More
-            </button>
-          ) : null}
+                {/* Load More button */}
+                {postsData.hasMorePosts && (
+                  <button
+                    className="mt-4 rounded-lg border border-black px-3 py-1"
+                    onClick={fetchPosts}
+                  >
+                    Load More
+                  </button>
+                )}
+              </div>
+            </ScrollableContainer>
+          )}
         </div>
+
+        {/* RightBarComponent */}
+        <RightBarComponent />
       </div>
-      )}
     </div>
   );
-  
 };
 
 export default Home;
