@@ -62,8 +62,7 @@ const PostsByTag = () => {
   }, [tag, navigate]);
 
   return (
-    <div className="w-full min-h-screen bg-zinc-100">
-      <Navbar />
+    <div className="w-full min-h-full">
       <div className="flex">
         {/* TagSidebar */}
         <TagSidebar />

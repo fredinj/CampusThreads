@@ -12,7 +12,7 @@ import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
 import UpdateCategory from './pages/categories/UpdateCategory'; // Import the component
-import PostsByTag from './components/post/PostsByTag.jsx';
+import PostsByTag from './pages/post/PostsByTag.jsx';
 
 import Navbar from './components/navbar/Navbar.jsx';
 
