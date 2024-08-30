@@ -14,7 +14,14 @@ const {
   viewOneCategory,
   updateCategory,
   getSpecificCategory,
+  getAllCategoryNames,
+  getSubscribedCategories
 } = require("../controllers/category.controller");
+
+router.get('/category-names', getAllCategoryNames);
+
+
+router.get('/:userId/categories', getSubscribedCategories);
 
 
 // Create a new category request
