@@ -43,10 +43,10 @@ const RightBarContainer = styled(Box)({
   },
 });
 
-const CategoryChip = styled(Chip)(({ colorIndex }) => ({
+const CategoryChip = styled(Chip)(({ colorindex }) => ({
   margin: '8px 0',
   borderRadius: '4px', // Slightly rounded corners
-  backgroundColor: pastelColors[colorIndex % pastelColors.length], // Pastel colors
+  backgroundColor: pastelColors[colorindex % pastelColors.length], // Pastel colors
   color: '#333',
   fontSize: '14px',
   fontWeight: '400',
@@ -54,12 +54,12 @@ const CategoryChip = styled(Chip)(({ colorIndex }) => ({
   padding: '6px 12px',
   transition: 'background-color 0.3s ease, transform 0.3s ease',
   '&:hover': {
-    backgroundColor: pastelColors[(colorIndex + 1) % pastelColors.length], // Slightly different pastel shade on hover
+    backgroundColor: pastelColors[(colorindex + 1) % pastelColors.length], // Slightly different pastel shade on hover
     color: '#111',
     transform: 'scale(1.02)',
   },
   '&:focus': {
-    backgroundColor: pastelColors[(colorIndex + 1) % pastelColors.length],
+    backgroundColor: pastelColors[(colorindex + 1) % pastelColors.length],
     boxShadow: 'none',
   },
 }));
@@ -133,7 +133,7 @@ const RightBarComponent = () => {
             label={category.name} // Use category name for the label
             variant="outlined"
             clickable
-            colorIndex={index} // Pass index for pastel colors
+            colorindex={index} // Pass index for pastel colors
           />
         ))}
       </Box>

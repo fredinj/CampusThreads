@@ -44,22 +44,22 @@ const pastelColors = [
   
 
 // Styled chip component for tags
-const TagChip = styled(Chip)(({ colorIndex }) => ({
+const TagChip = styled(Chip)(({ colorindex }) => ({
   margin: '4px 0',
   borderRadius: '12px', // Less curved for a sleek look
-  backgroundColor: pastelColors[colorIndex % pastelColors.length], // Apply pastel color
+  backgroundColor: pastelColors[colorindex % pastelColors.length], // Apply pastel color
   color: '#333', // Darker color for text
   fontSize: '14px',  // Smaller font size for a sleek look
   fontWeight: '500', // Medium weight for a balanced look
-  border: `1px solid ${pastelColors[colorIndex % pastelColors.length]}`, // Border with same color as background
+  border: `1px solid ${pastelColors[colorindex % pastelColors.length]}`, // Border with same color as background
   transition: 'background-color 0.3s ease, transform 0.3s ease', // Smooth transition for background and transform
   '&:hover': {
-    backgroundColor: pastelColors[(colorIndex + 1) % pastelColors.length], // Slightly different pastel on hover
+    backgroundColor: pastelColors[(colorindex + 1) % pastelColors.length], // Slightly different pastel on hover
     color: '#111', // Darker text on hover
     transform: 'scale(1.03)', // Slight zoom effect on hover
   },
   '&:focus': {
-    backgroundColor: pastelColors[(colorIndex + 1) % pastelColors.length], // Slightly different pastel on focus
+    backgroundColor: pastelColors[(colorindex + 1) % pastelColors.length], // Slightly different pastel on focus
     boxShadow: '0 0 0 2px rgba(0, 0, 0, 0.1)', // Focus ring
   },
 }));
@@ -122,7 +122,7 @@ const TagSidebar = () => {
           <TagChip
             key={tag}
             label={tag}
-            colorIndex={index}  // Pass index to style tag chips
+            colorindex={index}  // Pass index to style tag chips
             variant="outlined"
             clickable
             onClick={() => handleTagClick(tag)} // Handle tag click
