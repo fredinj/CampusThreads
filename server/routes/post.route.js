@@ -14,7 +14,6 @@ const {
   toggleReaction,
   getPostsByTag,
   fetchTags,
-  getTags // Add this handler
 } = require("../controllers/post.controller");
 
 // Post Routes
