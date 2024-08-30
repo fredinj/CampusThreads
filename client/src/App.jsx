@@ -12,6 +12,7 @@ import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
 import UpdateCategory from './pages/categories/UpdateCategory'; // Import the component
+import PostsByTag from './components/post/PostsByTag.jsx';
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
@@ -28,6 +29,8 @@ function App() {
           <Route path="/verify-email" element={<UserProfile />} /> 
           <Route path="/login" element={<Navigate to="/" />} />
           <Route path="/post/:postId" element={<PostPage />} />
+          <Route path="/posts-by-tag/:tag" element={<PostsByTag />} />
+
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:categoryId" element={<CategoryFeed />} />
           <Route path="/profile" element={<UserProfile />} />

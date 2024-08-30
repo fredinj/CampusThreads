@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Post = require("../models/post.model");
 const CategoryRequest = require("../models/category-request.model");
 const Category = require("../models/category.model");
-
+const {User} = require("../models/user.model.js")
 const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 const viewCategoryRequests = async (req, res) => {
@@ -226,6 +226,50 @@ const validateRequest = (data) => {
   return schema.validate(data);
 };
 
+const getAllCategoryNames = async (req, res) => {
+  try {
+    // Find all categories and return only their names
+    const categories = await Category.find().select('name');
+    const categoryNames = categories.map(category => category.name);
+    
+    res.status(200).json(categoryNames);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+const getSubscribedCategories = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find the user by ID and populate both 'name' and '_id' fields of categories
+    const user = await User.findById(userId)
+      .populate({
+        path: 'categories',
+        select: 'name _id' // Select both 'name' and '_id' fields
+      });
+
+    // If the user is not found, return 404
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Extract the category ids and names
+    const categories = user.categories.map(category => ({
+      id: category._id,
+      name: category.name
+    }));
+
+    // Return the list of category names and ids
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 module.exports = {
   categoryRequest,
   approveCategoryRequest,
@@ -236,5 +280,7 @@ module.exports = {
   viewCategories,
   updateCategory,
   viewOneCategory,
-  getSpecificCategory
+  getSpecificCategory,
+  getAllCategoryNames,
+  getSubscribedCategories
 };
