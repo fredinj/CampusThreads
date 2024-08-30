@@ -169,8 +169,8 @@ const CategoryFeed = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full min-h-screen bg-zinc-100 p-5">
-      <Navbar home={true} />
+    <div className="w-full min-h-full p-5">
+      {/* <Navbar home={true} /> */}
 
       {loadingPosts ? (
         <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /></div>

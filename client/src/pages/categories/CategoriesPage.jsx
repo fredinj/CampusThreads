@@ -96,75 +96,7 @@ const CategoriesPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ marginTop: 2 }}>
-      <AppBar
-        position="fixed"
-        color="default"
-        elevation={1}
-        sx={{
-          borderRadius: 1,
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: 1,
-          zIndex: 1100,
-          backgroundColor: "#FFFFFF",
-          borderBottom: `2px solid #3C6E71`,
-        }}
-      >
-        <Toolbar>
-          <Button
-            color="inherit"
-            onClick={() => navigate("/")}
-            sx={{
-              color: "#284B63",
-              "&:hover": {
-                color: "#3C6E71",
-              },
-            }}
-          >
-            Home
-          </Button>
-          <Box sx={{ flexGrow: 1 }} />
-          {(user.role === "teacher" || user.role === "admin") && (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={navigateToMakeRequest}
-              sx={{
-                marginRight: 2,
-                borderRadius: 2,
-                borderColor: "#3C6E71",
-                color: "#3C6E71",
-                "&:hover": {
-                  borderColor: "#284B63",
-                  color: "#284B63",
-                },
-              }}
-            >
-              Make Request
-            </Button>
-          )}
-          {user.role === "admin" && (
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={navigateToApproveRequest}
-              sx={{
-                borderRadius: 2,
-                borderColor: "#592941",
-                color: "#592941",
-                "&:hover": {
-                  borderColor: "#3C6E71",
-                  color: "#3C6E71",
-                },
-              }}
-            >
-              View Requests
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
-
+      
       <Box sx={{ marginTop: 12 }}>
         <Grid container spacing={4}>
           {categories.length > 0 ? (

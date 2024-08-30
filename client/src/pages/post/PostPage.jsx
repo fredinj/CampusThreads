@@ -15,7 +15,7 @@ const PostPage = () => {
   const [commentBox, setCommentBox] = useState(false)
 
   const navigate = useNavigate();
-  const { logout, user } = useContext(AuthContext);
+  const { logout, user, setPostNavbarDetails } = useContext(AuthContext);
 
   const handleReplyToggle = ()=> {
     setCommentBox(!commentBox)
@@ -52,6 +52,9 @@ const PostPage = () => {
   }, []);
 
   useEffect(() => {
+    if (post.category_id){
+      setPostNavbarDetails({id: post.category_id, name: post.category_name})
+    }
     // console.log(post)
   }, [post]);
 
@@ -60,9 +63,9 @@ const PostPage = () => {
   return (
     loadingPost ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
 
-    <div className="w-full min-h-screen bg-zinc-100 p-5">
+    <div className="w-full min-h-full p-5">
 
-      <Navbar home={true} categoryButtonName={post.category_name} categoryId={post.category_id} />
+      {/* <Navbar home={true} categoryButtonName={post.category_name} categoryId={post.category_id} /> */}
 
       <div className="flex flex-col items-center">
 
