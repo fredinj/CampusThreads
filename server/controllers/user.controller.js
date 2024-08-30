@@ -1,6 +1,7 @@
 const { User } = require('../models/user.model');
 const Category = require("../models/category.model");
-
+const Comment = require("../models/comment.model");
+const Post = require("../models/post.model");
 
 const updateUserProfile = async (req, res) => {
   const { _id } = req.user; 
@@ -68,4 +69,25 @@ const unsubscribeCategory = async (req, res) => {
   }
 }
 
-module.exports = {updateUserProfile, subscribeCategory, unsubscribeCategory};
+const fetchUserComments = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const userComments = await Comment.find({ author_id: userId }).sort({ createdAt: -1 });
+    res.status(200).json(userComments);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching comments', error });
+  }
+}
+
+const fetchUserPosts = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    // Fetch posts by the user and sort them by creation date in descending order
+    const userPosts = await Post.find({ author_id: userId }).sort({ createdAt: -1 });
+    res.status(200).json(userPosts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching posts', error });
+  }
+};
+
+module.exports = {updateUserProfile, subscribeCategory, unsubscribeCategory, fetchUserComments, fetchUserPosts};

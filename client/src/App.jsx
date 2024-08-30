@@ -12,7 +12,9 @@ import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
 import UpdateCategory from './pages/categories/UpdateCategory'; // Import the component
-import PostsByTag from './components/post/PostsByTag.jsx';
+import PostsByTag from './pages/post/PostsByTag.jsx';
+
+import Navbar from './components/navbar/Navbar.jsx';
 
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
@@ -20,35 +22,38 @@ function App() {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <Routes>
-      <Route path="/signup" element={<SignUp />} />
+    <div className='bg-zinc-100 w-full min-h-screen py-5'>
+    <Navbar />
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
 
-      {isAuthenticated ? (
-        <>
-          <Route path="/" element={<Home />} />
-          <Route path="/verify-email" element={<UserProfile />} /> 
-          <Route path="/login" element={<Navigate to="/" />} />
-          <Route path="/post/:postId" element={<PostPage />} />
-          <Route path="/posts-by-tag/:tag" element={<PostsByTag />} />
+        {isAuthenticated ? (
+          <>
+            <Route path="/" element={<Home />} />
+            <Route path="/verify-email" element={<UserProfile />} /> 
+            <Route path="/login" element={<Navigate to="/" />} />
+            <Route path="/post/:postId" element={<PostPage />} />
+            <Route path="/posts-by-tag/:tag" element={<PostsByTag />} />
 
-          <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/category/:categoryId" element={<CategoryFeed />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/categories/:id/update" element={<UpdateCategory />} />
-          {(user.role === "teacher" || user.role === "admin") && (
-            <Route path="/categories/make-request" element={<MakeRequest />} />
-          )}
-          {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
-          <Route path="*" element={<Navigate to="/" />} />
-        </>
-      ) : (
-        <>
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-email" element={<UserProfile />} /> 
-          <Route path="*" element={<Navigate to="/login" />} />
-        </>
-      )}
-    </Routes>
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/category/:categoryId" element={<CategoryFeed />} />
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/categories/:id/update" element={<UpdateCategory />} />
+            {(user.role === "teacher" || user.role === "admin") && (
+              <Route path="/categories/make-request" element={<MakeRequest />} />
+            )}
+            {user.role === 'admin' && <Route path="/approve-request" element={<ApproveRequest />} />}
+            <Route path="*" element={<Navigate to="/" />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/verify-email" element={<UserProfile />} /> 
+            <Route path="*" element={<Navigate to="/login" />} />
+          </>
+        )}
+      </Routes>
+    </div>
   );
 }
 

@@ -89,10 +89,9 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="w-full min-h-screen bg-zinc-100">
-      <Navbar />
+    <div className="w-full min-h-full">
+      {/* <Navbar /> */}
       <div className="flex">
-        {/* TagSidebar */}
         <TagSidebar />
 
         {/* Main content */}

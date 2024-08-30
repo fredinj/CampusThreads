@@ -59,40 +59,6 @@ const MakeRequest = () => {
   return (
     <>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        color="transparent"
-        elevation={1}
-        sx={{ paddingY: 1, boxShadow: "none", borderBottom: "1px solid #ddd" }}
-      >
-        <Toolbar sx={{ justifyContent: "flex-end" }}>
-          <Button
-            color="primary"
-            onClick={() => navigate("/")}
-            sx={{
-              marginRight: 2,
-              fontSize: "0.875rem",
-              paddingX: 2,
-              paddingY: 0.75,
-              borderRadius: "8px",
-            }}
-          >
-            Home
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => navigate("/categories")}
-            sx={{
-              fontSize: "0.875rem",
-              paddingX: 2,
-              paddingY: 0.75,
-              borderRadius: "8px",
-            }}
-          >
-            Categories
-          </Button>
-        </Toolbar>
-      </AppBar>
 
       <Container
         maxWidth="sm"
