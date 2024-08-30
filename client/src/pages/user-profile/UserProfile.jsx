@@ -150,27 +150,8 @@ const UserProfile = () => {
   }
 
   return (
-    <nav className='flex flex-col items-center justify-center'>
-      <nav className="mt-4">
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => navigate("/")}
-        >
-          Home
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={() => navigate("/categories")}
-        >
-          Categories
-        </button>
-        <button
-          className="ml-2 rounded border border-black px-2 py-1"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+    <div className='flex flex-col items-center justify-center'>
+
       <div className="user-profile-container">
         <h1 className="user-profile-heading"><b>User Profile</b></h1>
         {isVerifying ? (
@@ -258,7 +239,7 @@ const UserProfile = () => {
           </>
         )}
       </div>
-    </nav>
+    </div>
   );
 };
 

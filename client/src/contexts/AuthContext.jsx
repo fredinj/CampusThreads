@@ -7,6 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [postNavbarDetails, setPostNavbarDetails] = useState({id:null, name:null})
 
   const checkAuth = async () => {
     setIsLoading(true);
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, login, logout, isLoading, user, reloadUserData, checkAuth }}
+      value={{ isAuthenticated, login, logout, isLoading, user, reloadUserData, checkAuth, setPostNavbarDetails, postNavbarDetails }}
     >
       {children}
     </AuthContext.Provider>
