@@ -1,15 +1,14 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AppBar, Toolbar, IconButton, Menu, MenuItem, Typography, Avatar, Button, Box } from '@mui/material';
 import { AccountCircle, Logout } from '@mui/icons-material';
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
-const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) => {
+const Navbar = ({}) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [ categoryButton, setCategoryButton ] = useState(categoryButtonName ? categoryButtonName : "Categories")
-  const { logout, user } = useContext(AuthContext);
+  const { logout, user, postNavbarDetails, setPostNavbarDetails } = useContext(AuthContext);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -19,53 +18,98 @@ const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) =
     setAnchorEl(null);
   };
 
+  const isOnCategoriesPage = location.pathname === '/categories';
+  const isOnRequestPage = location.pathname === '/categories/make-request';
+  const isOnRequestManagePage = location.pathname === '/approve-request';
+  // const showMakeRequest = isOnCategoriesPage && user && (user.role === "teacher" || user.role === "admin");
+  const showMakeRequest = (isOnCategoriesPage || isOnRequestPage || isOnRequestManagePage) && user && (user.role === "teacher" || user.role === "admin");
+  // const showManageRequest = isOnCategoriesPage && user && user.role === "admin";
+  const showManageRequest = (isOnCategoriesPage || isOnRequestPage || isOnRequestManagePage) && user && user.role === "admin";
+  const isOnPostsPage = location.pathname.startsWith('/post/');
+  // const isOnHomePage = location.pathname ==='/'
+  const isOnHomePage = false
+  const showCategories = true
+
+  useEffect( ()=>{
+    if(!isOnPostsPage){
+      setPostNavbarDetails({id:null, name:null})
+    }
+  },[isOnPostsPage])
+
   return (
     <Box className="flex justify-center">
       <AppBar
         position="static"
         sx={{
-          backgroundColor: '#e8e8e8', // Custom grayish white color
+          backgroundColor: '#e8e8e8',
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-          borderRadius: '9999px', // Full rounded corners
+          borderRadius: '9999px',
           maxWidth: '1100px',
           padding: '0 2rem',
+          margin: '0rem 0'
         }}
       >
         <Toolbar className="flex justify-between">
-          {/* Logo */}
-          <Typography variant="h6" className="text-gray-800 font-semibold" onClick={()=>navigate('/')}>
+          <Typography variant="h6" className="text-gray-800 font-semibold" onClick={() => navigate('/')}>
             YourLogo
           </Typography>
 
-          {/* Links/Buttons */}
           <div className="flex items-center space-x-6">
 
-            { home? (
-              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
-                onClick={ ()=> navigate('/') }
+            {showMakeRequest && (
+              <Button
+                variant="outlined"
+                sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={() => navigate('/categories/make-request')}
+              >
+                Make Request
+              </Button>
+            )}
+
+            {showManageRequest && (
+              <Button
+                variant="outlined"
+                sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={() => navigate('/approve-request')}
+              >
+                Manage Request
+              </Button>
+            )}
+
+            {isOnPostsPage && postNavbarDetails.name !== null && (
+              <Button
+                variant="outlined"
+                sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={() =>  navigate(`/category/${postNavbarDetails.id}`) }
+              >
+                {postNavbarDetails.name}
+              </Button>
+            )}
+
+            {showCategories && (
+              <Button
+                variant="outlined"
+                sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={() =>  navigate(`/categories`) }
+              >
+                Categories
+              </Button>
+            )}
+
+            {!isOnHomePage && (
+              <Button
+                variant="outlined"
+                sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
+                onClick={() => navigate('/')}
               >
                 Home
               </Button>
-            ) : (<></>)}
+            )}
 
-            { categories? (
-              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
-                onClick={ ()=> {
-                  if (categoryButton === "Categories") navigate('/categories')
-                  else navigate(`/category/${categoryId}`)
-                }}
-              >
-                {categoryButton}
-              </Button>
-            ) : (<></>) }
-              
-            
-            {/* User Profile */}
             <IconButton onClick={handleMenuOpen}>
               <Avatar alt="Username" src="/profile-pic.jpg" />
             </IconButton>
-            
-            {/* Dropdown Menu */}
+
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
@@ -99,7 +143,7 @@ const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) =
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              <MenuItem onClick={ ()=> navigate('/profile') } sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>
+              <MenuItem onClick={() => navigate('/profile')} sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>
                 <AccountCircle sx={{ mr: 2, fontSize: '1.25rem' }} /> Profile
               </MenuItem>
               <MenuItem onClick={logout} sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>

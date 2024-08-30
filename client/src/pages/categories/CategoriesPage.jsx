@@ -50,8 +50,8 @@ const CategoriesPage = () => {
   if (error) return <Alert severity="error" className="text-center">{`Error: ${error}`}</Alert>;
 
   return (
-    <div className="w-full min-h-screen bg-zinc-100 p-5">
-      <Navbar home={true} categories={false} />
+    <div className="w-full min-h-full p-5">
+      {/* <Navbar home={true} categories={false} /> */}
 
       {loadingCategories ? (
         <div className="flex flex-col items-center justify-center w-full">

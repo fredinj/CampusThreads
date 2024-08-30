@@ -12,12 +12,16 @@ import MakeRequest from "./pages/request/MakeRequest";
 import UserProfile from "./pages/user-profile/UserProfile";
 import CategoryFeed from "./pages/category-feed/CategoryFeed";
 
+import Navbar from './components/navbar/Navbar.jsx';
+
 function App() {
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
 
   if (isLoading) return <p>Loading...</p>;
 
   return (
+    <div className='bg-zinc-100 w-full min-h-screen py-5'>
+    <Navbar />
     <Routes>
       <Route path="/signup" element={<SignUp />} />
 
@@ -44,6 +48,7 @@ function App() {
         </>
       )}
     </Routes>
+    </div>
   );
 }
 

@@ -63,8 +63,8 @@ const Home = () => {
   if (error) return <p>Error: {error}</p>;
 
   return(
-    <div className="w-full min-h-screen bg-zinc-100 p-5">
-      <Navbar />  
+    <div className="w-full min-h-full">
+      {/* <Navbar />   */}
   
       { loadingPosts ? ( <div className="flex flex-col items-center justify-center w-full"><LoadingIndicator /> </div>) : (
 
