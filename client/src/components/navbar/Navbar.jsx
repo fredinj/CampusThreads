@@ -8,7 +8,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [ categoryButton, setCategoryButton ] = useState(categoryButtonName ? categoryButtonName : "Categories")
+  const [categoryButton, setCategoryButton] = useState(categoryButtonName ? categoryButtonName : "Categories");
   const { logout, user } = useContext(AuthContext);
 
   const handleMenuOpen = (event) => {
@@ -20,51 +20,73 @@ const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) =
   };
 
   return (
-    <Box className="flex justify-center">
+    <Box sx={{ width: '100%', marginBottom: '1rem' }}>
       <AppBar
         position="static"
         sx={{
           backgroundColor: '#e8e8e8', // Custom grayish white color
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
           borderRadius: '9999px', // Full rounded corners
-          maxWidth: '1100px',
+          width: '100%', // Full width
           padding: '0 2rem',
         }}
       >
-        <Toolbar className="flex justify-between">
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           {/* Logo */}
-          <Typography variant="h6" className="text-gray-800 font-semibold" onClick={()=>navigate('/')}>
+          <Typography
+            variant="h6"
+            sx={{ color: '#333', fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => navigate('/')}
+          >
             YourLogo
           </Typography>
 
           {/* Links/Buttons */}
-          <div className="flex items-center space-x-6">
-
-            { home? (
-              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
-                onClick={ ()=> navigate('/') }
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {home && (
+              <Button
+                variant="outlined"
+                sx={{ 
+                  color: '#333',
+                  borderColor: '#2f2f31',
+                  textTransform: 'capitalize',
+                  '&:hover': {
+                    color: '#555',
+                    borderColor: '#535357'
+                  }
+                }}
+                onClick={() => navigate('/')}
               >
                 Home
               </Button>
-            ) : (<></>)}
+            )}
 
-            { categories? (
-              <Button variant="outlined" sx={{ color: '#333', borderColor: '#2f2f31', textTransform: 'capitalize', '&:hover': { color: '#555', borderColor: '#535357' } }}
-                onClick={ ()=> {
-                  if (categoryButton === "Categories") navigate('/categories')
-                  else navigate(`/category/${categoryId}`)
+            {categories && (
+              <Button
+                variant="outlined"
+                sx={{ 
+                  color: '#333',
+                  borderColor: '#2f2f31',
+                  textTransform: 'capitalize',
+                  '&:hover': {
+                    color: '#555',
+                    borderColor: '#535357'
+                  }
+                }}
+                onClick={() => {
+                  if (categoryButton === "Categories") navigate('/categories');
+                  else navigate(`/category/${categoryId}`);
                 }}
               >
                 {categoryButton}
               </Button>
-            ) : (<></>) }
-              
-            
+            )}
+
             {/* User Profile */}
             <IconButton onClick={handleMenuOpen}>
               <Avatar alt="Username" src="/profile-pic.jpg" />
             </IconButton>
-            
+
             {/* Dropdown Menu */}
             <Menu
               anchorEl={anchorEl}
@@ -99,14 +121,14 @@ const Navbar = ({categoryButtonName, categoryId, home=false, categories=true}) =
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              <MenuItem onClick={ ()=> navigate('/profile') } sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>
+              <MenuItem onClick={() => navigate('/profile')} sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>
                 <AccountCircle sx={{ mr: 2, fontSize: '1.25rem' }} /> Profile
               </MenuItem>
               <MenuItem onClick={logout} sx={{ '&:hover': { backgroundColor: '#e0e0e0' } }}>
                 <Logout sx={{ mr: 2, fontSize: '1.25rem' }} /> Logout
               </MenuItem>
             </Menu>
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>

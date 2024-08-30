@@ -1,16 +1,28 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThumbUp, Comment, Share } from '@mui/icons-material';
-import { Avatar, Chip, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Avatar, Chip, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardHeader, CardContent, CardActions, IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const PostCard = ({ postProp }) => {
+  // console.log(postProp)
+  const colorPalette = [
+    '#90323d', // Darker Pink
+    '#4c956c', // Darker Peach
+    '#c75146', // Darker Mint
+    '#012a4a', // Darker Light Mint
+    '#294c60', // Darker Blue
+    '#007f5f', // Darker Teal
+  ];
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [post, setPost] = useState(postProp);
   const [open, setOpen] = useState(false);
+
+  // Randomly select a color from the palette
+  const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
 
   const handleReaction = async () => {
     try {
@@ -52,68 +64,85 @@ const PostCard = ({ postProp }) => {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.origin + `/post/${post._id}`);
-    // alert("Link copied to clipboard!");
   };
 
   return (
-    <div className="m-4 flex flex-col rounded-lg border border-gray-300 bg-white p-5 shadow-md hover:shadow-lg transition-shadow duration-300 w-full max-w-xl">
+    <Card sx={{
+      m: 2,
+      p: 2,
+      borderRadius: 2,
+      boxShadow: 2,
+      transition: 'box-shadow 0.3s ease-in-out',
+      '&:hover': {
+        boxShadow: 4,
+      },
+      maxWidth: '100%',
+      width: '800px',  // Adjusting the width to make it longer
+    }}>
       {/* Header Section */}
-      <div className="flex items-center mb-3">
-        {/* Avatar */}
-        <Avatar
-          alt={post.author}
-          src={post.authorAvatarUrl || '/default-avatar.png'}
-          className="mr-3"
-        />
-        <div>
-          {/* Author Name */}
-          <Link to={`/user/${post.author_id}`}>
+      <CardHeader
+        avatar={
+          <Avatar
+            alt={post.author}
+            src={post.authorAvatarUrl || '/default-avatar.png'}
+            sx={{ backgroundColor: randomColor, width: 36, height: 36 }}
+          />
+        }
+        title={
+          <Link to={`/user/${post.author_id}`} style={{ textDecoration: 'none' }}>
             <Chip
               label={post.author}
               clickable
-              className="text-blue-600 hover:text-blue-800 hover:bg-blue-100 transition-colors duration-200"
               sx={{
+                color: '#3C6E71',
                 fontWeight: 'bold',
-                backgroundColor: 'transparent',
-                padding: 0,
+                fontSize: '0.875rem',
+                '&:hover': {
+                  backgroundColor: 'rgba(60, 110, 113, 0.1)',
+                },
               }}
             />
           </Link>
-          {/* Post Time */}
-          <p className="text-sm text-gray-500">Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
-        </div>
-      </div>
+        }
+        subheader={`Posted on ${new Date(post.createdAt).toLocaleDateString()}`}
+        subheaderTypographyProps={{ fontSize: '0.75rem', color: 'text.secondary' }}
+      />
 
       <Divider />
 
       {/* Post Title */}
-      <Link to={`/post/${post._id}/`}>
-        <h2 className="text-gray-800 font-semibold mt-3 mb-3 hover:text-blue-600 transition-colors duration-200">
-          {post.post_title}
-        </h2>
-      </Link>
+      <CardContent sx={{ padding: '8px 16px' }}>
+        <Link to={`/post/${post._id}/`} style={{ textDecoration: 'none' }}>
+          <h2 style={{
+            color: '#284B63',
+            fontWeight: 'bold',
+            margin: '8px 0',
+            fontSize: '1rem',
+            transition: 'color 0.3s',
+            '&:hover': {
+              color: '#007f5f',
+            },
+          }}>
+            {post.post_title}
+          </h2>
+        </Link>
+      </CardContent>
 
       {/* Footer Section with Icons */}
-      <div className="mt-3 flex items-center space-x-4 text-gray-600">
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
-          onClick={handleReaction}
-        >
-          <ThumbUp fontSize="small" sx={{ color: post.likedByUser ? 'blue' : 'inherit' }} />
-          <span>{post.post_likes}</span>
-        </button>
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
-          onClick={() => navigate(`/post/${post._id}`)}
-        >
-          <Comment fontSize="small" />
-          <span>Comment</span>
-        </button>
-        <button className="flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200"
-          onClick={handleShareClick}
-        >
-          <Share fontSize="small" />
-          <span>Share</span>
-        </button>
-      </div>
+      <CardActions disableSpacing sx={{ padding: '8px 16px' }}>
+        <IconButton onClick={handleReaction} sx={{ color: post.likedByUser ? '#007f5f' : 'inherit', fontSize: '0.875rem' }}>
+          <ThumbUp />
+          <span style={{ marginLeft: 8 }}>{post.post_likes}</span>
+        </IconButton>
+        <IconButton onClick={() => navigate(`/post/${post._id}`)} sx={{ fontSize: '0.875rem' }}>
+          <Comment />
+          <span style={{ marginLeft: 8 }}>Comment</span>
+        </IconButton>
+        <IconButton onClick={handleShareClick} sx={{ fontSize: '0.875rem' }}>
+          <Share />
+          <span style={{ marginLeft: 8 }}>Share</span>
+        </IconButton>
+      </CardActions>
 
       {/* Share Modal */}
       <Dialog open={open} onClose={handleClose}>
@@ -136,7 +165,7 @@ const PostCard = ({ postProp }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Card>
   );
 };
 
