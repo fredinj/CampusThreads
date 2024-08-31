@@ -41,7 +41,7 @@ const Login = () => {
     <div className="login_container">
       <div className="login_form_container">
         <div className="left">
-          <form className="form_container" onSubmit={handleSubmit}>
+          <form className="form_container p-3" onSubmit={handleSubmit}>
             <h1>Login To Your Account</h1>
             <input
               type="email"
