@@ -62,7 +62,7 @@ const UpdateCategory = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ marginTop: 4 }}>
+      <Box sx={{ marginTop: 4, backgroundColor: 'white', color: 'black', padding: 2, borderRadius: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Update Category
         </Typography>
@@ -77,6 +77,8 @@ const UpdateCategory = () => {
               multiline
               rows={4}
               variant="outlined"
+              InputLabelProps={{ style: { color: 'black' } }}
+              InputProps={{ style: { color: 'black' } }}
             />
           </Box>
           <Box sx={{ marginBottom: 2 }}>
@@ -87,6 +89,8 @@ const UpdateCategory = () => {
               value={formData.tags}
               onChange={handleChange}
               variant="outlined"
+              InputLabelProps={{ style: { color: 'black' } }}
+              InputProps={{ style: { color: 'black' } }}
             />
           </Box>
           <Button type="submit" variant="contained" color="primary">
@@ -96,6 +100,8 @@ const UpdateCategory = () => {
       </Box>
     </Container>
   );
+    
+  
 };
 
 export default UpdateCategory;

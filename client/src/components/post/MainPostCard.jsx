@@ -135,7 +135,6 @@ const MainPostCard = ({ postProp, handleReplyToggle }) => {
             className="mr-3"
           />
           <div>
-            <Link to={`/user/${post.author_id}`}>
               <Chip
                 label={post.author}
                 clickable
@@ -146,7 +145,6 @@ const MainPostCard = ({ postProp, handleReplyToggle }) => {
                   padding: 0,
                 }}
               />
-            </Link>
             <p className="text-sm text-gray-500">
               Posted on {new Date(post.createdAt).toLocaleDateString()}
             </p>

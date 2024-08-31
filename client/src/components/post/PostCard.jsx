@@ -89,7 +89,6 @@ const PostCard = ({ postProp }) => {
           />
         }
         title={
-          <Link to={`/user/${post.author_id}`} style={{ textDecoration: 'none' }}>
             <Chip
               label={post.author}
               clickable
@@ -102,7 +101,6 @@ const PostCard = ({ postProp }) => {
                 },
               }}
             />
-          </Link>
         }
         subheader={`Posted on ${new Date(post.createdAt).toLocaleDateString()}`}
         subheaderTypographyProps={{ fontSize: '0.75rem', color: 'text.secondary' }}

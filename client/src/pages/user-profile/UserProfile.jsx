@@ -319,14 +319,14 @@ const UserProfile = () => {
                       variant="body2"
                       component="div"
                       dangerouslySetInnerHTML={{ __html: comment.comment_content }}
-                      sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary', color: '#ffffff'  }}
+                      sx={{ mb: 2, lineHeight: 1.6, color: '#ffffff'  }}
                     />
                   </li>
                 </Link>
               ))}
             </ul>
           ) : (
-            <p>You have not made any comments yet.</p>
+            <p style={{ color: '#ffffff' }}>You have not made any comments yet.</p>
           )}
 
 <div className="user-posts-section" style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -342,7 +342,7 @@ const UserProfile = () => {
                   variant="body2"
                   component="div"
                   dangerouslySetInnerHTML={{ __html: post.post_title }}
-                  sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary',color: '#ffffff'  }}
+                  sx={{ mb: 2, lineHeight: 1.6,color: '#ffffff'  }}
                 />
               </li>
             </Link>
