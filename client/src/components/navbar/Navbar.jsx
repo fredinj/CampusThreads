@@ -51,7 +51,7 @@ const Navbar = ({}) => {
       >
         <Toolbar className="flex justify-between">
           <Typography variant="h6" className="text-gray-800 font-semibold" onClick={() => navigate('/')}>
-            YourLogo
+            CampusThreads
           </Typography>
 
           <div className="flex items-center space-x-6">

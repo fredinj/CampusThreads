@@ -153,7 +153,7 @@ const CategoriesPage = () => {
                       Explore More
                     </Button>
                     {(user.role === "teacher" || user.role === "admin") && (
-                      <>
+                      
                         <Button
                           size="small"
                           sx={{
@@ -166,6 +166,8 @@ const CategoriesPage = () => {
                         >
                           Update
                         </Button>
+                    )}
+                     {(user.role === "admin") && (
                         <Button
                           size="small"
                           sx={{
@@ -178,7 +180,7 @@ const CategoriesPage = () => {
                         >
                           Delete
                         </Button>
-                      </>
+                      
                     )}
                   </CardActions>
                 </Card>
