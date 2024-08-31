@@ -278,7 +278,7 @@ const CommentCard = ({ commentProp })=>{
             variant="text"
             size="small"
             className="mt-2"
-            sx={{ textTransform: 'none' }}
+            sx={{ textTransform: 'none', color: '#ffffff' }}
             onClick={handleLoadMore}
           >
             Load More

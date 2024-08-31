@@ -113,7 +113,7 @@ const Home = () => {
                 {/* Load More button */}
                 {postsData.hasMorePosts && (
                   <button
-                    className="mt-4 rounded-lg border border-black px-3 py-1"
+                    className="mt-4 rounded-lg border border-white px-3 py-1 text-white"
                     onClick={fetchPosts}
                   >
                     Load More

@@ -240,7 +240,7 @@ const CategoryFeed = () => {
               variant="contained"
               color="info"
               onClick={() => fetchPosts()}
-              sx={{ my: 4 }}
+              sx={{ my: 4, color: '#ffffff' }}
             >
               Load More
             </Button>

@@ -143,6 +143,7 @@ const CommentContainer = ({ postId, commentBox=true }) => {
             size="small"
             className="mt-2"
             onClick={handleLoadMore}
+            sx={{color: '#ffffff'}}
           >
             Load More
           </Button>
