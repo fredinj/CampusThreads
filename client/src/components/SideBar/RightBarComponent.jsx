@@ -106,7 +106,7 @@ const RightBarComponent = () => {
     return (
       <RightBarContainer>
         <CircularProgress color="primary" />
-        <Typography variant="body1" sx={{ mt: 2, fontWeight: 'medium' }}>Loading categories...</Typography>
+        <Typography variant="body1" sx={{ mt: 2, fontWeight: 'medium', color: '#ffffff' }}>Loading categories...</Typography>
       </RightBarContainer>
     );
   }

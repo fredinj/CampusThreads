@@ -95,7 +95,7 @@ const TagSidebar = () => {
     return (
       <SidebarContainer>
         <CircularProgress color="primary" />
-        <Typography variant="body1" sx={{ mt: 2, fontWeight: 'medium' }}>Loading tags...</Typography>
+        <Typography variant="body1" sx={{ mt: 2, fontWeight: 'medium', color: '#ffffff' }}>Loading tags...</Typography>
       </SidebarContainer>
     );
   }
