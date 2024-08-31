@@ -111,10 +111,11 @@ const TagSidebar = () => {
   return (
     <SidebarContainer>
       <Box sx={{ width: '100%', textAlign: 'center', mb: 2 }}>
-        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold', color: '#333' }}>
-          <Tag style={{ verticalAlign: 'middle', marginRight: 8, color: '#6c757d' }} />
-          Tags
-        </Typography>
+      <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', fontWeight: 'bold', color: '#ffffff' }}>
+  <Tag style={{ verticalAlign: 'middle', marginRight: 8, color: '#ffffff' }} />
+  Tags
+</Typography>
+
       </Box>
       <Divider sx={{ mb: 2, borderColor: '#e5e5e5' }} />
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>

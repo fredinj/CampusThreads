@@ -307,11 +307,11 @@ const UserProfile = () => {
 
       {!isVerificationScreen && (
         <div className="user-comments-section" style={{ textAlign: 'center', marginTop: '20px' }}>
-          <h2 style={{ fontWeight: 'bold', fontSize: '24px' }}>Your Comments</h2>
+          <h2 style={{ fontWeight: 'bold', fontSize: '24px',color: '#ffffff'  }}>Your Comments</h2>
           {loadingComments ? (
-            <p>Loading comments...</p>
+            <p style={{ color: '#ffffff' }}>Loading comments...</p>
           ) : userComments.length > 0 ? (
-            <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+            <ul style={{ listStyleType: 'disc', paddingLeft: '20px', color: '#ffffff'  }}>
               {userComments.map((comment) => (
                 <Link to={`/post/${comment.post}`} key={comment._id}>
                   <li style={{ marginBottom: '16px' }}>
@@ -319,7 +319,7 @@ const UserProfile = () => {
                       variant="body2"
                       component="div"
                       dangerouslySetInnerHTML={{ __html: comment.comment_content }}
-                      sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary' }}
+                      sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary', color: '#ffffff'  }}
                     />
                   </li>
                 </Link>
@@ -330,11 +330,11 @@ const UserProfile = () => {
           )}
 
 <div className="user-posts-section" style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h2 style={{ fontWeight: 'bold', fontSize: '24px' }}>Your Posts</h2>
+      <h2 style={{ fontWeight: 'bold', fontSize: '24px', color: '#ffffff'  }}>Your Posts</h2>
       {loadingPosts ? (
-        <p>Loading posts...</p>
+        <p style={{ color: '#ffffff' }}>Loading posts...</p>
       ) : userPosts.length > 0 ? (
-        <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
+        <ul style={{ listStyleType: 'disc', paddingLeft: '20px', color: '#ffffff'  }}>
           {userPosts.map((post) => (
             <Link to={`/post/${post._id}`} key={post._id}>
               <li style={{ marginBottom: '16px' }}>
@@ -342,14 +342,14 @@ const UserProfile = () => {
                   variant="body2"
                   component="div"
                   dangerouslySetInnerHTML={{ __html: post.post_title }}
-                  sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary' }}
+                  sx={{ mb: 2, lineHeight: 1.6, color: 'text.secondary',color: '#ffffff'  }}
                 />
               </li>
             </Link>
           ))}
         </ul>
       ) : (
-        <p>You have not made any posts yet.</p>
+        <p style={{ color: '#ffffff' }}>You have not made any posts yet.</p>
       )}
     </div>
 

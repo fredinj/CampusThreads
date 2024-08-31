@@ -121,9 +121,10 @@ const RightBarComponent = () => {
 
   return (
     <RightBarContainer>
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#333', textAlign: 'center' }}>
-        Subscribed Categories
-      </Typography>
+<Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>
+  Subscribed Categories
+</Typography>
+
       <Divider sx={{ mb: 2, borderColor: '#e5e5e5' }} />
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {categories.map((category, index) => (

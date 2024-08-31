@@ -22,7 +22,7 @@ function App() {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div className='bg-zinc-100 w-full min-h-screen py-5'>
+    <div className='bg-slate-800 w-full min-h-screen py-5'>
     <Navbar />
       <Routes>
         <Route path="/signup" element={<SignUp />} />

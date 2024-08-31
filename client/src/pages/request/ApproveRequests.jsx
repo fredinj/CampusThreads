@@ -98,7 +98,7 @@ const ApproveRequests = () => {
 
   return (
     <Container maxWidth="md" sx={{ marginTop: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center">
+      <Typography variant="h4" component="h1" gutterBottom align="center" style={{ color: '#ffffff' }}>
         Approve Category Requests
       </Typography>
       {loading && (
