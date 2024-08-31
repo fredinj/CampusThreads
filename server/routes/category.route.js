@@ -54,7 +54,7 @@ router.put('/:id/delete', [auth, admin], deleteCategory);
 
 // Update a category's tags and description
 // category.routes.js
-router.put('/:id/update', [auth, admin], updateCategory);
+router.put('/:id/update', updateCategory);
 
 //get posts from a category
 // router.get("/:categoryId/posts", getPostsByCategory)

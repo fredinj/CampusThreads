@@ -18,6 +18,7 @@ const Navbar = ({}) => {
     setAnchorEl(null);
   };
 
+  const isOnLoginSignup = location.pathname === '/login' || location.pathname === '/signup'
   const isOnCategoriesPage = location.pathname === '/categories';
   const isOnRequestPage = location.pathname === '/categories/make-request';
   const isOnRequestManagePage = location.pathname === '/approve-request';
@@ -36,7 +37,7 @@ const Navbar = ({}) => {
     }
   },[isOnPostsPage])
 
-  return (
+  return ( !isOnLoginSignup? (
     <Box className="flex justify-center">
       <AppBar
         position="static"
@@ -154,6 +155,7 @@ const Navbar = ({}) => {
         </Toolbar>
       </AppBar>
     </Box>
+  ) : (<></>)
   );
 };
 
