@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from '../../api/axiosConfig';  
 import CommentCard from "./CommentCard.jsx";
 import ReplyCard from "./ReplyCard.jsx"
 import LoadingIndicator from "../ui/LoadingIndicator.jsx"
@@ -30,7 +30,7 @@ const CommentContainer = ({ postId, commentBox=true }) => {
     
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/comments/post/${postId}`,
+        `/api/comments/post/${postId}`,
         comment_content,
         {
           headers: {
@@ -69,7 +69,7 @@ const CommentContainer = ({ postId, commentBox=true }) => {
   const fetchComments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=2&childLimit=3&depth=3`,
+        `/api/comments/post/${postId}?topLevelLimit=2&childLimit=3&depth=3`,
         {
           withCredentials: true,
         },
@@ -86,7 +86,7 @@ const CommentContainer = ({ postId, commentBox=true }) => {
   const handleLoadMore = async ()=> {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/post/${postId}?topLevelLimit=2&childLimit=2&depth=3&topLevelSkip=${fetchedTopCount}`,
+        `/api/comments/post/${postId}?topLevelLimit=2&childLimit=2&depth=3&topLevelSkip=${fetchedTopCount}`,
         {
           withCredentials: true,
         },

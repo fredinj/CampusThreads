@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import {
   Container,
   TextField,
@@ -28,7 +28,7 @@ const MakeRequest = () => {
     setError(null);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/category/request",
+        "/api/category/request",
         {
           categoryName,
           description,

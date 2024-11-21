@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import CommentContainer from "../../components/post/CommentContainer";
 import { AuthContext } from "../../contexts/AuthContext";
 import MainPostCard from "../../components/post/MainPostCard";
@@ -34,7 +34,7 @@ const PostPage = () => {
   const fetchPost = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/posts/${postId}?userId=${user._id}`,
+        `/api/posts/${postId}?userId=${user._id}`,
         {
           withCredentials: true,
         },

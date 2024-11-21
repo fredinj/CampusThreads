@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axiosConfig";
 
 export const AuthContext = createContext();
 
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     setIsLoading(true);
     try {
-      const authCheckUrl = "http://localhost:3000/api/auth/check-auth";
+      const authCheckUrl = "/api/auth/check-auth";
       const response = await axios.get(authCheckUrl, {
         withCredentials: true,
       });
@@ -38,10 +38,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     setIsLoading(true); 
     try {
-      const loginUrl = "http://localhost:3000/api/auth/login";
+      const loginUrl = "/api/auth/login";
       await axios.post(loginUrl, credentials, { withCredentials: true });
       const response = await axios.get(
-        "http://localhost:3000/api/auth/check-auth",
+        "/api/auth/check-auth",
         { withCredentials: true },
       );
       setUser(response.data.user);
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setIsLoading(true); 
     try {
-      const logoutUrl = "http://localhost:3000/api/auth/logout";
+      const logoutUrl = "/api/auth/logout";
       await axios.post(logoutUrl, {}, { withCredentials: true });
       setIsAuthenticated(false);
       setUser(null);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import PostCard from '../../components/post/PostCard';
 import Navbar from '../../components/navbar/Navbar';
 import LoadingIndicator from '../../components/ui/LoadingIndicator';
@@ -42,7 +42,7 @@ const PostsByTag = () => {
     const fetchPostsByTag = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/posts/tag/?tag=${tag}`); 
+        const response = await axios.get(`/api/posts/tag/?tag=${tag}`); 
         const fetchedPosts = response.data.posts || [];
         if (fetchedPosts.length === 0) {
           // Redirect to home page if no posts found

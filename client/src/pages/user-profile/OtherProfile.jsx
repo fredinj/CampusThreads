@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Typography, Chip, Avatar, CircularProgress, Box } from '@mui/material';
 import { Person, Comment, Article } from '@mui/icons-material';
 import { styled } from '@mui/system';
@@ -39,7 +39,7 @@ const OtherProfile = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/user/${userId}`);
+        const response = await axios.get(`/api/user/${userId}`);
         if (response.status === 200) {
           setUser(response.data);
         }
@@ -54,7 +54,7 @@ const OtherProfile = () => {
   useEffect(() => {
     const fetchUserComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/user/comments/${userId}`);
+        const response = await axios.get(`/api/user/comments/${userId}`);
         if (response.status === 200) {
           setUserComments(response.data);
         }
@@ -71,7 +71,7 @@ const OtherProfile = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/user/posts/${userId}`);
+        const response = await axios.get(`/api/user/posts/${userId}`);
         if (response.status === 200) {
           setUserPosts(response.data);
         }

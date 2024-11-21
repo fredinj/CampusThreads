@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import RichTextEditor from "../../components/editorjs/RichTextEditor";
 import PostCard from "../../components/post/PostCard";
 import Navbar from "../../components/navbar/Navbar";
@@ -57,7 +57,7 @@ const CategoryFeed = () => {
   const fetchCategory = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/category/${categoryId}`,
+        `/api/category/${categoryId}`,
         {
           withCredentials: true,
         }
@@ -72,8 +72,8 @@ const CategoryFeed = () => {
   const handleSubscribe = async () => {
     const subscriptionStatus = user.categories.includes(categoryId);
     const requestURL = subscriptionStatus
-      ? `http://localhost:3000/api/user/category/${categoryId}/unsubscribe`
-      : `http://localhost:3000/api/user/category/${categoryId}/subscribe`;
+      ? `/api/user/category/${categoryId}/unsubscribe`
+      : `/api/user/category/${categoryId}/subscribe`;
 
     try {
       const response = await axios.put(
@@ -103,7 +103,7 @@ const CategoryFeed = () => {
         tag: selectedTag // Include the selected tag
       };
       const response = await axios.post(
-        "http://localhost:3000/api/posts",
+        "/api/posts",
         postData,
         {
           headers: {
@@ -135,7 +135,7 @@ const CategoryFeed = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/posts/category/${categoryId}?postLimit=3&postSkip=${fetchedPostsCount}&userId=${user._id}`,
+        `/api/posts/category/${categoryId}?postLimit=3&postSkip=${fetchedPostsCount}&userId=${user._id}`,
         {
           withCredentials: true,
         }

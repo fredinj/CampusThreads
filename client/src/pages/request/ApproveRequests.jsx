@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import {
   Container,
   Typography,
@@ -25,7 +25,7 @@ const ApproveRequests = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('http://localhost:3000/api/category/request/pending', {
+        const response = await axios.get('/api/category/request/pending', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -47,22 +47,18 @@ const ApproveRequests = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:3000/api/category/${id}/approve`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.message}`);
-      }
-
-      const data = await response.json();
-      // console.log('Approval response:', data);
+      const response = await axios.put(
+        `/api/category/${id}/approve`,
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true, // Ensures cookies are included with the request
+        }
+      );
+  
       setRequests(requests.filter(request => request._id !== id));
     } catch (error) {
       console.error('Error approving request:', error.message);
@@ -71,12 +67,13 @@ const ApproveRequests = () => {
       setLoading(false);
     }
   };
+  
 
   const handleReject = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.put(`http://localhost:3000/api/category/${id}/reject`, {}, {
+      const response = await axios.put(`/api/category/${id}/reject`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

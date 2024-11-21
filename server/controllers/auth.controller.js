@@ -56,8 +56,8 @@ const loginUser = async (req,res) => {
       
       res.cookie('token', token, {
         httpOnly: true, // Prevents JavaScript access to the cookie
-        // secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
-        secure: false, // Use secure cookies in production (HTTPS)
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
+        //secure: false, // Use secure cookies in production (HTTPS)
         sameSite: 'strict', // Helps protect against CSRF
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
@@ -118,7 +118,7 @@ const sendVerificationEmail = async (req, res) => {
     await user.save();
 
     // Compose the verification email
-    const verificationUrl = `http://localhost:3001/verify-email?token=${emailToken}`;
+    const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${emailToken}`;
     const mailOptions = {
       from: 'uvanceddtube@gmail.com', // Sender address
       to: user.email, // List of receivers

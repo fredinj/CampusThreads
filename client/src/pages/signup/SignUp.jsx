@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import "./SignUp.css";
 
 const SignUp = () => {
@@ -21,7 +21,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = "http://localhost:3000/api/auth/signup";
+      const url = "/api/auth/signup";
       const { data: res } = await axios.post(url, data);
       navigate("/login");
       console.log(res.message);

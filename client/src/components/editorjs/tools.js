@@ -14,7 +14,7 @@ import CheckList from "@editorjs/checklist";
 import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 import SimpleImage from "@editorjs/simple-image";
-import axios from "axios";
+import axios from '../../api/axiosConfig';  
 import { v4 as uuidv4 } from 'uuid';
 
 export const EDITOR_JS_TOOLS = {
@@ -53,7 +53,7 @@ export const EDITOR_JS_TOOLS = {
           const imageID = uuidv4();
 
           return axios.post(
-            `http://localhost:3000/api/uploads/image/post/${imageID}`, 
+            `/api/uploads/image/post/${imageID}`, 
             data, 
             {
               headers: {'Content-Type': 'multipart/form-data'},

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import PostCard from "../../components/post/PostCard";
@@ -58,7 +58,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3&userId=${user._id}`, {
+      const response = await axios.get(`/api/posts/home?postSkip=${fetchedPostsCount}&postLimit=3&userId=${user._id}`, {
         withCredentials: true,
       });
 

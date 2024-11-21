@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Box, Typography, Chip, CircularProgress, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -83,7 +83,7 @@ const RightBarComponent = () => {
 
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/category/${user._id}/categories`);
+        const response = await axios.get(`/api/category/${user._id}/categories`);
         
         // Log the response data for debugging
         console.log('API Response:', response.data);

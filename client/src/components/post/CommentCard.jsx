@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
-import axios from "axios";
+import axios from '../../api/axiosConfig';  
 import ReactQuill from "react-quill-new";
 // import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import "react-quill/dist/quill.core.css"; // Import Quill styles
@@ -36,7 +36,7 @@ const CommentCard = ({ commentProp })=>{
   const handleReplyComment = async ({ comment_content }) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/comments/post/${comment.post}`,
+        `/api/comments/post/${comment.post}`,
         {
           comment_content: comment_content,
           parent_comment: comment._id
@@ -75,7 +75,7 @@ const CommentCard = ({ commentProp })=>{
   const handleLoadMore = async ()=> {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/comments/post/${comment.post}?topLevelLimit=2&childLimit=2&depth=2&parentCommentId=${comment._id}&topLevelSkip=${fetchedChildCount}`,
+        `/api/comments/post/${comment.post}?topLevelLimit=2&childLimit=2&depth=2&parentCommentId=${comment._id}&topLevelSkip=${fetchedChildCount}`,
         {
           withCredentials: true,
         },
@@ -109,7 +109,7 @@ const CommentCard = ({ commentProp })=>{
       };
 
       const response = await axios.put(
-        `http://localhost:3000/api/comments/${comment._id}`,
+        `/api/comments/${comment._id}`,
         comment_content,
         {
           headers: {
@@ -140,7 +140,7 @@ const CommentCard = ({ commentProp })=>{
   const handleDeleteComment = async () => {
     
     const response = await axios.delete(
-      `http://localhost:3000/api/comments/${comment._id}`,
+      `/api/comments/${comment._id}`,
       {
         headers: {
           "Content-Type": "application/json",

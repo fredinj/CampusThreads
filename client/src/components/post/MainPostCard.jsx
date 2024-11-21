@@ -1,6 +1,6 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import { AuthContext } from "../../contexts/AuthContext";
 import RichTextEditor from "../editorjs/RichTextEditor";
 import { ThumbUp, Comment, Share, Edit, Delete } from "@mui/icons-material";
@@ -25,7 +25,7 @@ const MainPostCard = ({ postProp, handleReplyToggle }) => {
   const handlePostDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/posts/${post._id}`,
+        `/api/posts/${post._id}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const MainPostCard = ({ postProp, handleReplyToggle }) => {
       };
 
       const response = await axios.put(
-        `http://localhost:3000/api/posts/${postProp._id}/react`,
+        `/api/posts/${postProp._id}/react`,
         reactionContent,
         {
           headers: {
@@ -83,7 +83,7 @@ const MainPostCard = ({ postProp, handleReplyToggle }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/posts/${post._id}`,
+        `/api/posts/${post._id}`,
         postData,
         {
           headers: {

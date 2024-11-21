@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ThumbUp, Comment, Share } from '@mui/icons-material';
 import { Avatar, Chip, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Card, CardHeader, CardContent, CardActions, IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import axios from "axios";
+import axios from "../../api/axiosConfig";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const PostCard = ({ postProp }) => {
@@ -32,7 +32,7 @@ const PostCard = ({ postProp }) => {
       };
 
       const response = await axios.put(
-        `http://localhost:3000/api/posts/${postProp._id}/react`,
+        `/api/posts/${postProp._id}/react`,
         reactionContent,
         {
           headers: {

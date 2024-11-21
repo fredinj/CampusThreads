@@ -37,17 +37,12 @@ const CategoriesPage = () => {
 
   const handleDeleteCategory = async (categoryId) => {
     if (!window.confirm("Are you sure you want to delete this category?")) return;
-
+  
     try {
-      const response = await fetch(`http://localhost:3000/api/category/${categoryId}`, {
-        method: "DELETE",
-        credentials: "include",
+      const response = await axios.delete(`/api/category/${categoryId}`, {
+        withCredentials: true, // Ensures cookies are included with the request
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete category");
-      }
-
+  
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category._id !== categoryId)
       );
@@ -55,28 +50,25 @@ const CategoriesPage = () => {
       setError(err.message);
     }
   };
+  
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/category", {
-          method: "GET",
-          credentials: "include",
+        const response = await axios.get("/api/category", {
+          withCredentials: true,
         });
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setCategories(data);
+        setCategories(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoadingCategories(false);
       }
     };
-
+  
     fetchCategories();
   }, []);
+  
 
   if (loadingCategories)
     return (

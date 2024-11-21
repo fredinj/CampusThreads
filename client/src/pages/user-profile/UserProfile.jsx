@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { FaPencilAlt } from 'react-icons/fa';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import Typography from '@mui/material/Typography';
 import './UserProfile.css';
 
@@ -42,7 +42,7 @@ const UserProfile = () => {
     setIsVerifying(true);
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/auth/verify-email?token=${token}`,
+        `/api/auth/verify-email?token=${token}`,
         {},
         {
           headers: {
@@ -71,7 +71,7 @@ const UserProfile = () => {
   const handleVerifyEmail = async () => {
     try {
       const response = await axios.put(
-        'http://localhost:3000/api/auth/send-verify-email',
+        '/api/auth/send-verify-email',
         {},
         {
           headers: {
@@ -119,7 +119,7 @@ const UserProfile = () => {
 
     try {
       const response = await axios.put(
-        'http://localhost:3000/api/user/update', 
+        '/api/user/update', 
         editableUser,
         {
           headers: {
@@ -152,7 +152,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserComments = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/user/comments/${user._id}`);
+        const response = await axios.get(`/api/user/comments/${user._id}`);
         if (response.status === 200) {
           setUserComments(response.data);
         }
@@ -171,7 +171,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/user/posts/${user._id}`);
+        const response = await axios.get(`/api/user/posts/${user._id}`);
         if (response.status === 200) {
           setUserPosts(response.data);
         }

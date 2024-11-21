@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tag } from 'lucide-react';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Box, Typography, Chip, CircularProgress, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +74,7 @@ const TagSidebar = () => {
     const fetchTags = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get('http://localhost:3000/api/posts/tags');
+        const response = await axios.get('/api/posts/tags');
         setTags(response.data.tags);
       } catch (err) {
         setError(err.message || 'An error occurred while fetching tags');

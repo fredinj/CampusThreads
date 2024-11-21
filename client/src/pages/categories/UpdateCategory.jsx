@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axiosConfig';
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
 
 const UpdateCategory = () => {
@@ -20,7 +20,7 @@ const UpdateCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const {data} = await axios.get( `http://localhost:3000/api/category/${id}`, { withCredentials: true } ); // Updated URL here
+        const {data} = await axios.get( `/api/category/${id}`, { withCredentials: true } ); // Updated URL here
         setCategory(data);
 
         setFormData({
@@ -52,7 +52,7 @@ const UpdateCategory = () => {
     };
 
     try {
-      await axios.put(`http://localhost:3000/api/category/${id}/update`, updatedCategory, {withCredentials: true}); // Updated URL here
+      await axios.put(`/api/category/${id}/update`, updatedCategory, {withCredentials: true}); // Updated URL here
       navigate('/categories'); // Redirect after successful update
     } catch (error) {
       console.error('Failed to update category:', error);
