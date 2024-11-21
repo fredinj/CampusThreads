@@ -86,7 +86,7 @@ const RightBarComponent = () => {
         const response = await axios.get(`/api/category/${user._id}/categories`);
         
         // Log the response data for debugging
-        console.log('API Response:', response.data);
+        //console.log('API Response:', response.data);
         
         // Update categories to match the expected structure
         setCategories(response.data || []);

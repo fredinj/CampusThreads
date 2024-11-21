@@ -6,3 +6,9 @@
 * EMAIL_PASS = _email pass for nodemailer_
 * EMAIL_USER = _email for nodemailer_
 * CLIENT_URL = _client's url_
+* SERVER_URL = _server's url_
+* NODE_ENV = _"production"_ (if in production)
+
+# Required Client env variables
+
+* VITE_SERVER_URL = _server's url_

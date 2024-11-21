@@ -14,6 +14,7 @@ import {
   AppBar,
   Toolbar,
 } from "@mui/material";
+import axios from "../../api/axiosConfig";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState([]);

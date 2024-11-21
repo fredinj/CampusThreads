@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./db");
 const cookieParser = require("cookie-parser");
-
 const postRoute = require("./routes/post.route.js");
 const userRoute = require("./routes/user.route.js");
 const authRoute = require("./routes/auth.route.js");
@@ -13,6 +12,10 @@ const uploadRoute = require("./routes/upload.route.js")
 
 const app = express();
 
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? ['https://campus.autone.live'] 
+  : ['http://localhost:3001'];
+
 // connect to db
 connectDB();
 
@@ -21,13 +24,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: true, // Replace with your client URL
+    // origin: true, // Consider setting this to your specific frontend URL in production
+    origin: function(origin, callback) {
+      // allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // Allow credentials to be sent with requests
+    allowedHeaders: [
+      'Content-Type',
+      'X-XSRF-TOKEN',
+      'Authorization',
+      'Accept',
+      'X-Requested-With',
+      'Origin',
+      'Cache-Control',
+      'Accept-Language'
+    ],
+    credentials: true,
   })
 );
-app.use(cookieParser()); // for jwt in cookies
+
+app.use(cookieParser());
 
 // routes
 app.use("/api/posts", postRoute);

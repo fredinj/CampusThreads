@@ -9,7 +9,7 @@ const handlePostImageUpload = async (req, res) => {
     return res.status(200).json({
       success: 1,
       file: {
-        url: `/api/uploads/image/${req.file.filename}`,
+        url: `${process.env.SERVER_URL}/api/uploads/image/${req.file.filename}`,
       }
     });
   } catch (error) {

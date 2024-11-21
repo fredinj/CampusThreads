@@ -87,7 +87,7 @@ const TagSidebar = () => {
   }, []);
 
   const handleTagClick = (tag) => {
-    console.log(`/posts-by-tag/${tag}`)
+    //console.log(`/posts-by-tag/${tag}`)
     navigate(`/posts-by-tag/${tag}`); // Navigate to the posts-by-tag route with the selected tag
   };
 
