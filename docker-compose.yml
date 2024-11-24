@@ -1,0 +1,37 @@
+services:
+  client:
+    image: 
+    restart: unless-stopped
+    ports:
+      - "80:80"  # Expose port 80 to the internet
+    environment:
+      - VITE_SERVER_URL=
+    networks:
+      - campusthreads-network
+
+  server:
+    image: 
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Expose the server internally
+    networks:
+      - campusthreads-network
+    environment:
+      - NODE_ENV=production
+      - DB=
+      - JWT_SECRET=
+      - CLIENT_URL=
+      - SERVER_URL=
+      - EMAIL_PASS=
+      - EMAIL_USER=
+      - PORT=3000
+    volumes:
+      - campusthreads-uploads:/app/uploads
+
+networks:
+  campusthreads-network:
+    driver: bridge  # Bridge network for communication between client and server
+
+volumes:
+  campusthreads-uploads: # Volume to store uploaded files
+    external: true
