@@ -32,6 +32,7 @@
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@tailwindcss/typography": "^0.5.14",
+    "@tailwindcss/vite": "^4.0.2",
     "axios": "^1.7.2",
     "dompurify": "^3.1.6",
     "editorjs-html": "^3.4.3",
@@ -61,7 +62,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.17",
     "vite": "^5.3.1"
   }
 }

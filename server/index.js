@@ -13,7 +13,7 @@ const uploadRoute = require("./routes/upload.route.js")
 const app = express();
 
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? ['https://campus.autone.live'] 
+  ? [process.env.CLIENT_URL] 
   : ['http://localhost:3001'];
 
 // connect to db
@@ -65,7 +65,9 @@ app.get("/", (req, res) => {
 });
 
 // Start the server
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_ENV === 'production' 
+  ? process.env.PORT
+  : 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
