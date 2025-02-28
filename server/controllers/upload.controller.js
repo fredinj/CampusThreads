@@ -1,6 +1,10 @@
 const fs = require('fs').promises;
 const path = require("path");
 
+const serverURL = process.env.NODE_ENV === 'production' 
+  ? process.env.SERVER_URL 
+  : 'http://localhost:3000'
+
 const handlePostImageUpload = async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: 0, error: 'No file uploaded or file is not an image.' });
@@ -9,7 +13,7 @@ const handlePostImageUpload = async (req, res) => {
     return res.status(200).json({
       success: 1,
       file: {
-        url: `${process.env.SERVER_URL}/api/uploads/image/${req.file.filename}`,
+        url: `${serverURL}/api/uploads/image/${req.file.filename}`,
       }
     });
   } catch (error) {

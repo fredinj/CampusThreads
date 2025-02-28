@@ -31,6 +31,10 @@ const Navbar = ({}) => {
   const isOnHomePage = false
   const showCategories = true
 
+  const appName = import.meta.env.VITE_APP_NAME 
+    ? import.meta.env.VITE_APP_NAME 
+    : 'CampusThreads';
+
   useEffect( ()=>{
     if(!isOnPostsPage){
       setPostNavbarDetails({id:null, name:null})
@@ -52,7 +56,7 @@ const Navbar = ({}) => {
       >
         <Toolbar className="flex justify-between">
           <Typography variant="h6" className="text-gray-800 font-semibold" onClick={() => navigate('/')}>
-            CampusThreads
+            {appName}
           </Typography>
 
           <div className="flex items-center space-x-6">

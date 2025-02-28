@@ -12,6 +12,7 @@
 # Required Client env variables
 
 * VITE_SERVER_URL = _server's url_
+* VITE_APP_NAME = _app's name_
 
 # Config
 

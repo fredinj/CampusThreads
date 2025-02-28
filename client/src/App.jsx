@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 
@@ -17,6 +17,26 @@ import PostsByTag from './pages/post/PostsByTag.jsx';
 import Navbar from './components/navbar/Navbar.jsx';
 
 function App() {
+  
+  useEffect(() => {
+    const getTokenFromParams = () => {
+      const params = new URLSearchParams(location.search);
+      const token = params.get('token');
+      if (token) {
+        verifyEmail(token);
+      }
+    };
+
+    getTokenFromParams();
+  }, [location.search]); // Run when location.search changes
+
+  useEffect(() => {
+    document.title =  import.meta.env.VITE_APP_NAME 
+    ? import.meta.env.VITE_APP_NAME 
+    : 'CampusThreads'
+  }, []);
+
+
   const { isAuthenticated, isLoading, user } = useContext(AuthContext);
 
   if (isLoading) return <p>Loading...</p>;
