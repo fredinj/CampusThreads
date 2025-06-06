@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const authCheckUrl = "/api/auth/check-auth";
       const response = await axios.get(authCheckUrl, {
-        withCredentials: true,
+        withCredentials: true, 
       });
       setIsAuthenticated(response.data.authenticated);
       setUser(response.data.user); // Store the user data
@@ -39,10 +39,15 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true); 
     try {
       const loginUrl = "/api/auth/login";
-      await axios.post(loginUrl, credentials, { withCredentials: true });
+      const login_response = await axios.post(loginUrl, credentials, { withCredentials: true });
+    const token = login_response.data.access
+    const headers = token
+        ? { Authorization: `Bearer ${token}` }
+        : {};
+      localStorage.setItem('access', token);
       const response = await axios.get(
         "/api/auth/check-auth",
-        { withCredentials: true },
+        { withCredentials: true, headers },
       );
       setUser(response.data.user);
       setIsAuthenticated(true);
@@ -59,6 +64,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const logoutUrl = "/api/auth/logout";
       await axios.post(logoutUrl, {}, { withCredentials: true });
+      localStorage.removeItem('access');
       setIsAuthenticated(false);
       setUser(null);
     } catch (error) {
