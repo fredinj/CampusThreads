@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const serverURL = import.meta.env.PROD 
-  ? import.meta.env.VITE_SERVER_URL 
-  : 'http://localhost:3000'
+const serverURL = import.meta.env.VITE_SERVER_URL ? 
+    import.meta.env.VITE_SERVER_URL: 'http://localhost:3000'
 
+console.log(serverURL)
 
 const axiosInstance = axios.create({
   baseURL: serverURL,
@@ -21,6 +21,12 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem('access');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (config.url) {
+      const [path, query] = config.url.split('?');
+      if (!path.endsWith('/')) {
+        config.url = path + '/' + (query ? '?' + query : '');
+      }
     }
     return config;
   },

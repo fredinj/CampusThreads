@@ -26,18 +26,6 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const isVerificationScreen = location.search.includes('token');
 
-  useEffect(() => {
-    const getTokenFromParams = () => {
-      const params = new URLSearchParams(location.search);
-      const token = params.get('token');
-      if (token) {
-        verifyEmail(token);
-      }
-    };
-
-    getTokenFromParams();
-  }, [location.search]); // Run when location.search changes
-
   const verifyEmail = async (token) => {
     setIsVerifying(true);
     try {
@@ -92,6 +80,18 @@ const UserProfile = () => {
       alert('Error sending email verification link. Please try again.');
     }
   };
+
+    useEffect(() => {
+    const getTokenFromParams = () => {
+      const params = new URLSearchParams(location.search);
+      const token = params.get('token');
+      if (token) {
+        verifyEmail(token);
+      }
+    };
+
+    getTokenFromParams();
+  }, [location.search]); // Run when location.search changes
 
   const handleLogout = async () => {
     try {

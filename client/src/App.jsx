@@ -17,18 +17,19 @@ import PostsByTag from './pages/post/PostsByTag.jsx';
 import Navbar from './components/navbar/Navbar.jsx';
 
 function App() {
-  
-  useEffect(() => {
-    const getTokenFromParams = () => {
-      const params = new URLSearchParams(location.search);
-      const token = params.get('token');
-      if (token) {
-        verifyEmail(token);
-      }
-    };
 
-    getTokenFromParams();
-  }, [location.search]); // Run when location.search changes
+    // this is handled in the user profile page
+//   useEffect(() => {
+//     const getTokenFromParams = () => {
+//       const params = new URLSearchParams(location.search);
+//       const token = params.get('token');
+//       if (token) {
+//         verifyEmail(token);
+//       }
+//     };
+// 
+//     getTokenFromParams();
+//   }, [location.search]); // Run when location.search changes
 
   useEffect(() => {
     document.title =  import.meta.env.VITE_APP_NAME 
