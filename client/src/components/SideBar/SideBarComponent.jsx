@@ -5,20 +5,23 @@ import { Box, Typography, Chip, CircularProgress, Divider } from '@mui/material'
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 
-// Elegant sidebar container with transparent background
+// sidebar container
 const SidebarContainer = styled(Box)({
   width: '250px',
   height: '100vh',
+  maxHeight: '100vh', // Ensure it doesn't exceed screen height
   backgroundColor: 'transparent', // Transparent background
   padding: '16px',
   boxShadow: '1px 0 4px rgba(0, 0, 0, 0.05)', // Subtle shadow to blend with the page
   overflowY: 'auto',  // Enables vertical scrolling
+  overflowX: 'hidden', // Prevent horizontal overflow
   borderRight: '1px solid #e5e5e5', // Very light grey border for blending
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',  // Align items to the start of the sidebar
   transition: 'background-color 0.3s ease', // Smooth transition for background color
   borderRadius: '8px', // Softer border radius
+  boxSizing: 'border-box', // Include padding in height calculation
   '&::-webkit-scrollbar': {
     width: '8px',
   },
