@@ -18,16 +18,32 @@ const axiosInstance = axios.create({
 // Add a request interceptor to include the token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     if (config.url) {
       const [path, query] = config.url.split('?');
       if (!path.endsWith('/')) {
         config.url = path + '/' + (query ? '?' + query : '');
       }
     }
+
+    // Public endpoints to not send auth headers to
+    const publicEndpoints = [
+      '/api/auth/login/',
+      '/api/auth/signup/',
+      '/api/auth/verify-email/',
+    ];
+    
+    // Check if the current request is to a public endpoint
+    const isPublicEndpoint = publicEndpoints.some(endpoint => 
+      config.url?.includes(endpoint)
+    );
+
+    if(!isPublicEndpoint){
+        const token = localStorage.getItem('access');
+        if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
