@@ -11,35 +11,27 @@ const {
   deleteCategory,
   viewCategories,
   viewPendingCategoryRequests,
-  viewOneCategory,
   updateCategory,
   getSpecificCategory,
   getAllCategoryNames,
   getSubscribedCategories
 } = require("../controllers/category.controller");
 
-router.get('/category-names', getAllCategoryNames);
-
-
 router.get('/:userId/categories', getSubscribedCategories);
 
-
 // Create a new category request
-router.post("/request", [auth, teacher], categoryRequest); // add back teacher middleware
+router.post("/request", [auth, teacher], categoryRequest);
 
 // Approve a category request
-router.put("/:id/approve", [auth, admin], approveCategoryRequest); // add admin middleware
+router.put("/:id/approve", [auth, admin], approveCategoryRequest);
 
 // Reject a category request
-router.put("/:id/reject", [auth, admin], rejectCategoryRequest); // add admin middleware
+router.put("/:id/reject", [auth, admin], rejectCategoryRequest);
 
 // view all requests
-router.get("/request", [auth, admin], viewCategoryRequests); // add admin middleware
+router.get("/request", [auth, admin], viewCategoryRequests);
 
 router.get("/request/pending", [auth, admin], viewPendingCategoryRequests);
-
-// view one
-router.get("/:id", auth, viewOneCategory)
 
 // view all categories
 router.get("/", [auth], viewCategories);
@@ -48,12 +40,9 @@ router.get("/", [auth], viewCategories);
 router.get("/:id", auth, getSpecificCategory)
 
 //delete a category
-router.delete("/:id", [auth, admin], deleteCategory); // add admin middleware
-router.put('/:id/delete', [auth, admin], deleteCategory);
-
+router.delete("/:id", [auth, admin], deleteCategory);
 
 // Update a category's tags and description
-// category.routes.js
 router.put('/:id/update', updateCategory);
 
 //get posts from a category

@@ -14,9 +14,9 @@ router.put("/update", auth, updateUserProfile);
 
 // /api/user/category/${categoryId}/unsubscribe
 
+// after /api/user
 router.put("/category/:categoryId/unsubscribe", auth, unsubscribeCategory)
 router.put("/category/:categoryId/subscribe", auth, subscribeCategory)
 router.get('/comments/:userId/', fetchUserComments);
 router.get('/posts/:userId/', fetchUserPosts);
-
 module.exports = router;

@@ -86,7 +86,7 @@ const getUserHomePosts = async (req, res) => {
       const reactions = await Reaction.find({ user: userId, post: { $in: postIds }, type: 'like' });
       
       const likedPostIds = new Set(reactions.map(reaction => reaction.post.toString()));
-      
+
       posts = posts.map(post => ({
         ...post,
         likedByUser: likedPostIds.has(post._id.toString())
